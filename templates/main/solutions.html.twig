@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bibliothèque de Solutions - Je Demain{% endblock %}
+
+{% block body %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Bibliothèque de solutions</h1>
+    <button class="btn btn-outline-secondary">Filtrer par</button>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for solution in solutions %}
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <div class="bg-light d-flex align-items-center justify-content-center" style="height: 150px; border-bottom: 1px solid #dee2e6;">
+                <span class="text-muted">Photo</span>
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ solution.titre }}</h5>
+                <p class="text-primary fw-bold" style="font-size: 0.9rem;">{{ solution.tag }}</p>
+                <p class="card-text text-muted small">Par {{ solution.auteur }}</p>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="badge bg-warning text-dark">{{ solution.note }}/5</span>
+                    <a href="#" class="btn btn-sm btn-primary">Voir détails</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="mt-5 p-4 bg-light rounded text-center">
+    <p class="mb-3">Vous ne trouvez pas ?</p>
+    <a href="{{ path('app_besoins') }}" class="btn btn-secondary">Exprimez votre besoin</a>
+</div>
+{% endblock %}

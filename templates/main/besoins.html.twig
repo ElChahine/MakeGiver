@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Exprimer un besoin - Je Demain{% endblock %}
+
+{% block body %}
+<div class="mx-auto" style="max-width: 700px;">
+    <h1 class="mb-4">Formulaire besoin</h1>
+    
+    <form action="#" method="post" class="card p-4 shadow-sm border-0">
+        <div class="mb-3">
+            <label class="form-label fw-bold">Titre du besoin</label>
+            <input type="text" class="form-control" placeholder="Titre">
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label fw-bold">Description détaillée</label>
+            <textarea class="form-control" rows="5" placeholder="Description"></textarea>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Téléphone</label>
+                <input type="tel" class="form-control" placeholder="..">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Mail</label>
+                <input type="email" class="form-control" placeholder="..">
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label fw-bold">Photos & Fichiers</label>
+            <div class="p-3 border border-dashed rounded text-center bg-light">
+                <input type="file" class="form-control mb-2" multiple>
+                <small class="text-muted">Ajoutez des photos et des fichiers (STL, PDF...)</small>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100 fw-bold py-2">PUBLIER</button>
+    </form>
+</div>
+{% endblock %}
