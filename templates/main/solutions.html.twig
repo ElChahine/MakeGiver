@@ -1,0 +1,313 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bibliothèque de Solutions - Je Demain{% endblock %}
+
+{% block body %}
+<style>
+    .page-header {
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 3px solid #F3F4F6;
+    }
+
+    .page-title {
+        font-size: 2.75rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, var(--dark-color) 0%, var(--primary-color) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .filter-btn {
+        padding: 12px 28px;
+        border-radius: 12px;
+        border: 2px solid #E5E7EB;
+        background: white;
+        font-weight: 600;
+        color: var(--dark-color);
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .filter-btn:hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px -8px rgba(79, 70, 229, 0.3);
+    }
+
+    .solution-card {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        background: white;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        height: 100%;
+        position: relative;
+    }
+
+    .solution-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border: 2px solid transparent;
+        border-radius: 16px;
+        transition: border-color 0.3s ease;
+        pointer-events: none;
+    }
+
+    .solution-card:hover {
+        transform: translateY(-12px) scale(1.02);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    }
+
+    .solution-card:hover::after {
+        border-color: var(--primary-color);
+    }
+
+    .card-image {
+        height: 200px;
+        background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 2px solid #F3F4F6;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .card-image::before {
+        content: '';
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translate(0, 0); }
+        50% { transform: translate(20px, -20px); }
+    }
+
+    .card-image i {
+        font-size: 4rem;
+        color: #D1D5DB;
+        position: relative;
+        z-index: 1;
+    }
+
+    .solution-card .card-body {
+        padding: 1.75rem;
+    }
+
+    .solution-title {
+        font-size: 1.35rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        color: var(--dark-color);
+    }
+
+    .solution-tag {
+        display: inline-block;
+        padding: 6px 16px;
+        background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(79, 70, 229, 0.05) 100%);
+        color: var(--primary-color);
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.85rem;
+        margin-bottom: 1rem;
+        letter-spacing: 0.5px;
+    }
+
+    .solution-author {
+        color: #6B7280;
+        font-size: 0.95rem;
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .solution-author i {
+        color: var(--secondary-color);
+    }
+
+    .card-footer-custom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1rem;
+        border-top: 2px solid #F3F4F6;
+    }
+
+    .rating-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+        color: white;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.95rem;
+        box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.3);
+    }
+
+    .btn-details {
+        padding: 10px 24px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-details:hover {
+        transform: translateX(5px);
+        box-shadow: 0 8px 16px -8px rgba(79, 70, 229, 0.5);
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        padding: 3.5rem 2rem;
+        border-radius: 20px;
+        margin-top: 4rem;
+        text-align: center;
+        color: white;
+        box-shadow: 0 20px 40px -15px rgba(79, 70, 229, 0.4);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -20%;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .cta-section h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .cta-section p {
+        font-size: 1.15rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+        position: relative;
+    }
+
+    .btn-cta {
+        padding: 14px 32px;
+        background: white;
+        color: var(--primary-color);
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        position: relative;
+    }
+
+    .btn-cta:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.3);
+        color: var(--primary-dark);
+    }
+
+    @media (max-width: 768px) {
+        .page-title {
+            font-size: 2rem;
+        }
+
+        .cta-section {
+            padding: 2.5rem 1.5rem;
+        }
+
+        .cta-section h3 {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+    <div>
+        <h1 class="page-title">Bibliothèque de solutions</h1>
+        <p class="text-muted mb-0">
+            <i class="bi bi-collection me-2"></i>
+            Découvrez les solutions créées par la communauté
+        </p>
+    </div>
+    <button class="filter-btn">
+        <i class="bi bi-funnel"></i>
+        Filtrer par catégorie
+    </button>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for solution in solutions %}
+    <div class="col">
+        <div class="solution-card card">
+            <div class="card-image">
+                <i class="bi bi-image"></i>
+            </div>
+            <div class="card-body">
+                <h5 class="solution-title">{{ solution.titre }}</h5>
+                <span class="solution-tag">{{ solution.tag }}</span>
+                <p class="solution-author">
+                    <i class="bi bi-person-circle"></i>
+                    Par {{ solution.auteur }}
+                </p>
+                <div class="card-footer-custom">
+                    <span class="rating-badge">
+                        <i class="bi bi-star-fill"></i>
+                        {{ solution.note }}/5
+                    </span>
+                    <a href="#" class="btn-details">
+                        Voir détails
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<div class="cta-section">
+    <h3>
+        <i class="bi bi-search me-2"></i>
+        Vous ne trouvez pas ce que vous cherchez ?
+    </h3>
+    <p>Exprimez votre besoin et notre communauté vous aidera à trouver ou créer la solution idéale.</p>
+    <a href="{{ path('app_besoins') }}" class="btn-cta">
+        <i class="bi bi-plus-circle-fill"></i>
+        Exprimer mon besoin
+    </a>
+</div>
+{% endblock %}
