@@ -277,17 +277,25 @@
                 <i class="bi bi-image"></i>
             </div>
             <div class="card-body">
-                <h5 class="solution-title">{{ solution.titre }}</h5>
-                <span class="solution-tag">{{ solution.tag }}</span>
+                {# On utilise Titre_Solution (le nom en BDD) #}
+                <h5 class="solution-title">{{ solution.Titre_Solution }}</h5>
+                
+                {# On utilise Difficulte_Fabrication pour le tag #}
+                <span class="solution-tag">{{ solution.Difficulte_Fabrication }}</span>
+                
                 <p class="solution-author">
                     <i class="bi bi-person-circle"></i>
-                    Par {{ solution.auteur }}
+                    {# On affiche le prénom et le nom récupérés grâce au JOIN #}
+                    Par {{ solution.Prenom }} {{ solution.Nom }}
                 </p>
+                
                 <div class="card-footer-custom">
-                    <span class="rating-badge">
-                        <i class="bi bi-star-fill"></i>
-                        {{ solution.note }}/5
+                    {# On affiche la Licence à la place de la note #}
+                    <span class="rating-badge" style="background: var(--primary-color); color: white;">
+                        <i class="bi bi-shield-check"></i>
+                        {{ solution.Licence }}
                     </span>
+                    
                     <a href="#" class="btn-details">
                         Voir détails
                         <i class="bi bi-arrow-right"></i>
@@ -298,6 +306,7 @@
     </div>
     {% endfor %}
 </div>
+
 
 <div class="cta-section">
     <h3>

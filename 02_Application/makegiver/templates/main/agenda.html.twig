@@ -3,128 +3,54 @@
 {% block title %}Agenda - Je Demain{% endblock %}
 
 {% block body %}
-<style>
-    .construction-container {
-        max-width: 900px;
-        margin: 4rem auto;
-        text-align: center;
-    }
-
-    .status-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 20px;
-        background: rgba(79, 70, 229, 0.1);
-        color: var(--primary-color);
-        border-radius: 50px;
-        font-weight: 700;
-        font-size: 0.9rem;
-        margin-bottom: 2rem;
-        border: 1px solid rgba(79, 70, 229, 0.2);
-    }
-
-    .main-title {
-        font-size: 3.5rem;
-        font-weight: 800;
-        margin-bottom: 1.5rem;
-        background: linear-gradient(135deg, var(--dark-color) 0%, var(--primary-color) 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-
-    .construction-card {
-        background: white;
-        border-radius: 24px;
-        padding: 4rem 2rem;
-        box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
-        border: 2px solid #F3F4F6;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .icon-anim {
-        font-size: 5rem;
-        color: var(--primary-color);
-        margin-bottom: 2rem;
-        display: inline-block;
-        animation: pulse-calendar 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse-calendar {
-        0%, 100% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.1); opacity: 0.8; }
-    }
-
-    .timeline-preview {
-        margin-top: 3rem;
-        padding-top: 3rem;
-        border-top: 2px dashed #E5E7EB;
-        display: flex;
-        justify-content: space-around;
-        opacity: 0.6;
-    }
-
-    .preview-item {
-        text-align: center;
-        filter: grayscale(1);
-    }
-
-    .btn-return {
-        margin-top: 3rem;
-        padding: 14px 32px;
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-        color: white;
-        border-radius: 12px;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        transition: all 0.3s ease;
-    }
-
-    .btn-return:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px -10px rgba(79, 70, 229, 0.5);
-        color: white;
-    }
-</style>
-
-<div class="construction-container">
-    <div class="status-badge">
-        <i class="bi bi-gear-fill"></i>
-        MODULE EN DÉVELOPPEMENT
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <span class="badge bg-primary-soft text-primary px-3 py-2 rounded-pill mb-3">ÉVÉNEMENTS À VENIR</span>
+        <h1 class="display-4 fw-bold">Notre Agenda</h1>
     </div>
 
-    <div class="construction-card">
-        <i class="bi bi-calendar-event icon-anim"></i>
-        <h1 class="main-title">L'agenda arrive bientôt</h1>
-        <p class="text-muted fs-5">
-            Nous préparons un espace pour centraliser tous les ateliers, 
-            webinaires et rencontres de la communauté Je Demain.
-        </p>
+    <div class="row g-4 justify-content-center">
+        {% for event in evenements %}
+            <div class="col-md-10 col-lg-8">
+                <div class="card border-0 shadow-sm" style="border-radius: 20px; transition: transform 0.3s ease;">
+                    <div class="row g-0">
+                        {# Bloc Date #}
+                        <div class="col-sm-3 bg-primary text-white d-flex flex-column align-items-center justify-content-center p-4" style="border-radius: 20px 0 0 20px;">
+                            <span class="h1 fw-bold mb-0">{{ event.Date_Evenement|date('d') }}</span>
+                            <span class="text-uppercase">{{ event.Date_Evenement|date('M') }}</span>
+                        </div>
 
-        <div class="timeline-preview">
-            <div class="preview-item">
-                <div class="h4 mb-1">Févr.</div>
-                <small>Ateliers</small>
+                        {# Détails #}
+                        <div class="col-sm-9 p-4">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h3 class="fw-bold h4">{{ event.Titre_Evenement }}</h3>
+                                <span class="badge bg-success-soft text-success">Webinaire</span>
+                            </div>
+                            
+                            <p class="text-muted mt-2">{{ event.Description }}</p>
+                            
+                            <hr class="my-3 opacity-10">
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small text-secondary">
+                                    <i class="bi bi-clock me-1"></i> {{ event.Date_Evenement|date('H:i') }}
+                                </span>
+                                {# On affiche le nom du lieu (ex: Wenov ou En ligne) #}
+                                <span class="small text-secondary">
+                                    <i class="bi bi-geo-alt me-1"></i> {{ event.Nom_Lieu|default('En ligne') }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="preview-item">
-                <div class="h4 mb-1">Mars</div>
-                <small>Hackathon</small>
+        {% else %}
+            {# Si la BDD est vide #}
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-calendar-x display-1 text-light mb-3"></i>
+                <p class="text-muted">Aucun événement n'est prévu pour le moment.</p>
             </div>
-            <div class="preview-item">
-                <div class="h4 mb-1">Avril</div>
-                <small>Webinaires</small>
-            </div>
-        </div>
+        {% endfor %}
     </div>
-
-    <a href="{{ path('app_home') }}" class="btn-return">
-        <i class="bi bi-house-door"></i>
-        Retour à l'accueil
-    </a>
 </div>
 {% endblock %}

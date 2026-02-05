@@ -5,6 +5,8 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\DBAL\Connection;
 
 class MainController extends AbstractController
 {
@@ -15,29 +17,77 @@ class MainController extends AbstractController
     }
 
     #[Route('/solutions', name: 'app_solutions')]
-    public function solutions(): Response
-    {
-        // On simule des données pour le catalogue (Page 5)
-        $solutions = [
-            ['titre' => 'Adaptateur Clé', 'tag' => '#Lowtech', 'note' => 4, 'auteur' => 'FabLab Lille'],
-            ['titre' => 'Allume-Feu', 'tag' => '#3D', 'note' => 3, 'auteur' => 'Maker59'],
-        ];
+        public function solutions(Connection $connection): Response
+        {
+            // On récupère les solutions ET on va chercher le Prénom/Nom de l'auteur dans la table Utilisateurs
+            $sql = "
+                SELECT s.*, u.Nom, u.Prenom 
+                FROM Solutions s 
+                LEFT JOIN Utilisateurs u ON s.CreateurID = u.UtilisateurID
+            ";
+            
+            $solutions = $connection->fetchAllAssociative($sql);
 
-        return $this->render('main/solutions.html.twig', [
-            'solutions' => $solutions
+            return $this->render('main/solutions.html.twig', [
+                'solutions' => $solutions,
+            ]);
+        }
+
+#[Route('/besoins', name: 'app_besoins', methods: ['GET', 'POST'])] // On autorise le POST
+    public function besoins(Connection $connection, Request $request): Response
+    {
+        // 1. GESTION DE L'ENVOI DU FORMULAIRE
+        if ($request->isMethod('POST')) {
+            // On récupère les données des champs "name" du formulaire
+            $titre = $request->request->get('titre');
+            $description = $request->request->get('description');
+
+            if ($titre && $description) {
+                // On insère dans la table Projets
+                // On met DemandeurID = 1 par défaut pour la démo (Jean Dupont)
+                $connection->executeStatement("
+                    INSERT INTO Projets (Titre_Besoin, Description_Detaillee, Statut, DemandeurID, Date_Creation) 
+                    VALUES (?, ?, 'Ouvert', 1, NOW())
+                ", [$titre, $description]);
+
+                // Petit message de succès (optionnel mais pro)
+                $this->addFlash('success', 'Votre besoin a été publié !');
+
+                // On redirige vers la même page pour vider le formulaire et voir le résultat
+                return $this->redirectToRoute('app_besoins');
+            }
+        }
+
+        // 2. RÉCUPÉRATION DE LA LISTE (Comme avant)
+        $sql = "SELECT p.*, u.Nom, u.Prenom 
+                FROM Projets p 
+                LEFT JOIN Utilisateurs u ON p.DemandeurID = u.UtilisateurID
+                ORDER BY p.Date_Creation DESC"; // Le plus récent en premier
+        
+        $besoins = $connection->fetchAllAssociative($sql);
+
+        return $this->render('main/besoins.html.twig', [
+            'besoins' => $besoins,
         ]);
     }
 
-    #[Route('/besoins', name: 'app_besoins')]
-    public function besoins(): Response
-    {
-        return $this->render('main/besoins.html.twig');
-    }
-
     #[Route('/agenda', name: 'app_agenda')]
-    public function agenda(): Response
+    public function agenda(Connection $connection): Response
     {
-        return $this->render('main/agenda.html.twig');
+        // On récupère les événements et le nom du lieu associé
+        $sql = "
+            SELECT e.*, l.Nom_Lieu, l.Ville 
+            FROM Evenements e 
+            LEFT JOIN Lieux l ON e.LieuID = l.LieuID
+            WHERE e.Date_Evenement >= CURDATE()
+            ORDER BY e.Date_Evenement ASC
+        ";
+        
+        $evenements = $connection->fetchAllAssociative($sql);
+
+        return $this->render('main/agenda.html.twig', [
+            'evenements' => $evenements,
+        ]);
     }
 
     #[Route('/projets', name: 'app_projets')]
