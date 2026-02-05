@@ -1,0 +1,62 @@
+1. Personne Concernée (Patient)
+En tant que personne concernée, je veux m'inscrire sur la plateforme afin de pouvoir décrire mes besoins et trouver de l'aide.
+
+En tant que personne concernée, je veux soumettre une description de ma difficulté (Projet) en précisant le type de gêne (Catégorie de besoin) afin que les makers comprennent bien le problème. (Mise à jour : Lien "Défini par" du MCD)
+
+En tant que personne concernée, je veux chercher dans une bibliothèque de Solutions autonomes afin de voir si une ressource existe déjà sans avoir à créer un projet. (Mise à jour : Autonomie de la solution)
+
+En tant que personne concernée, je veux filtrer les solutions par type de fabrication (Catégorie technique) ou par type de besoin afin de trouver ce qui est réalisable pour moi. (Mise à jour : Distinction des classifications)
+
+En tant que personne concernée, je veux être mis en relation avec un maker et un soignant dans un espace de projet collaboratif afin de co-concevoir une aide sur mesure.
+
+En tant que personne concernée, je veux voir une carte des Lieux (FabLabs, Centres) près de chez moi pour savoir où fabriquer un objet.
+
+En tant que personne concernée, je veux consulter le calendrier des Événements (Webinaires, Ateliers) afin de m'inscrire à une rencontre ou une formation. (Nouveau : Entité Événement)
+
+En tant que personne concernée, je veux suivre l'avancement (Statut) d'un projet que j'ai initié afin de savoir où en est la fabrication.
+
+En tant que personne concernée, je veux laisser un commentaire sur une Solution ou un Projet afin de donner mon retour d'expérience.
+
+2. Maker (Concepteur)
+En tant que Maker, je veux m'inscrire pour proposer mes compétences.
+
+En tant que Maker, je veux consulter la liste des Projets (Besoins) ouverts afin de proposer mon aide.
+
+En tant que Maker, je veux rejoindre une équipe projet (Trinôme) pour collaborer avec un patient et un soignant.
+
+En tant que Maker, je veux publier une Solution de manière autonome (sans demande préalable) pour partager une invention existante en Open Source. (Mise à jour : Cardinalité 0,N entre Projet et Solution)
+
+En tant que Maker, je veux ajouter des Fichiers numériques (STL, PDF, Vidéo) à une Solution afin qu'elle soit reproductible. (Mise à jour : Entité Fichier)
+
+En tant que Maker, je veux qualifier ma solution par une catégorie technique (ex: Impression 3D, Découpe Laser) pour qu'elle soit bien référencée. (Mise à jour : Lien "Qualifié par")
+
+En tant que Maker, je veux documenter les étapes de fabrication (Tuto) pour aider la communauté.
+
+3. Soignant (Ergo, Kiné)
+En tant que Soignant, je veux m'inscrire pour accompagner mes patients.
+
+En tant que Soignant, je veux soumettre un besoin pour un patient (Projet) afin de trouver une aide technique.
+
+En tant que Soignant, je veux valider la pertinence d'une Solution ou d'un prototype dans un Projet pour garantir la sécurité médicale.
+
+En tant que Soignant, je veux rechercher des solutions existantes pour les recommander à mes patients.
+
+En tant que Soignant, je veux proposer ou animer un Événement (Table ronde, Webinaire) pour partager mon expertise. (Nouveau : Entité Événement)
+
+4. Partenaire (FabLab, Centre, Association)
+En tant que Partenaire, je veux inscrire mon Lieu physique sur la plateforme pour être visible sur la carte.
+
+En tant que Partenaire, je veux indiquer le matériel disponible dans mon Lieu afin d'attirer les makers pertinents.
+
+En tant que Partenaire, je veux créer et gérer des Événements (Ateliers de co-conception, Journées portes ouvertes) liés à mon Lieu. (Nouveau : Lien Lieu-Événement)
+
+En tant que Partenaire (FabLab Mobile), je veux gérer un calendrier de déplacement pour organiser mes tournées dans les établissements.
+
+5. Administrateur
+En tant qu'Administrateur, je veux valider les inscriptions pour assurer le sérieux de la communauté.
+
+En tant qu'Administrateur, je veux modérer les contenus (Projets, Solutions, Commentaires).
+
+En tant qu'Administrateur, je veux gérer la liste des Catégories (Types de handicap, Techniques) pour maintenir la cohérence du classement. (Mise à jour : Gestion des tables de référence)
+
+En tant qu'Administrateur, je veux mettre en avant certaines Solutions ("Coups de cœur") sur la page d'accueil.

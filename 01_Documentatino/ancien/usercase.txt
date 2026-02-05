@@ -1,0 +1,87 @@
+@startuml
+
+' --- Paramètres de style ---
+skinparam actorStyle awesome
+left to right direction
+skinparam packageStyle rectangle
+
+' --- ACTEURS & HÉRITAGE ---
+actor "Visiteur" as Guest
+actor "Membre Connecté" as Member
+actor "Patient (Personne Concernée)" as Patient
+actor "Maker" as Maker
+actor "Soignant" as Soignant
+actor "Administrateur" as Admin
+
+' Héritage : Le membre est un visiteur connecté, les autres sont des membres spécialisés
+Guest <|-- Member
+Member <|-- Patient
+Member <|-- Maker
+Member <|-- Soignant
+Member <|-- Admin
+
+' --- SYSTÈME ---
+package "Plateforme Makegiver" {
+
+    ' 1. Fonctions Communes
+    usecase "S'authentifier" as UC_Login
+    usecase "Rechercher une Solution" as UC_Search
+    usecase "Filtrer (Handicap/Techno)" as UC_Filter
+    usecase "Consulter l'Agenda / Événements" as UC_Agenda
+    usecase "S'inscrire à un Webinaire" as UC_RegisterEvent
+
+    ' 2. Gestion des Besoins (Projets)
+    usecase "Soumettre un Besoin (Projet)" as UC_Submit
+    usecase "Définir la Catégorie (Handicap)" as UC_DefineCat
+    usecase "Co-concevoir (Espace Projet)" as UC_Collab
+
+    ' 3. Gestion des Solutions (Ressources)
+    usecase "Publier une Solution" as UC_Publish
+    usecase "Téléverser Fichiers (STL/PDF)" as UC_Upload
+    usecase "Qualifier la Solution (Technique)" as UC_Qualify
+    
+    ' 4. Administration
+    usecase "Modérer les contenus" as UC_Mod
+    usecase "Gérer les Catégories" as UC_ManageCat
+}
+
+' --- RELATIONS ---
+
+' Visiteur (Actions sans compte)
+Guest --> UC_Search
+Guest --> UC_Agenda
+
+' Extension : Le filtre est une option de la recherche
+UC_Filter .> UC_Search : <<extend>>
+
+' Membre (Actions connectées)
+Member --> UC_Login
+Member --> UC_RegisterEvent
+
+' Inclusion : Pour s'inscrire, il faut être connecté
+UC_RegisterEvent .> UC_Login : <<include>>
+
+' Patient
+Patient --> UC_Submit
+Patient --> UC_Collab
+
+' Inclusion : Soumettre un besoin impose de choisir une catégorie
+UC_Submit .> UC_DefineCat : <<include>>
+
+' Maker
+Maker --> UC_Collab
+Maker --> UC_Publish
+
+' Inclusions : Une solution doit avoir des fichiers et une qualification technique
+UC_Publish .> UC_Upload : <<include>>
+UC_Publish .> UC_Qualify : <<include>>
+
+' Soignant
+Soignant --> UC_Submit
+Soignant --> UC_Collab
+
+' Admin
+Admin --> UC_Mod
+Admin --> UC_ManageCat
+
+@enduml

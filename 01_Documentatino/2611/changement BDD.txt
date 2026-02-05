@@ -1,0 +1,10 @@
+Évolution de la structure de la Base de Données (BDD)
+Afin de supporter les nouvelles fonctionnalités définies dans le MCD et les User Stories, le schéma de la base de données a été enrichi sur plusieurs axes majeurs :
+
+Gestion de l'Agenda et des Lieux : Ajout d'une table dédiée Evenements (liée aux Utilisateurs et aux Lieux) pour gérer le calendrier des webinaires et ateliers, et enrichissement de la table Lieux avec des détails sur les équipements disponibles.
+
+Gestion des Ressources Numériques : Création d'une table Fichiers distincte de la table Solutions. Cela permet de stocker proprement plusieurs types de fichiers (STL, PDF, Vidéo) pour une même solution technique.
+
+Classification Double : Mise en place de deux tables de liaison distinctes (ProjetsCategories et SolutionsCategories) pour différencier le classement des besoins (ex: type de handicap) du classement technique des solutions (ex: impression 3D).
+
+Interactions et Modération : Intégration d'une table Commentaires incluant un champ de validation pour la modération, et ajout de champs de "mise en avant" (Coup de Cœur) dans la table Solutions.

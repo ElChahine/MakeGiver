@@ -1,0 +1,42 @@
+graph TD
+    classDef box fill:#fff,stroke:#000,stroke-width:1px,align:left;
+
+    U["**UTILISATEUR**<br>----------------------<br>_id_user_<br>Nom, Prenom<br>Email, Telephone<br>MotDePasse_Hash<br>Role, Bio_Description<br>Competences_Techniques<br>**Consentement_Public (Bool)**<br>Date_Inscription"]:::box
+
+    P["**PROJET / BESOIN**<br>----------------------<br>_id_projet_<br>Titre_Besoin<br>Description_Detaillee<br>Statut (Ouvert, En cours...)<br>Date_Creation<br>**Date_MiseAJour**"]:::box
+
+    S["**SOLUTION / RESSOURCE**<br>----------------------<br>_id_solution_<br>Titre_Solution<br>Description_Technique<br>Licence, Materiel_Necessaire<br>**Difficulte_Fabrication**<br>Date_Publication<br>Est_CoupDeCoeur"]:::box
+
+    F["**FICHIER NUMERIQUE**<br>----------------------<br>_id_fichier_<br>Nom_Fichier<br>Chemin_URL<br>Type (STL, PDF...)<br>Taille_Mo"]:::box
+
+    L["**LIEU (ANNUAIRE)**<br>----------------------<br>_id_lieu_<br>Nom_Lieu<br>Adresse_Complete<br>Code_Postal, Ville<br>GPS, Type<br>Liste_Equipements"]:::box
+
+    E["**EVENEMENT (AGENDA)**<br>----------------------<br>_id_event_<br>Titre_Event<br>Description<br>Date_Debut, Date_Fin<br>Type, **Lien_Externe**"]:::box
+
+    C["**CATEGORIE**<br>----------------------<br>_id_categorie_<br>Nom_Categorie<br>Type_Categorie<br>Description"]:::box
+
+    COM["**COMMENTAIRE**<br>----------------------<br>_id_com_<br>Contenu_Texte<br>Date_Post<br>Est_Valide"]:::box
+
+    SIG["**SIGNALEMENT**<br>----------------------<br>_id_sig_<br>Raison, Date_Signalement"]:::box
+
+    %% RELATIONS
+    U ---|1,N| Soumettre((Soumettre)) ---|1,1| P
+    U ---|0,N| Publier((Publier_Lead)) ---|1,1| S
+    U ---|0,1| Co_auteur((Co-Auteur)) ---|1,1| S
+    U ---|0,N| Participer((Participer à)) ---|1,N| P
+    U ---|0,N| Rediger((Rédiger)) ---|1,1| COM
+    U ---|0,N| Signaler((Signaler)) ---|1,1| SIG
+
+    P ---|0,1| Aboutir((Aboutir à)) ---|0,N| S
+    P ---|1,N| Definir((Défini par)) ---|0,N| C
+    S ---|1,N| Qualifier((Qualifié par)) ---|0,N| C
+
+    P ---|0,N| Lier_F((Lier Fichier)) ---|0,N| F
+    S ---|1,1| Comporter_F((Comporter)) ---|1,N| F
+
+    SIG ---|1,1| Viser((Concerne)) --- P
+    SIG --- Viser --- S
+    SIG --- Viser --- COM
+
+    P ---|0,1| AvoirP((Lien)) ---|0,N| COM
+    S ---|0,1| AvoirS((Lien)) ---|0,N| COM

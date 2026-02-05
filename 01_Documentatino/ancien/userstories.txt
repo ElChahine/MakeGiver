@@ -1,0 +1,42 @@
+SÉCURITÉ ET CONNEXION
+En tant qu'utilisateur, je veux m'authentifier avec un code de sécurité reçu par email ou téléphone (F2A) afin de protéger l'accès à mes données personnelles et médicales.
+
+En tant qu'utilisateur, je veux renseigner mes coordonnées de contact (téléphone, email) une seule fois lors de mon inscription afin qu'elles soient automatiquement utilisées pour la mise en relation sur mes projets et solutions .
+
+PATIENT (PERSONNE CONCERNÉE)
+En tant que personne concernée, je veux m'inscrire sur la plateforme en choisissant mon rôle afin d'accéder aux services adaptés à mon besoin.
+
+En tant que personne concernée, je veux soumettre un besoin via un formulaire si aucune solution existante ne correspond à ma recherche dans le catalogue.
+
+En tant que personne concernée, je veux chercher dans une bibliothèque de solutions ou de besoins existants afin de voir si ma problématique a déjà été traitée par la communauté.
+
+En tant que personne concernée, je veux filtrer les résultats par type de déficit ou via la recherche intégrée pour trouver rapidement des aides techniques pertinentes.
+
+En tant que personne concernée, je veux accéder aux coordonnées directes d'un Maker sur son profil pour organiser la fabrication d'un objet sans passer par une messagerie interne.
+
+En tant que personne concernée, je veux voir une carte des FabLabs pour identifier les lieux ressources à proximité de mon domicile.
+
+En tant que personne concernée, je veux laisser un avis et une note sur une solution terminée ou un commentaire sur un projet en cours pour partager mon expérience.
+
+MAKER (CONCEPTEUR)
+En tant que Maker, je veux m'inscrire pour proposer mes compétences techniques et être visible par les patients et soignants.
+
+En tant que Maker, je veux consulter le catalogue des besoins soumis par les utilisateurs afin d'identifier des projets de co-conception à accompagner.
+
+En tant que Maker, je veux publier une solution technique en remplissant un formulaire incluant la description, les photos et les fichiers de fabrication (STL/PDF).
+
+En tant que Maker, je veux être contacté directement par les membres intéressés via les informations de contact de mon profil.
+
+SOIGNANT
+En tant que Soignant, je veux m'inscrire pour accompagner officiellement mes patients dans leur recherche d'autonomie.
+
+En tant que Soignant, je veux soumettre un besoin pour un de mes patients afin de solliciter l'aide de la communauté Maker.
+
+En tant que Soignant, je veux valider officiellement une étape de conception sur l'Espace Projet afin de garantir que l'aide technique est sécurisée et adaptée à l'usage médical.
+
+ADMINISTRATEUR ET PARTENAIRE
+En tant qu'Administrateur, je veux modérer les publications et gérer les catégories de référence pour assurer la qualité du catalogue.
+
+En tant que Partenaire, je veux inscrire mon FabLab sur la carte et indiquer le matériel disponible (imprimante 3D, découpe laser).
+
+En tant que Partenaire, je veux afficher mes événements dans l'agenda avec des liens de redirection vers mes propres systèmes d'inscription externes.

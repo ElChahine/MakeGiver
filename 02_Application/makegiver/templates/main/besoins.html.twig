@@ -1,0 +1,344 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Exprimer un besoin - Je Demain{% endblock %}
+
+{% block body %}
+<style>
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 3px solid #F3F4F6;
+    }
+
+    .form-main-title {
+        font-size: 3rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+    }
+
+    .form-subtitle {
+        color: #6B7280;
+        font-size: 1.15rem;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+        border: 2px solid #F3F4F6;
+        transition: all 0.3s ease;
+    }
+
+    .form-card:hover {
+        border-color: rgba(79, 70, 229, 0.2);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    }
+
+    .form-section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-section-title i {
+        color: var(--primary-color);
+        font-size: 1.3rem;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .form-label .required {
+        color: #EF4444;
+    }
+
+    .form-control-custom {
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 14px 18px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .form-control-custom:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        outline: none;
+        transform: translateY(-2px);
+    }
+
+    .form-control-custom::placeholder {
+        color: #9CA3AF;
+    }
+
+    textarea.form-control-custom {
+        resize: vertical;
+        min-height: 150px;
+    }
+
+    .upload-zone {
+        border: 3px dashed #D1D5DB;
+        border-radius: 16px;
+        padding: 3rem 2rem;
+        text-align: center;
+        background: linear-gradient(135deg, #F9FAFB 0%, #F3F4F6 100%);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .upload-zone:hover {
+        border-color: var(--primary-color);
+        background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(79, 70, 229, 0.02) 100%);
+        transform: scale(1.02);
+    }
+
+    .upload-zone i {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+        display: block;
+    }
+
+    .upload-zone p {
+        margin: 0;
+        color: #6B7280;
+        font-weight: 600;
+    }
+
+    .upload-zone small {
+        color: #9CA3AF;
+        display: block;
+        margin-top: 0.5rem;
+    }
+
+    .file-input-hidden {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        cursor: pointer;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-dark) 100%);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 1.15rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        margin-top: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: 0 10px 20px -10px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px -15px rgba(16, 185, 129, 0.5);
+    }
+
+    .btn-submit i {
+        font-size: 1.3rem;
+    }
+
+    .help-text {
+        background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(79, 70, 229, 0.02) 100%);
+        padding: 1.5rem;
+        border-radius: 12px;
+        border-left: 4px solid var(--primary-color);
+        margin-top: 2rem;
+    }
+
+    .help-text h4 {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        margin-bottom: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .help-text ul {
+        margin: 0;
+        padding-left: 1.5rem;
+        color: #6B7280;
+    }
+
+    .help-text li {
+        margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+        .form-main-title {
+            font-size: 2.25rem;
+        }
+
+        .form-card {
+            padding: 2rem 1.5rem;
+        }
+
+        .upload-zone {
+            padding: 2rem 1rem;
+        }
+    }
+</style>
+
+<div class="form-container">
+    <div class="form-header">
+        <h1 class="form-main-title">
+            <i class="bi bi-chat-square-text"></i>
+            Exprimez votre besoin
+        </h1>
+        <p class="form-subtitle">
+            Décrivez votre difficulté et trouvez des solutions adaptées avec l'aide de notre communauté
+        </p>
+    </div>
+
+    <div class="help-text">
+        <h4>
+            <i class="bi bi-lightbulb-fill"></i>
+            Conseils pour bien décrire votre besoin
+        </h4>
+        <ul>
+            <li>Soyez le plus précis possible dans votre description</li>
+            <li>Ajoutez des photos ou schémas si disponibles</li>
+            <li>Indiquez le contexte d'utilisation</li>
+            <li>Mentionnez les solutions que vous avez déjà essayées</li>
+        </ul>
+    </div>
+    
+    <form action="#" method="post" class="form-card mt-4">
+        <div class="mb-4">
+            <label class="form-label">
+                <i class="bi bi-pencil-fill"></i>
+                Titre du besoin
+                <span class="required">*</span>
+            </label>
+            <input type="text" class="form-control form-control-custom" placeholder="Ex: Besoin d'un adaptateur pour télécommande" required>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label">
+                <i class="bi bi-card-text"></i>
+                Description détaillée
+                <span class="required">*</span>
+            </label>
+            <textarea class="form-control form-control-custom" rows="6" placeholder="Décrivez votre besoin en détail : contexte, difficulté rencontrée, objectif recherché..." required></textarea>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6 mb-3 mb-md-0">
+                <label class="form-label">
+                    <i class="bi bi-telephone-fill"></i>
+                    Téléphone
+                </label>
+                <input type="tel" class="form-control form-control-custom" placeholder="06 12 34 56 78">
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">
+                    <i class="bi bi-envelope-fill"></i>
+                    Email
+                    <span class="required">*</span>
+                </label>
+                <input type="email" class="form-control form-control-custom" placeholder="votre.email@exemple.com" required>
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label">
+                <i class="bi bi-cloud-upload-fill"></i>
+                Photos & Fichiers
+            </label>
+            <div class="upload-zone">
+                <input type="file" class="file-input-hidden" multiple accept="image/*,.pdf,.stl">
+                <i class="bi bi-cloud-arrow-up-fill"></i>
+                <p>Cliquez ou glissez vos fichiers ici</p>
+                <small>Images, PDF, fichiers STL acceptés (max 10 Mo par fichier)</small>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-submit">
+            <i class="bi bi-send-fill"></i>
+            Publier mon besoin
+        </button>
+
+        <p class="text-center text-muted mt-3 small">
+            <i class="bi bi-shield-check me-1"></i>
+            Vos données sont protégées et ne seront utilisées que pour traiter votre demande
+        </p>
+    </form>
+</div>
+
+<script>
+    // Gestion du drag & drop pour l'upload
+    const uploadZone = document.querySelector('.upload-zone');
+    const fileInput = document.querySelector('.file-input-hidden');
+
+    uploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadZone.style.borderColor = 'var(--primary-color)';
+        uploadZone.style.background = 'rgba(79, 70, 229, 0.05)';
+    });
+
+    uploadZone.addEventListener('dragleave', () => {
+        uploadZone.style.borderColor = '#D1D5DB';
+        uploadZone.style.background = '';
+    });
+
+    uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadZone.style.borderColor = '#D1D5DB';
+        uploadZone.style.background = '';
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            console.log('Fichiers déposés:', files);
+            // Ici vous pouvez ajouter la logique de traitement des fichiers
+        }
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        const files = e.target.files;
+        if (files.length > 0) {
+            console.log('Fichiers sélectionnés:', files);
+            // Ici vous pouvez ajouter la logique de traitement des fichiers
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,14 @@
+Suite à la refonte du Modèle Conceptuel de Données, nous avons mis à jour les User Stories pour refléter la nouvelle structure logique du projet :
+
+
+Autonomie des Solutions : Nous avons ajouté la possibilité pour un Maker de publier une Solution indépendante (hors projet), permettant la création d'une bibliothèque de ressources libres sans demande préalable.
+
+
+
+Double Classification : Les histoires distinguent désormais la qualification du besoin par le patient (catégorie de handicap) de la qualification de la solution par le Maker (catégorie technique), pour plus de précision dans les filtres de recherche.
+
+
+Intégration des Événements : De nouvelles histoires ont été créées pour permettre aux utilisateurs de consulter et aux partenaires de gérer un calendrier d'activités (webinaires, ateliers), suite à l'ajout de l'entité Événement.
+
+
+Gestion des Fichiers : L'ajout de fichiers numériques (STL, PDF) est maintenant explicitement mentionné comme une composante technique d'une Solution.

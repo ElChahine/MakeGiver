@@ -1,0 +1,17 @@
+pour la recherche
+Comme sur Outlook:
+-Recherche par titre
+-Recherche par filtre
+-Recherche par nom maker
+-etc
+
+ou recherche général
+
+
+Revoir la possibilité d'un chat dans la page projet
+
+
+ajouter un catalogue de besoins non pris en charge
+
+
+système de double authentification pour l'inscription et connexion (avec options téléphone ou email) -> page avec recu de code etc pour s'authentifier

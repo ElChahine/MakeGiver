@@ -1,0 +1,41 @@
+Est-il nécessaire ou non de garder le système de notes ? Pas réellement nécessaire, cela peut descendre les différentes personnes qui travaillent gratuitement et les solutions ne sont pas nécessairement représentatifs.
+Laisser en revanche le système de commentaire.
+Retirer le système de notes.
+
+
+La personne ayant demandé la solution doit être co-auteur de la page de solution ?
+
+--> Un besoin doit être pris en charge par une personne souhaitant le réaliser.
+
+Ajouter une page d'annuaire des différents Fablabs
+
+
+SYSTEME DE RECHERCHE (si je cherche FablabLib, je veux seulement celui ou il l'a créé par, pas seulement le corps de texte)
+
+
+PAGE Projet -> seulement pour le créateur, le co-créateur (demandant)
+
+
+
+Mes projets restreints, le reste n'est pas nécessaire
+
+
+à l'inscription, demande s'il souhaite que les informations soit publiés (email, téléphone, alias(--> Pseudo))
+
+Modérateur ou pas// si pas, système de signalement pour signaler à gestataire du site web.
+
+
+Trouver une base de données des différents fablab de France  --> Séparation des fablabs et de l'agenda (en deux pages) puis ajout des potentiels commerces adhératnts
+
+
+Enlever la connexion entre un utilisateur et un lieu physique. (directeur de fablab n'est pas nécessairement inscrit sur le site)
+Enlever la connexion entre un utilisateur et un evenement (c'est externe)
+Ajouter une connexion entre le projet/besoin et les fichiers numériques (pas seulement pour les ressources et solutions)
+
+
+
+FORMULAIRE POUR UN BESOIN + FORMULAIRE POUR UN PROjet
+
+
+
+BDD fictives pour implémenter les prochaines fonctionnalités du liste

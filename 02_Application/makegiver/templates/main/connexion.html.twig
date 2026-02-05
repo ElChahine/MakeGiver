@@ -1,0 +1,119 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion - Je Demain{% endblock %}
+
+{% block body %}
+<style>
+    .form-container { max-width: 500px; margin: 4rem auto; }
+    
+    /* Style de la carte identique à besoins.html.twig */
+    .form-card {
+        background: white;
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+        border: 2px solid #F3F4F6;
+        transition: all 0.3s ease;
+    }
+
+    .form-main-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .form-control-custom {
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 14px 18px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control-custom:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        outline: none;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+
+    /* Message d'erreur central */
+    #overlay-error {
+        display: none;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.5);
+        backdrop-filter: blur(4px);
+        z-index: 9999;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .error-modal {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 24px;
+        text-align: center;
+        max-width: 400px;
+        border-top: 5px solid #EF4444;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+</style>
+
+<div id="overlay-error">
+    <div class="error-modal">
+        <i class="bi bi-exclamation-triangle-fill text-danger fs-1 mb-3"></i>
+        <h3 class="fw-bold">Bientôt disponible</h3>
+        <p class="text-muted">La connexion n'est pas encore développée, cela arrivera d'ici peu !</p>
+        <button class="btn btn-dark w-100 mt-3" onclick="closeError()">Fermer</button>
+    </div>
+</div>
+
+<div class="form-container">
+    <h1 class="form-main-title">Se connecter</h1>
+    
+    <div class="form-card">
+        <form id="login-form">
+            <div class="mb-4">
+                <label class="form-label fw-bold">Email</label>
+                <input type="email" class="form-control form-control-custom" placeholder="votre.email@exemple.com" required>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-bold">Mot de passe</label>
+                <input type="password" class="form-control form-control-custom" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-submit">Connexion</button>
+        </form>
+        <p class="text-center mt-4 mb-0">
+            Pas de compte ? <a href="{{ path('app_inscription') }}" class="fw-bold" style="color: var(--primary-color)">S'inscrire</a>
+        </p>
+    </div>
+</div>
+
+<script>
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        document.getElementById('overlay-error').style.display = 'flex';
+    });
+    function closeError() {
+        document.getElementById('overlay-error').style.display = 'none';
+    }
+</script>
+{% endblock %}

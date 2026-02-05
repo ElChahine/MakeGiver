@@ -1,0 +1,49 @@
+graph TD
+    %% --- STYLE DES BOITES ---
+    classDef box fill:#fff,stroke:#000,stroke-width:1px,align:left;
+
+    %% --- 1. UTILISATEURS ---
+    Utilisateur["**UTILISATEUR**<br>----------------------<br>_id_user_<br>Nom<br>Prenom<br>Email<br>MotDePasse_Hash<br>Role (Patient, Maker, Soignant, Admin)<br>Bio_Description<br>Competences_Techniques<br>Date_Inscription"]:::box
+
+    %% --- 2. PROJETS (BESOINS) ---
+    Projet["**PROJET / BESOIN**<br>----------------------<br>_id_projet_<br>Titre_Besoin<br>Description_Detaillee<br>Statut (Ouvert, En cours, Terminé)<br>Date_Creation<br>Date_MiseAJour"]:::box
+
+    %% --- 3. SOLUTIONS (RESSOURCES) ---
+    Solution["**SOLUTION / RESSOURCE**<br>----------------------<br>_id_solution_<br>Titre_Solution<br>Description_Technique<br>Licence (OpenSource, CC...)<br>Materiel_Necessaire<br>Difficulte_Fabrication<br>Date_Publication<br>**Telephone_Public**<br>**Email_Public**<br>**Adresse_Atelier**"]:::box
+
+    %% --- 4. FICHIERS ---
+    Fichier["**FICHIER NUMERIQUE**<br>----------------------<br>_id_fichier_<br>Nom_Fichier<br>Chemin_URL<br>Type (STL, PDF, MP4...)<br>Taille_Mo"]:::box
+
+    %% --- 5. LIEUX ---
+    Lieu["**LIEU PHYSIQUE**<br>----------------------<br>_id_lieu_<br>Nom_Lieu<br>Adresse_Complete<br>Code_Postal<br>Ville<br>Coordonnees_GPS<br>Type (FabLab, Centre Soin...)<br>Liste_Equipements"]:::box
+
+    %% --- 6. EVENEMENTS (AGENDA) ---
+    Evenement["**EVENEMENT**<br>----------------------<br>_id_event_<br>Titre_Event<br>Description<br>Date_Debut<br>Date_Fin<br>Type (Webinaire, Atelier...)<br>**Lien_Externe_Organisateur**"]:::box
+
+    %% --- 7. CATEGORIES ---
+    Categorie["**CATEGORIE**<br>----------------------<br>_id_categorie_<br>Nom_Categorie (ex: Préhension, 3D)<br>Type_Categorie (Besoin ou Technique)<br>Description"]:::box
+
+    %% --- 8. COMMENTAIRES ---
+    Commentaire["**COMMENTAIRE**<br>----------------------<br>_id_com_<br>Contenu_Texte<br>Note (Entier 0-5)<br>Date_Post<br>Est_Valide (Modération)"]:::box
+
+    %% --- RELATIONS (Traits simples) ---
+    Utilisateur ---|1,N| Soumettre((Soumettre)) ---|1,1| Projet
+    Utilisateur ---|0,N| Publier((Publier)) ---|1,1| Solution
+    Utilisateur ---|0,N| GererLieu((Gérer)) ---|1,1| Lieu
+    Utilisateur ---|0,N| Organiser((Organiser)) ---|1,1| Evenement
+
+    %% Relation d'inscription supprimée conformément au rapport
+
+    Projet ---|0,1| Aboutir((Aboutir à)) ---|0,N| Solution
+    Solution ---|1,1| Comporter((Comporter)) ---|1,N| Fichier
+
+    Projet ---|1,N| Definir((Défini par)) ---|0,N| Categorie
+    Solution ---|1,N| Qualifier((Qualifié par)) ---|0,N| Categorie
+
+    Lieu ---|0,N| Accueillir((Accueillir)) ---|0,1| Evenement
+
+    Utilisateur ---|0,N| Participer((Participer à)) ---|1,N| Projet
+    Utilisateur ---|0,N| Commenter((Laisser)) ---|1,1| Commentaire
+    
+    Projet ---|0,1| AvoirCom((Avoir)) ---|0,N| Commentaire
+    Solution ---|0,1| AvoirComSol((Avoir)) ---|0,N| Commentaire

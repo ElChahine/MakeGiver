@@ -1,0 +1,21 @@
+1. Utilisateurs (Users) UtilisateurID (PK), Nom, Prénom, Email, Telephone, MotDePasse_Hash, Rôle, Bio_Description, Date_Inscription.
+
+2. Projets (Besoins) ProjetID (PK), Titre_Besoin, Description_Detaillee, Statut, Date_Creation, DemandeurID (FK).
+
+3. Solutions (Ressources Techniques) SolutionID (PK), Titre_Solution, Description_Technique, Licence, Materiel_Necessaire, Date_Publication, Est_CoupDeCoeur, CreateurID (FK).
+
+4. Fichiers (Fichiers Numériques) FichierID (PK), Nom_Fichier, Chemin_URL, Type, Taille_Mo, SolutionID (FK).
+
+5. Lieux (Lieux Physiques - FabLabs) LieuID (PK), Nom_Lieu, Adresse_Complete, Ville, GPS, Type, Liste_Equipements, ContactUserID (FK).
+
+6. Evenements (Agenda Externe) EvenementID (PK), Titre_Event, Description, Date_Debut, Date_Fin, Type, Lien_Externe_Organisateur, LieuID (FK).
+
+7. Categories (Tables de référence) CategorieID (PK), Nom_Categorie, Type_Categorie, Description.
+
+8. Commentaires (Avis et Notes) CommentaireID (PK), Contenu_Texte, Note (Integer 0-5), Date_Post, Est_Valide, AuteurID (FK), SolutionID (FK, Optionnel), ProjetID (FK, Optionnel).
+
+9. MembresProjet (Table de liaison) ProjetID (FK), UtilisateurID (FK), RoleSurProjet.
+
+10. ProjetsCategories (Table de liaison) ProjetID (FK), CategorieID (FK).
+
+11. SolutionsCategories (Table de liaison) SolutionID (FK), CategorieID (FK).

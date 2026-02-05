@@ -1,0 +1,25 @@
+Utilisateurs (Users) : UtilisateurID (PK), Nom, Prénom, Email, Telephone, MotDePasse_Hash, Rôle, Bio_Description, Consentement_Public (Boolean), Date_Inscription .
+
+Projets (Besoins) : ProjetID (PK), Titre_Besoin, Description_Detaillee, Statut, Date_Creation, DemandeurID (FK).
+
+Solutions (Ressources Techniques) : SolutionID (PK), Titre_Solution, Description_Technique, Licence, Materiel_Necessaire, Date_Publication, Est_CoupDeCoeur, CreateurID (FK), CoAuteurID (FK) (Demandeur du besoin initial).
+
+Fichiers (Fichiers Numériques) : FichierID (PK), Nom_Fichier, Chemin_URL, Type, Taille_Mo, SolutionID (FK, Optionnel), ProjetID (FK, Optionnel).
+
+Lieux (Annuaire - FabLabs & Commerces) : LieuID (PK), Nom_Lieu, Adresse_Complete, Ville, GPS, Type (FabLab ou Commerce), Liste_Equipements.
+
+Evenements (Agenda Externe) : EvenementID (PK), Titre_Event, Description, Date_Debut, Date_Fin, Type, Lien_Externe_Organisateur.
+
+Categories (Tables de référence) : CategorieID (PK), Nom_Categorie, Type_Categorie, Description.
+
+Commentaires (Avis) : CommentaireID (PK), Contenu_Texte, Date_Post, Est_Valide, AuteurID (FK), SolutionID (FK, Optionnel), ProjetID (FK, Optionnel). (Note : le système de notation a été retiré).
+
+MembresProjet (Table de liaison) : ProjetID (FK), UtilisateurID (FK), RoleSurProjet.
+
+ProjetsCategories (Table de liaison) : ProjetID (FK), CategorieID (FK).
+
+SolutionsCategories (Table de liaison) : SolutionID (FK), CategorieID (FK).
+
+Signalements (Système de modération) : SignalementID (PK), UtilisateurID (FK), TypeContenu (Projet, Solution, Commentaire), ContenuID, Raison, Date_Signalement.
+
+Consentements (Historique RGPD) : ConsentementID (PK), UtilisateurID (FK), TypeDonnee (Email, Tel, Alias), Date_Accord .

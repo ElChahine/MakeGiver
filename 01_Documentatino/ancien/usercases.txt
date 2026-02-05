@@ -1,0 +1,86 @@
+@startuml
+
+' --- Paramètres de style ---
+skinparam actorStyle awesome
+left to right direction
+skinparam packageStyle rectangle
+
+' --- ACTEURS & HÉRITAGE ---
+actor "Visiteur" as Guest
+actor "Membre Connecté" as Member
+actor "Patient (Personne Concernée)" as Patient
+actor "Maker" as Maker
+actor "Soignant" as Soignant
+actor "Administrateur" as Admin
+
+' Héritage
+Guest <|-- Member
+Member <|-- Patient
+Member <|-- Maker
+Member <|-- Soignant
+Member <|-- Admin
+
+' --- SYSTÈME ---
+package "Plateforme Makegiver" {
+
+    ' 1. Fonctions Communes
+    usecase "S'authentifier (F2A Email/Tel)" as UC_Login
+    usecase "Rechercher une Solution ou un Besoin" as UC_Search
+    usecase "Filtrer (Handicap/Techno)" as UC_Filter
+    usecase "Consulter l'Agenda (Infos Externes)" as UC_Agenda
+    usecase "Consulter les Coordonnées de Contact" as UC_Contact
+    usecase "Laisser un Avis / Commentaire" as UC_Rate
+
+    ' 2. Gestion des Besoins (Projets)
+    usecase "Soumettre un Besoin (Formulaire)" as UC_Submit
+    usecase "Définir la Catégorie (Handicap)" as UC_DefineCat
+    usecase "Co-concevoir (Espace Projet)" as UC_Collab
+    usecase "Valider une étape du projet" as UC_Validate
+
+    ' 3. Gestion des Solutions (Ressources)
+    usecase "Publier une Solution (Formulaire)" as UC_Publish
+    usecase "Téléverser Fichiers & Photos" as UC_Upload
+    usecase "Qualifier la Solution (Technique)" as UC_Qualify
+    
+    ' 4. Administration
+    usecase "Modérer les contenus" as UC_Mod
+    usecase "Gérer les Catégories" as UC_ManageCat
+}
+
+' --- RELATIONS ---
+
+' Visiteur
+Guest --> UC_Search
+Guest --> UC_Agenda
+UC_Filter .> UC_Search : <<extend>>
+
+' Membre
+Member --> UC_Login
+Member --> UC_Contact
+Member --> UC_Rate
+
+UC_Contact .> UC_Login : <<include>>
+UC_Rate .> UC_Login : <<include>>
+
+' Patient
+Patient --> UC_Submit
+Patient --> UC_Collab
+UC_Submit .> UC_DefineCat : <<include>>
+
+' Maker
+Maker --> UC_Collab
+Maker --> UC_Publish
+UC_Publish .> UC_Upload : <<include>>
+UC_Publish .> UC_Qualify : <<include>>
+
+' Soignant
+Soignant --> UC_Submit
+Soignant --> UC_Collab
+Soignant --> UC_Validate
+
+' Admin
+Admin --> UC_Mod
+Admin --> UC_ManageCat
+Admin --> UC_Validate
+
+@enduml
