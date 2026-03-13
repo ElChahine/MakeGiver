@@ -1,29 +1,184 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Besoins de la Communauté - Je Demain{% endblock %}
+{% block title %}Besoins de la Communauté - MakeGiver{% endblock %}
 
 {% block body %}
+<style>
+    .page-header {
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 3px solid #F3F4F6;
+    }
+
+    .page-title {
+        font-size: 2.75rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, var(--dark-color) 0%, var(--primary-color) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .besoin-card {
+        background: white;
+        border-radius: 20px;
+        border: 2px solid #F3F4F6;
+        border-left: 5px solid var(--primary-color) !important;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .besoin-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 20px 40px -15px rgba(79,70,229,0.2);
+        border-color: rgba(79,70,229,0.3) !important;
+    }
+
+    .btn-proposer {
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .btn-proposer:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px -8px rgba(79,70,229,0.5);
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        padding: 3.5rem 2rem;
+        border-radius: 24px;
+        margin-top: 4rem;
+        text-align: center;
+        color: white;
+        box-shadow: 0 20px 40px -15px rgba(79, 70, 229, 0.4);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: -50%; left: -20%;
+        width: 400px; height: 400px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        border-radius: 50%;
+    }
+
+    .cta-section h3 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        position: relative;
+    }
+
+    .cta-section p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+
+    .btn-cta {
+        padding: 16px 40px;
+        background: white;
+        color: var(--primary-color);
+        border: none;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        position: relative;
+    }
+
+    .btn-cta:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 30px -10px rgba(0,0,0,0.3);
+        color: var(--primary-dark);
+    }
+
+    .flash-success {
+        background: #F0FDF4;
+        border: 2px solid #BBF7D0;
+        border-radius: 12px;
+        padding: 14px 18px;
+        color: #16A34A;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+    }
+</style>
+
 <div class="container mt-5">
-    <div class="page-header mb-5">
-        <h1 class="display-4 fw-bold text-primary">Besoins de la Communauté</h1>
-        <p class="lead text-muted">Découvrez les défis lancés par les patients et proposez vos solutions.</p>
+
+    {# Header #}
+    <div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
+        <div>
+            <h1 class="page-title">Besoins de la communauté</h1>
+            <p class="text-muted mb-0">
+                <i class="bi bi-people me-2"></i>
+                Découvrez les défis lancés par les patients et proposez vos solutions.
+            </p>
+        </div>
+        {# BOUTON vers le formulaire dédié #}
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_nouveau_besoin') }}" class="btn-proposer" style="width: auto; padding: 14px 28px; border-radius: 14px; white-space: nowrap;">
+                <i class="bi bi-plus-circle-fill"></i>
+                Déposer un besoin
+            </a>
+        {% else %}
+            <a href="{{ path('app_connexion') }}" class="btn-proposer" style="width: auto; padding: 14px 28px; border-radius: 14px; white-space: nowrap; background: linear-gradient(135deg, #6B7280, #4B5563);">
+                <i class="bi bi-lock-fill"></i>
+                Connexion requise
+            </a>
+        {% endif %}
     </div>
 
-    {# --- SECTION 1 : LISTE DES BESOINS (Vient de la BDD) --- #}
+    {# Flash messages #}
+    {% for message in app.flashes('success') %}
+        <div class="flash-success">
+            <i class="bi bi-check-circle-fill fs-5"></i> {{ message }}
+        </div>
+    {% endfor %}
+
+    {# Liste des besoins #}
     <div class="row row-cols-1 row-cols-md-2 g-4 mb-5">
         {% for besoin in besoins %}
             <div class="col">
-                <div class="card h-100 border-0 shadow-sm" style="border-radius: 20px; border-left: 5px solid #4F46E5 !important;">
+                <div class="besoin-card card border-0">
                     <div class="card-body p-4">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <span class="badge rounded-pill {% if besoin.Statut == 'Ouvert' %}bg-success{% else %}bg-primary{% endif %}">
+                            <span class="badge rounded-pill {% if besoin.Statut == 'Ouvert' %}bg-success{% elseif besoin.Statut == 'En cours' %}bg-primary{% else %}bg-secondary{% endif %}">
                                 {{ besoin.Statut }}
                             </span>
-                            <small class="text-muted"><i class="bi bi-calendar3"></i> {{ besoin.Date_Creation|date('d/m/Y') }}</small>
+                            <small class="text-muted">
+                                <i class="bi bi-calendar3 me-1"></i>
+                                {{ besoin.Date_Creation|date('d/m/Y') }}
+                            </small>
                         </div>
 
                         <h3 class="h5 fw-bold mb-3">{{ besoin.Titre_Besoin }}</h3>
-                        <p class="text-secondary mb-4">{{ besoin.Description_Detaillee }}</p>
+                        <p class="text-secondary mb-4">{{ besoin.Description_Detaillee|slice(0, 150) }}{% if besoin.Description_Detaillee|length > 150 %}…{% endif %}</p>
 
                         <div class="d-flex align-items-center pt-3 border-top">
                             <div class="bg-light rounded-circle p-2 me-3">
@@ -36,43 +191,55 @@
                         </div>
                     </div>
                     <div class="card-footer bg-transparent border-0 p-4 pt-0">
-                        <a href="#" class="btn btn-primary w-100 rounded-pill">Proposer une solution</a>
+                        {% if is_granted('ROLE_USER') %}
+                            <a href="{{ path('app_nouvelle_solution') }}" class="btn-proposer">
+                                <i class="bi bi-lightbulb-fill"></i>
+                                Proposer une solution
+                            </a>
+                        {% else %}
+                            <a href="{{ path('app_connexion') }}" class="btn-proposer" style="background: linear-gradient(135deg, #6B7280, #4B5563);">
+                                <i class="bi bi-lock-fill"></i>
+                                Connectez-vous pour proposer
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         {% else %}
             <div class="col-12 text-center py-5">
-                <div class="alert alert-light border shadow-sm">
-                    <i class="bi bi-info-circle fs-2 text-primary d-block mb-3"></i>
-                    <p class="mb-0">Aucun besoin n'est listé pour le moment. Soyez le premier à en exprimer un !</p>
+                <div class="alert alert-light border shadow-sm" style="border-radius: 16px;">
+                    <i class="bi bi-inbox fs-2 text-primary d-block mb-3"></i>
+                    <p class="mb-3">Aucun besoin n'est listé pour le moment. Soyez le premier à en exprimer un !</p>
+                    {% if is_granted('ROLE_USER') %}
+                        <a href="{{ path('app_nouveau_besoin') }}" class="btn btn-primary rounded-pill px-4">
+                            <i class="bi bi-plus-circle me-2"></i>Déposer le premier besoin
+                        </a>
+                    {% else %}
+                        <a href="{{ path('app_connexion') }}" class="btn btn-secondary rounded-pill px-4">
+                            <i class="bi bi-lock-fill me-2"></i>Connexion requise
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}
     </div>
 
-    <hr class="my-5">
-
-    {# --- SECTION 2 : TON FORMULAIRE (Version fonctionnelle) --- #}
-    <div class="cta-section p-5 bg-dark text-white rounded-3 shadow-lg">
-        <h3 class="mb-4"><i class="bi bi-pencil-square me-2"></i>Exprimez votre besoin</h3>
-        <p class="mb-4">Dites-nous ce qui vous faciliterait la vie au quotidien. Les Makers vous répondront.</p>
-        
-        {# L'action utilise le nom de la route définie dans ton contrôleur #}
-        <form action="{{ path('app_besoins') }}" method="POST" class="row g-3">
-            <div class="col-md-6">
-                <label class="form-label">Titre de votre besoin</label>
-                {# AJOUT DE name="titre" #}
-                <input type="text" name="titre" class="form-control rounded-pill" placeholder="Ex: Aide pour ouvrir les bouteilles" required>
-            </div>
-            <div class="col-12">
-                <label class="form-label">Description détaillée</label>
-                {# AJOUT DE name="description" #}
-                <textarea name="description" class="form-control" rows="3" placeholder="Expliquez votre situation..." required></textarea>
-            </div>
-            <div class="col-12">
-                <button type="submit" class="btn btn-light btn-lg rounded-pill px-5 text-primary fw-bold">Envoyer le besoin</button>
-            </div>
-        </form>
+    {# CTA section #}
+    <div class="cta-section">
+        <h3><i class="bi bi-chat-dots-fill me-2"></i>Vous avez une difficulté au quotidien ?</h3>
+        <p>Décrivez votre besoin en détail et les Makers de la communauté vous proposeront des solutions adaptées.</p>
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_nouveau_besoin') }}" class="btn-cta">
+                <i class="bi bi-plus-circle-fill"></i>
+                Déposer mon besoin
+            </a>
+        {% else %}
+            <a href="{{ path('app_connexion') }}" class="btn-cta">
+                <i class="bi bi-lock-fill"></i>
+                Se connecter pour déposer
+            </a>
+        {% endif %}
     </div>
+
 </div>
 {% endblock %}

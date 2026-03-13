@@ -1,0 +1,277 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche "{{ q }}" - MakeGiver{% endblock %}
+
+{% block body %}
+<style>
+    .page-header {
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 3px solid #F3F4F6;
+    }
+
+    .page-title {
+        font-size: 2.25rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--dark-color) 0%, var(--primary-color) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .search-bar-page {
+        display: flex;
+        gap: 0;
+        max-width: 600px;
+    }
+
+    .search-bar-page input {
+        border: 2px solid #E5E7EB;
+        border-right: none;
+        border-radius: 12px 0 0 12px;
+        padding: 14px 20px;
+        font-size: 1rem;
+        flex: 1;
+        outline: none;
+        transition: border-color 0.3s;
+    }
+
+    .search-bar-page input:focus {
+        border-color: var(--primary-color);
+    }
+
+    .search-bar-page button {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+        border: none;
+        border-radius: 0 12px 12px 0;
+        padding: 14px 24px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: opacity 0.2s;
+    }
+
+    .search-bar-page button:hover { opacity: 0.9; }
+
+    .section-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--dark-color);
+        margin-bottom: 1.25rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-title .count-badge {
+        background: var(--primary-color);
+        color: white;
+        border-radius: 20px;
+        padding: 3px 12px;
+        font-size: 0.85rem;
+        font-weight: 700;
+    }
+
+    .result-card {
+        background: white;
+        border: 2px solid #F3F4F6;
+        border-radius: 16px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: block;
+        color: inherit;
+    }
+
+    .result-card:hover {
+        border-color: var(--primary-color);
+        transform: translateY(-4px);
+        box-shadow: 0 15px 30px -10px rgba(79,70,229,0.15);
+        color: inherit;
+    }
+
+    .result-card.besoin {
+        border-left: 4px solid var(--primary-color);
+    }
+
+    .result-card.solution {
+        border-left: 4px solid var(--secondary-color);
+    }
+
+    .result-title {
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 0.5rem;
+        color: var(--dark-color);
+    }
+
+    .result-excerpt {
+        color: #6B7280;
+        font-size: 0.95rem;
+        margin-bottom: 0.75rem;
+        line-height: 1.6;
+    }
+
+    .result-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.85rem;
+        color: #9CA3AF;
+    }
+
+    .result-type {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+
+    .type-solution {
+        background: rgba(16,185,129,0.1);
+        color: var(--secondary-color);
+    }
+
+    .type-besoin {
+        background: rgba(79,70,229,0.1);
+        color: var(--primary-color);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: #F9FAFB;
+        border-radius: 20px;
+        border: 2px dashed #E5E7EB;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        color: #D1D5DB;
+        display: block;
+        margin-bottom: 1rem;
+    }
+
+    mark {
+        background: rgba(79,70,229,0.15);
+        color: var(--primary-color);
+        border-radius: 3px;
+        padding: 1px 2px;
+    }
+</style>
+
+<div class="page-header">
+    <h1 class="page-title mb-3">
+        {% if q %}
+            Résultats pour "{{ q }}"
+        {% else %}
+            Recherche
+        {% endif %}
+    </h1>
+
+    {# Barre de recherche sur la page #}
+    <form action="{{ path('app_recherche') }}" method="GET" class="search-bar-page">
+        <input type="search" name="q" value="{{ q }}" placeholder="Rechercher une solution, un besoin..." autofocus>
+        <button type="submit"><i class="bi bi-search"></i></button>
+    </form>
+</div>
+
+{% if q == '' %}
+    <div class="empty-state">
+        <i class="bi bi-search"></i>
+        <p class="fw-bold fs-5 mb-2">Tapez votre recherche</p>
+        <p class="text-muted">Cherchez parmi les solutions et les besoins de la communauté.</p>
+    </div>
+
+{% elseif total == 0 %}
+    <div class="empty-state">
+        <i class="bi bi-emoji-frown"></i>
+        <p class="fw-bold fs-5 mb-2">Aucun résultat pour "{{ q }}"</p>
+        <p class="text-muted mb-4">Essayez avec d'autres mots-clés ou explorez les catégories.</p>
+        <div class="d-flex gap-3 justify-content-center">
+            <a href="{{ path('app_solutions') }}" class="btn btn-outline-primary rounded-pill px-4">Voir les solutions</a>
+            <a href="{{ path('app_besoins') }}" class="btn btn-primary rounded-pill px-4">Voir les besoins</a>
+        </div>
+    </div>
+
+{% else %}
+
+    <p class="text-muted mb-4">
+        <strong>{{ total }} résultat{{ total > 1 ? 's' : '' }}</strong> trouvé{{ total > 1 ? 's' : '' }}
+    </p>
+
+    {# Solutions #}
+    {% if solutions|length > 0 %}
+        <div class="mb-5">
+            <div class="section-title">
+                <i class="bi bi-lightbulb-fill" style="color: var(--secondary-color)"></i>
+                Solutions
+                <span class="count-badge" style="background: var(--secondary-color)">{{ solutions|length }}</span>
+            </div>
+            <div class="row g-3">
+                {% for s in solutions %}
+                <div class="col-md-6">
+                    <a href="{{ path('app_solutions') }}" class="result-card solution">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="result-type type-solution">
+                                <i class="bi bi-lightbulb-fill"></i> Solution
+                            </span>
+                            <span class="result-type" style="background:#F3F4F6; color:#6B7280;">
+                                {{ s.Difficulte_Fabrication }}
+                            </span>
+                        </div>
+                        <div class="result-title">{{ s.Titre_Solution }}</div>
+                        <div class="result-excerpt">
+                            {{ s.Description_Technique|slice(0, 120) }}{% if s.Description_Technique|length > 120 %}…{% endif %}
+                        </div>
+                        <div class="result-meta">
+                            <span><i class="bi bi-person-circle me-1"></i>{{ s.Prenom }} {{ s.Nom }}</span>
+                            <span><i class="bi bi-shield-check me-1"></i>{{ s.Licence }}</span>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {# Besoins #}
+    {% if besoins|length > 0 %}
+        <div class="mb-5">
+            <div class="section-title">
+                <i class="bi bi-chat-dots-fill" style="color: var(--primary-color)"></i>
+                Besoins
+                <span class="count-badge">{{ besoins|length }}</span>
+            </div>
+            <div class="row g-3">
+                {% for b in besoins %}
+                <div class="col-md-6">
+                    <a href="{{ path('app_besoins') }}" class="result-card besoin">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="result-type type-besoin">
+                                <i class="bi bi-chat-dots-fill"></i> Besoin
+                            </span>
+                            <span class="badge rounded-pill {% if b.Statut == 'Ouvert' %}bg-success{% elseif b.Statut == 'En cours' %}bg-primary{% else %}bg-secondary{% endif %}">
+                                {{ b.Statut }}
+                            </span>
+                        </div>
+                        <div class="result-title">{{ b.Titre_Besoin }}</div>
+                        <div class="result-excerpt">
+                            {{ b.Description_Detaillee|slice(0, 120) }}{% if b.Description_Detaillee|length > 120 %}…{% endif %}
+                        </div>
+                        <div class="result-meta">
+                            <span><i class="bi bi-person-circle me-1"></i>{{ b.Prenom }} {{ b.Nom }}</span>
+                            <span><i class="bi bi-calendar3 me-1"></i>{{ b.Date_Creation|date('d/m/Y') }}</span>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+{% endif %}
+{% endblock %}

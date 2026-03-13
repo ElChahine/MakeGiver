@@ -1,0 +1,145 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion - MakeGiver{% endblock %}
+
+{% block body %}
+<style>
+    .form-container { max-width: 500px; margin: 4rem auto; }
+    
+    .form-card {
+        background: white;
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+        border: 2px solid #F3F4F6;
+        transition: all 0.3s ease;
+    }
+
+    .form-main-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .form-control-custom {
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 14px 18px;
+        transition: all 0.3s ease;
+    }
+
+    .form-control-custom:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        outline: none;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+        cursor: pointer;
+    }
+
+    .btn-submit:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
+    .alert-error {
+        background: #FEF2F2;
+        border: 2px solid #FECACA;
+        border-radius: 12px;
+        padding: 14px 18px;
+        color: #DC2626;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .alert-success {
+        background: #F0FDF4;
+        border: 2px solid #BBF7D0;
+        border-radius: 12px;
+        padding: 14px 18px;
+        color: #16A34A;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+</style>
+
+<div class="form-container">
+    <h1 class="form-main-title">Se connecter</h1>
+
+    <div class="form-card">
+
+        {# Flash messages #}
+        {% for message in app.flashes('success') %}
+            <div class="alert-success">
+                <i class="bi bi-check-circle-fill"></i> {{ message }}
+            </div>
+        {% endfor %}
+
+        {# Erreur de connexion #}
+        {% if error %}
+            <div class="alert-error">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                Email ou mot de passe incorrect.
+            </div>
+        {% endif %}
+
+        <form method="post" action="{{ path('app_connexion') }}">
+            <div class="mb-4">
+                <label class="form-label fw-bold">Email</label>
+                <input 
+                    type="email" 
+                    name="email" 
+                    class="form-control form-control-custom" 
+                    value="{{ last_username }}"
+                    placeholder="votre.email@exemple.com" 
+                    required 
+                    autofocus
+                >
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-bold">Mot de passe</label>
+                <input 
+                    type="password" 
+                    name="password" 
+                    class="form-control form-control-custom" 
+                    placeholder="••••••••" 
+                    required
+                >
+            </div>
+
+            {# Token CSRF obligatoire avec Symfony Security #}
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button type="submit" class="btn-submit">
+                <i class="bi bi-box-arrow-in-right me-2"></i> Connexion
+            </button>
+        </form>
+
+        <p class="text-center mt-4 mb-0">
+            Pas de compte ? 
+            <a href="{{ path('app_inscription') }}" class="fw-bold" style="color: var(--primary-color)">S'inscrire</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

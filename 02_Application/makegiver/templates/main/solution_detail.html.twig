@@ -1,0 +1,436 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ solution.Titre_Solution }} - MakeGiver{% endblock %}
+
+{% block body %}
+<style>
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #6B7280;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.95rem;
+        margin-bottom: 2rem;
+        transition: all 0.2s ease;
+    }
+    .back-link:hover { color: var(--primary-color); transform: translateX(-4px); }
+
+    .hero-card {
+        background: white;
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 20px 40px -15px rgba(0,0,0,0.1);
+        border: 2px solid #F3F4F6;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .hero-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+    }
+
+    .solution-title {
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: var(--dark-color);
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    .badges-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 1.5rem;
+    }
+
+    .badge-custom {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.85rem;
+    }
+
+    .badge-difficulte.Facile       { background: rgba(16,185,129,0.12); color: #059669; }
+    .badge-difficulte.Intermédiaire { background: rgba(245,158,11,0.12); color: #D97706; }
+    .badge-difficulte.Avancé       { background: rgba(239,68,68,0.12); color: #DC2626; }
+
+    .badge-licence { background: rgba(79,70,229,0.1); color: var(--primary-color); }
+    .badge-coeur   { background: rgba(236,72,153,0.1); color: #DB2777; }
+
+    .section-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 4px 12px -4px rgba(0,0,0,0.08);
+        border: 2px solid #F3F4F6;
+        height: 100%;
+    }
+
+    .section-card h5 {
+        font-weight: 700;
+        color: var(--dark-color);
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #F3F4F6;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .section-card h5 i { font-size: 1.1rem; }
+
+    .description-text {
+        color: #4B5563;
+        line-height: 1.8;
+        font-size: 1rem;
+        white-space: pre-line;
+    }
+
+    .materiel-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .materiel-list li {
+        padding: 10px 0;
+        border-bottom: 1px solid #F9FAFB;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #4B5563;
+        font-size: 0.95rem;
+    }
+
+    .materiel-list li:last-child { border-bottom: none; }
+    .materiel-list li i { color: var(--secondary-color); flex-shrink: 0; }
+
+    .author-card {
+        background: linear-gradient(135deg, #F9FAFB, #F3F4F6);
+        border-radius: 16px;
+        padding: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .author-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 800;
+        flex-shrink: 0;
+    }
+
+    .author-name { font-weight: 700; font-size: 1.05rem; color: var(--dark-color); }
+    .author-role {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        padding: 3px 10px;
+        border-radius: 20px;
+        background: rgba(79,70,229,0.1);
+        color: var(--primary-color);
+        margin-top: 4px;
+    }
+
+    .fichier-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px 16px;
+        background: #F9FAFB;
+        border-radius: 12px;
+        border: 2px solid #F3F4F6;
+        text-decoration: none;
+        color: var(--dark-color);
+        transition: all 0.2s ease;
+        margin-bottom: 10px;
+    }
+
+    .fichier-item:hover {
+        border-color: var(--secondary-color);
+        background: rgba(16,185,129,0.05);
+        color: var(--dark-color);
+    }
+
+    .fichier-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.3rem;
+        flex-shrink: 0;
+    }
+
+    .fichier-icon.stl  { background: rgba(79,70,229,0.1);  color: var(--primary-color); }
+    .fichier-icon.img  { background: rgba(16,185,129,0.1);  color: var(--secondary-color); }
+    .fichier-icon.pdf  { background: rgba(239,68,68,0.1);   color: #DC2626; }
+    .fichier-icon.file { background: rgba(107,114,128,0.1); color: #6B7280; }
+
+    .comment-item {
+        padding: 1.25rem;
+        background: #F9FAFB;
+        border-radius: 14px;
+        border: 2px solid #F3F4F6;
+        margin-bottom: 1rem;
+    }
+
+    .comment-author {
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--dark-color);
+    }
+
+    .comment-date { font-size: 0.8rem; color: #9CA3AF; }
+    .comment-text { color: #4B5563; margin-top: 0.5rem; line-height: 1.6; }
+
+    .btn-action {
+        padding: 14px 28px;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn-primary-action {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: white;
+    }
+
+    .btn-primary-action:hover { color: white; transform: translateY(-2px); box-shadow: 0 10px 20px -10px rgba(79,70,229,0.5); }
+
+    .btn-outline-action {
+        background: white;
+        color: var(--primary-color);
+        border: 2px solid var(--primary-color);
+    }
+
+    .btn-outline-action:hover { background: var(--primary-color); color: white; transform: translateY(-2px); }
+
+    .meta-info {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        color: #6B7280;
+        font-size: 0.9rem;
+    }
+</style>
+
+<a href="{{ path('app_solutions') }}" class="back-link">
+    <i class="bi bi-arrow-left"></i> Retour aux solutions
+</a>
+
+{# Hero #}
+<div class="hero-card">
+    <div class="row align-items-start">
+        <div class="col-lg-8">
+            {% if solution.Est_CoupDeCoeur %}
+                <div class="mb-3">
+                    <span class="badge-custom badge-coeur">
+                        <i class="bi bi-heart-fill"></i> Coup de cœur
+                    </span>
+                </div>
+            {% endif %}
+
+            <h1 class="solution-title">{{ solution.Titre_Solution }}</h1>
+
+            <div class="badges-row">
+                <span class="badge-custom badge-difficulte {{ solution.Difficulte_Fabrication }}">
+                    {% if solution.Difficulte_Fabrication == 'Facile' %}🟢
+                    {% elseif solution.Difficulte_Fabrication == 'Intermédiaire' %}🟡
+                    {% else %}🔴{% endif %}
+                    {{ solution.Difficulte_Fabrication }}
+                </span>
+                <span class="badge-custom badge-licence">
+                    <i class="bi bi-shield-check"></i> {{ solution.Licence }}
+                </span>
+                <span class="meta-info">
+                    <i class="bi bi-calendar3"></i>
+                    Publié le {{ solution.Date_Publication|date('d/m/Y') }}
+                </span>
+            </div>
+
+            {# Auteur #}
+            <div class="author-card">
+                <div class="author-avatar">
+                    {{ solution.Prenom|slice(0,1) }}{{ solution.Nom|slice(0,1) }}
+                </div>
+                <div>
+                    <div class="author-name">{{ solution.Prenom }} {{ solution.Nom }}</div>
+                    <div class="author-role">
+                        <i class="bi bi-person-badge"></i> {{ solution.Role }}
+                    </div>
+                    {% if solution.Bio_Description %}
+                        <div class="text-muted small mt-1">{{ solution.Bio_Description|slice(0,80) }}…</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mt-4 mt-lg-0">
+            {# Image placeholder #}
+            <div style="background: linear-gradient(135deg, #F3F4F6, #E5E7EB); border-radius: 16px; height: 200px; display: flex; align-items: center; justify-content: center;">
+                <i class="bi bi-image" style="font-size: 3rem; color: #D1D5DB;"></i>
+            </div>
+
+            <div class="d-flex flex-column gap-2 mt-3">
+                {% if is_granted('ROLE_USER') %}
+                    <a href="{{ path('app_nouveau_besoin') }}" class="btn-action btn-outline-action w-100 justify-content-center">
+                        <i class="bi bi-chat-dots"></i> Poser une question
+                    </a>
+                {% endif %}
+                {% if fichiers|length > 0 %}
+                    <a href="{{ fichiers[0].Chemin_URL }}" class="btn-action btn-primary-action w-100 justify-content-center" download>
+                        <i class="bi bi-download"></i> Télécharger les fichiers
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{# Description + Matériel #}
+<div class="row g-4 mb-4">
+    <div class="col-lg-8">
+        <div class="section-card">
+            <h5>
+                <i class="bi bi-file-text" style="color: var(--primary-color)"></i>
+                Description technique
+            </h5>
+            <p class="description-text">{{ solution.Description_Technique }}</p>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="section-card">
+            <h5>
+                <i class="bi bi-box-seam" style="color: var(--secondary-color)"></i>
+                Matériel nécessaire
+            </h5>
+            {% if solution.Materiel_Necessaire %}
+                <ul class="materiel-list">
+                    {% for item in solution.Materiel_Necessaire|split(',') %}
+                        <li>
+                            <i class="bi bi-check-circle-fill"></i>
+                            {{ item|trim }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="text-muted">Non renseigné</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{# Fichiers + Commentaires #}
+<div class="row g-4 mb-4">
+
+    {# Fichiers #}
+    <div class="col-lg-5">
+        <div class="section-card">
+            <h5>
+                <i class="bi bi-folder2-open" style="color: var(--accent-color)"></i>
+                Fichiers disponibles
+                {% if fichiers|length > 0 %}
+                    <span class="ms-auto badge bg-secondary rounded-pill">{{ fichiers|length }}</span>
+                {% endif %}
+            </h5>
+            {% if fichiers|length > 0 %}
+                {% for f in fichiers %}
+                    <a href="{{ f.Chemin_URL }}" class="fichier-item" download>
+                        <div class="fichier-icon {% if f.Type in ['JPG','PNG','JPEG'] %}img{% elseif f.Type == 'STL' %}stl{% elseif f.Type == 'PDF' %}pdf{% else %}file{% endif %}">
+                            <i class="bi bi-{% if f.Type in ['JPG','PNG','JPEG'] %}image{% elseif f.Type == 'STL' %}box{% elseif f.Type == 'PDF' %}file-pdf{% else %}file-earmark{% endif %}"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-600">{{ f.Nom_Fichier }}</div>
+                            <div class="text-muted small">{{ f.Type }} — {{ f.Taille_Mo }} Mo</div>
+                        </div>
+                        <i class="bi bi-download text-muted"></i>
+                    </a>
+                {% endfor %}
+            {% else %}
+                <div class="text-center text-muted py-3">
+                    <i class="bi bi-folder-x fs-2 d-block mb-2"></i>
+                    Aucun fichier joint
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {# Commentaires #}
+    <div class="col-lg-7">
+        <div class="section-card">
+            <h5>
+                <i class="bi bi-chat-square-text" style="color: var(--primary-color)"></i>
+                Commentaires
+                {% if commentaires|length > 0 %}
+                    <span class="ms-auto badge bg-secondary rounded-pill">{{ commentaires|length }}</span>
+                {% endif %}
+            </h5>
+
+            {% if commentaires|length > 0 %}
+                {% for c in commentaires %}
+                    <div class="comment-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="comment-author">
+                                <i class="bi bi-person-circle me-1" style="color: var(--primary-color)"></i>
+                                {{ c.Prenom }} {{ c.Nom }}
+                            </span>
+                            <span class="comment-date">{{ c.Date_Post|date('d/m/Y à H:i') }}</span>
+                        </div>
+                        <p class="comment-text mb-0">{{ c.Contenu_Texte }}</p>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center text-muted py-3">
+                    <i class="bi bi-chat-slash fs-2 d-block mb-2"></i>
+                    Aucun commentaire pour l'instant.
+                </div>
+            {% endif %}
+
+            {% if is_granted('ROLE_USER') %}
+                <hr class="my-3">
+                <form action="#" method="POST">
+                    <textarea name="commentaire" class="form-control" rows="3" placeholder="Laisser un commentaire..." style="border-radius: 12px; border: 2px solid #E5E7EB;"></textarea>
+                    <button type="submit" class="btn-action btn-primary-action mt-2">
+                        <i class="bi bi-send-fill"></i> Envoyer
+                    </button>
+                </form>
+            {% else %}
+                <p class="text-muted text-center mt-3 small">
+                    <a href="{{ path('app_connexion') }}" style="color: var(--primary-color); font-weight: 600;">Connectez-vous</a> pour laisser un commentaire.
+                </p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,362 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Proposer une Solution - MakeGiver{% endblock %}
+
+{% block body %}
+<style>
+    .form-container { max-width: 750px; margin: 3rem auto; }
+
+    .page-header {
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 3px solid #F3F4F6;
+    }
+
+    .page-title {
+        font-size: 2.75rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, var(--dark-color) 0%, var(--secondary-color) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+        border: 2px solid #F3F4F6;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .form-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+    }
+
+    .form-label { font-weight: 700; color: #374151; margin-bottom: 0.5rem; }
+
+    .form-control-custom {
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 14px 18px;
+        transition: all 0.3s ease;
+        width: 100%;
+        font-size: 1rem;
+        background: #FAFAFA;
+    }
+
+    .form-control-custom:focus {
+        border-color: var(--secondary-color);
+        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.08);
+        outline: none;
+        background: white;
+    }
+
+    textarea.form-control-custom { resize: vertical; min-height: 130px; }
+
+    .input-icon-wrapper { position: relative; }
+    .input-icon-wrapper i {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9CA3AF;
+        font-size: 1.1rem;
+    }
+    .input-icon-wrapper .form-control-custom { padding-left: 44px; }
+
+    .section-divider {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 2rem 0 1.5rem;
+    }
+    .section-divider span {
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: #9CA3AF;
+        white-space: nowrap;
+    }
+    .section-divider::before, .section-divider::after {
+        content: '';
+        flex: 1;
+        height: 2px;
+        background: #F3F4F6;
+    }
+
+    .difficulte-group {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .difficulte-btn {
+        flex: 1;
+        min-width: 120px;
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 12px 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+        background: white;
+    }
+
+    .difficulte-btn input[type="radio"] { display: none; }
+    .difficulte-btn:has(input:checked) { border-color: var(--secondary-color); background: rgba(16,185,129,0.05); }
+    .difficulte-btn.medium:has(input:checked) { border-color: #F59E0B; background: rgba(245,158,11,0.05); }
+    .difficulte-btn.hard:has(input:checked) { border-color: #EF4444; background: rgba(239,68,68,0.05); }
+
+    .difficulte-icon { font-size: 1.5rem; margin-bottom: 4px; }
+    .difficulte-label { font-weight: 600; font-size: 0.9rem; color: #374151; }
+
+    .upload-zone {
+        border: 2px dashed #D1D5DB;
+        border-radius: 16px;
+        padding: 2.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: #FAFAFA;
+    }
+
+    .upload-zone:hover {
+        border-color: var(--secondary-color);
+        background: rgba(16,185,129,0.03);
+    }
+
+    .upload-zone i { font-size: 2.5rem; color: #D1D5DB; margin-bottom: 0.75rem; display: block; }
+    .upload-zone p { color: #6B7280; margin: 0; font-size: 0.95rem; }
+    .upload-zone strong { color: var(--secondary-color); }
+
+    .upload-zone input[type="file"] { display: none; }
+
+    .licence-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%239CA3AF' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 16px center;
+        padding-right: 44px !important;
+    }
+
+    .btn-submit-green {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-dark) 100%);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        box-shadow: 0 10px 20px -10px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-submit-green:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px -10px rgba(16, 185, 129, 0.6);
+    }
+
+    .flash-success {
+        background: #F0FDF4;
+        border: 2px solid #BBF7D0;
+        border-radius: 12px;
+        padding: 14px 18px;
+        color: #16A34A;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+    }
+
+    .tips-box {
+        background: linear-gradient(135deg, rgba(16,185,129,0.05) 0%, rgba(79,70,229,0.05) 100%);
+        border: 2px solid rgba(16,185,129,0.15);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .tips-box h6 { font-weight: 700; color: var(--secondary-color); margin-bottom: 0.75rem; }
+    .tips-box ul { margin: 0; padding-left: 1.2rem; color: #6B7280; font-size: 0.95rem; }
+    .tips-box li { margin-bottom: 4px; }
+
+    .char-counter {
+        text-align: right;
+        font-size: 0.8rem;
+        color: #9CA3AF;
+        margin-top: 4px;
+    }
+</style>
+
+<div class="form-container">
+
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="bi bi-lightbulb-fill me-3" style="font-size: 2rem; -webkit-text-fill-color: var(--secondary-color);"></i>
+            Proposer une solution
+        </h1>
+        <p class="text-muted mb-0">Partagez votre création avec la communauté et aidez ceux qui en ont besoin.</p>
+    </div>
+
+    <div class="tips-box">
+        <h6><i class="bi bi-tools me-2"></i>Pour une bonne fiche solution</h6>
+        <ul>
+            <li>Décrivez le matériel nécessaire et le processus de fabrication</li>
+            <li>Précisez la licence pour que d'autres puissent réutiliser votre travail</li>
+            <li>Ajoutez des fichiers (STL, plans, photos) pour faciliter la reproduction</li>
+        </ul>
+    </div>
+
+    <div class="form-card">
+
+        {% for message in app.flashes('success') %}
+            <div class="flash-success">
+                <i class="bi bi-check-circle-fill fs-5"></i> {{ message }}
+            </div>
+        {% endfor %}
+
+        <form action="{{ path('app_nouvelle_solution') }}" method="POST" enctype="multipart/form-data">
+
+            {# Titre #}
+            <div class="mb-4">
+                <label class="form-label">Titre de la solution <span class="text-danger">*</span></label>
+                <div class="input-icon-wrapper">
+                    <i class="bi bi-lightbulb"></i>
+                    <input 
+                        type="text" 
+                        name="titre" 
+                        class="form-control-custom" 
+                        placeholder="Ex : Adaptateur clé ergonomique imprimé en 3D"
+                        required
+                    >
+                </div>
+            </div>
+
+            {# Description technique #}
+            <div class="mb-4">
+                <label class="form-label">Description technique <span class="text-danger">*</span></label>
+                <textarea 
+                    name="description" 
+                    class="form-control-custom"
+                    id="description-field"
+                    placeholder="Décrivez le principe de fonctionnement, les étapes de fabrication, les réglages importants..."
+                    required
+                    oninput="updateCounter(this)"
+                ></textarea>
+                <div class="char-counter"><span id="char-count">0</span> caractères</div>
+            </div>
+
+            <div class="section-divider"><span>Détails de fabrication</span></div>
+
+            {# Matériel nécessaire #}
+            <div class="mb-4">
+                <label class="form-label">Matériel nécessaire</label>
+                <div class="input-icon-wrapper">
+                    <i class="bi bi-box-seam"></i>
+                    <input 
+                        type="text" 
+                        name="materiel" 
+                        class="form-control-custom" 
+                        placeholder="Ex : Filament PLA, vis M3, colle époxy..."
+                    >
+                </div>
+            </div>
+
+            {# Difficulté #}
+            <div class="mb-4">
+                <label class="form-label d-block">Difficulté de fabrication</label>
+                <div class="difficulte-group">
+                    <label class="difficulte-btn">
+                        <input type="radio" name="difficulte" value="Facile" checked>
+                        <div class="difficulte-icon">🟢</div>
+                        <div class="difficulte-label">Facile</div>
+                    </label>
+                    <label class="difficulte-btn medium">
+                        <input type="radio" name="difficulte" value="Intermédiaire">
+                        <div class="difficulte-icon">🟡</div>
+                        <div class="difficulte-label">Intermédiaire</div>
+                    </label>
+                    <label class="difficulte-btn hard">
+                        <input type="radio" name="difficulte" value="Avancé">
+                        <div class="difficulte-icon">🔴</div>
+                        <div class="difficulte-label">Avancé</div>
+                    </label>
+                </div>
+            </div>
+
+            {# Licence #}
+            <div class="mb-4">
+                <label class="form-label">Licence</label>
+                <select name="licence" class="form-control-custom licence-select">
+                    <option value="Creative Commons BY">Creative Commons BY (Attribution)</option>
+                    <option value="Creative Commons BY-NC" selected>Creative Commons BY-NC (Non commercial)</option>
+                    <option value="Creative Commons BY-SA">Creative Commons BY-SA (Partage à l'identique)</option>
+                    <option value="MIT">MIT</option>
+                    <option value="Domaine public">Domaine public</option>
+                </select>
+            </div>
+
+            <div class="section-divider"><span>Fichiers</span></div>
+
+            {# Upload fichiers #}
+            <div class="mb-4">
+                <label class="form-label">Fichiers (STL, plans, photos...)</label>
+                <label class="upload-zone" for="file-upload">
+                    <i class="bi bi-cloud-arrow-up"></i>
+                    <p><strong>Cliquez pour ajouter des fichiers</strong></p>
+                    <p>STL, JPG, PNG, PDF — max 10 Mo par fichier</p>
+                    <input type="file" id="file-upload" name="fichiers[]" multiple accept=".stl,.jpg,.jpeg,.png,.pdf">
+                </label>
+                <div id="file-list" class="mt-2"></div>
+            </div>
+
+            <button type="submit" class="btn-submit-green">
+                <i class="bi bi-send-fill"></i>
+                Publier ma solution
+            </button>
+        </form>
+    </div>
+
+    <p class="text-center text-muted mt-4">
+        <i class="bi bi-arrow-left me-1"></i>
+        <a href="{{ path('app_solutions') }}" style="color: var(--secondary-color); font-weight: 600;">Retour à la bibliothèque</a>
+    </p>
+</div>
+
+<script>
+function updateCounter(el) {
+    document.getElementById('char-count').textContent = el.value.length;
+}
+
+// Afficher les fichiers sélectionnés
+document.getElementById('file-upload').addEventListener('change', function() {
+    const list = document.getElementById('file-list');
+    list.innerHTML = '';
+    Array.from(this.files).forEach(file => {
+        const div = document.createElement('div');
+        div.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 12px;background:#F9FAFB;border-radius:8px;margin-top:6px;font-size:0.9rem;';
+        div.innerHTML = `<i class="bi bi-file-earmark" style="color:var(--secondary-color)"></i> <span>${file.name}</span> <span style="color:#9CA3AF;margin-left:auto">${(file.size/1024/1024).toFixed(2)} Mo</span>`;
+        list.appendChild(div);
+    });
+});
+</script>
+{% endblock %}

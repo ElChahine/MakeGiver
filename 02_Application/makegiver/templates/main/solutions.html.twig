@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Bibliothèque de Solutions - Je Demain{% endblock %}
+{% block title %}Bibliothèque de Solutions - MakeGiver{% endblock %}
 
 {% block body %}
 <style>
@@ -31,6 +31,7 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
+        text-decoration: none;
     }
 
     .filter-btn:hover {
@@ -38,6 +39,27 @@
         color: var(--primary-color);
         transform: translateY(-2px);
         box-shadow: 0 8px 16px -8px rgba(79, 70, 229, 0.3);
+    }
+
+    .btn-proposer-header {
+        padding: 12px 28px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-dark) 100%);
+        color: white;
+        font-weight: 600;
+        border: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        box-shadow: 0 8px 16px -8px rgba(16,185,129,0.4);
+    }
+
+    .btn-proposer-header:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px -10px rgba(16,185,129,0.5);
     }
 
     .solution-card {
@@ -54,10 +76,7 @@
     .solution-card::after {
         content: '';
         position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
+        top: 0; left: 0; right: 0; bottom: 0;
         border: 2px solid transparent;
         border-radius: 16px;
         transition: border-color 0.3s ease;
@@ -87,8 +106,7 @@
     .card-image::before {
         content: '';
         position: absolute;
-        width: 100px;
-        height: 100px;
+        width: 100px; height: 100px;
         background: radial-gradient(circle, rgba(79, 70, 229, 0.1) 0%, transparent 70%);
         border-radius: 50%;
         animation: float 6s ease-in-out infinite;
@@ -99,16 +117,9 @@
         50% { transform: translate(20px, -20px); }
     }
 
-    .card-image i {
-        font-size: 4rem;
-        color: #D1D5DB;
-        position: relative;
-        z-index: 1;
-    }
+    .card-image i { font-size: 4rem; color: #D1D5DB; position: relative; z-index: 1; }
 
-    .solution-card .card-body {
-        padding: 1.75rem;
-    }
+    .solution-card .card-body { padding: 1.75rem; }
 
     .solution-title {
         font-size: 1.35rem;
@@ -120,7 +131,7 @@
     .solution-tag {
         display: inline-block;
         padding: 6px 16px;
-        background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(79, 70, 229, 0.05) 100%);
+        background: linear-gradient(135deg, rgba(79,70,229,0.1) 0%, rgba(79,70,229,0.05) 100%);
         color: var(--primary-color);
         border-radius: 20px;
         font-weight: 700;
@@ -138,9 +149,7 @@
         gap: 6px;
     }
 
-    .solution-author i {
-        color: var(--secondary-color);
-    }
+    .solution-author i { color: var(--secondary-color); }
 
     .card-footer-custom {
         display: flex;
@@ -154,13 +163,12 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        background: linear-gradient(135deg, #FBBF24 0%, #F59E0B 100%);
+        background: var(--primary-color);
         color: white;
         padding: 8px 16px;
         border-radius: 20px;
         font-weight: 700;
         font-size: 0.95rem;
-        box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.3);
     }
 
     .btn-details {
@@ -175,9 +183,11 @@
         display: inline-flex;
         align-items: center;
         gap: 6px;
+        text-decoration: none;
     }
 
     .btn-details:hover {
+        color: white;
         transform: translateX(5px);
         box-shadow: 0 8px 16px -8px rgba(79, 70, 229, 0.5);
     }
@@ -197,11 +207,9 @@
     .cta-section::before {
         content: '';
         position: absolute;
-        top: -50%;
-        left: -20%;
-        width: 400px;
-        height: 400px;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+        top: -50%; left: -20%;
+        width: 400px; height: 400px;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
         border-radius: 50%;
     }
 
@@ -219,6 +227,14 @@
         position: relative;
     }
 
+    .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        position: relative;
+    }
+
     .btn-cta {
         padding: 14px 32px;
         background: white;
@@ -231,30 +247,45 @@
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        position: relative;
+        text-decoration: none;
     }
 
     .btn-cta:hover {
         transform: translateY(-4px);
-        box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 15px 30px -10px rgba(0,0,0,0.3);
         color: var(--primary-dark);
     }
 
+    .btn-cta-outline {
+        padding: 14px 32px;
+        background: transparent;
+        color: white;
+        border: 2px solid rgba(255,255,255,0.6);
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+    }
+
+    .btn-cta-outline:hover {
+        background: rgba(255,255,255,0.15);
+        border-color: white;
+        color: white;
+        transform: translateY(-4px);
+    }
+
     @media (max-width: 768px) {
-        .page-title {
-            font-size: 2rem;
-        }
-
-        .cta-section {
-            padding: 2.5rem 1.5rem;
-        }
-
-        .cta-section h3 {
-            font-size: 1.5rem;
-        }
+        .page-title { font-size: 2rem; }
+        .cta-section { padding: 2.5rem 1.5rem; }
+        .cta-section h3 { font-size: 1.5rem; }
     }
 </style>
 
+{# Header avec les deux boutons #}
 <div class="page-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3">
     <div>
         <h1 class="page-title">Bibliothèque de solutions</h1>
@@ -263,10 +294,24 @@
             Découvrez les solutions créées par la communauté
         </p>
     </div>
-    <button class="filter-btn">
-        <i class="bi bi-funnel"></i>
-        Filtrer par catégorie
-    </button>
+    <div class="d-flex gap-2 flex-wrap">
+        <button class="filter-btn">
+            <i class="bi bi-funnel"></i>
+            Filtrer
+        </button>
+        {# BOUTON vers le formulaire de proposition de solution #}
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_nouvelle_solution') }}" class="btn-proposer-header">
+                <i class="bi bi-plus-circle-fill"></i>
+                Proposer une solution
+            </a>
+        {% else %}
+            <a href="{{ path('app_connexion') }}" class="btn-proposer-header" style="background: linear-gradient(135deg, #6B7280, #4B5563); box-shadow: none;">
+                <i class="bi bi-lock-fill"></i>
+                Connexion requise
+            </a>
+        {% endif %}
+    </div>
 </div>
 
 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
@@ -277,26 +322,18 @@
                 <i class="bi bi-image"></i>
             </div>
             <div class="card-body">
-                {# On utilise Titre_Solution (le nom en BDD) #}
                 <h5 class="solution-title">{{ solution.Titre_Solution }}</h5>
-                
-                {# On utilise Difficulte_Fabrication pour le tag #}
                 <span class="solution-tag">{{ solution.Difficulte_Fabrication }}</span>
-                
                 <p class="solution-author">
                     <i class="bi bi-person-circle"></i>
-                    {# On affiche le prénom et le nom récupérés grâce au JOIN #}
                     Par {{ solution.Prenom }} {{ solution.Nom }}
                 </p>
-                
                 <div class="card-footer-custom">
-                    {# On affiche la Licence à la place de la note #}
-                    <span class="rating-badge" style="background: var(--primary-color); color: white;">
+                    <span class="rating-badge">
                         <i class="bi bi-shield-check"></i>
                         {{ solution.Licence }}
                     </span>
-                    
-                    <a href="#" class="btn-details">
+                    <a href="{{ path('app_solution_detail', {id: solution.SolutionID}) }}" class="btn-details">
                         Voir détails
                         <i class="bi bi-arrow-right"></i>
                     </a>
@@ -304,19 +341,48 @@
             </div>
         </div>
     </div>
+    {% else %}
+    <div class="col-12 text-center py-5">
+        <div class="alert alert-light border shadow-sm" style="border-radius: 16px;">
+            <i class="bi bi-lightbulb fs-2 text-primary d-block mb-3"></i>
+            <p class="mb-3">Aucune solution n'a encore été publiée.</p>
+            {% if is_granted('ROLE_USER') %}
+                <a href="{{ path('app_nouvelle_solution') }}" class="btn btn-primary rounded-pill px-4">
+                    <i class="bi bi-plus-circle me-2"></i>Proposer la première solution
+                </a>
+            {% else %}
+                <a href="{{ path('app_connexion') }}" class="btn btn-secondary rounded-pill px-4">
+                    <i class="bi bi-lock-fill me-2"></i>Connexion requise
+                </a>
+            {% endif %}
+        </div>
+    </div>
     {% endfor %}
 </div>
 
-
+{# CTA bas de page avec deux boutons #}
 <div class="cta-section">
     <h3>
         <i class="bi bi-search me-2"></i>
         Vous ne trouvez pas ce que vous cherchez ?
     </h3>
-    <p>Exprimez votre besoin et notre communauté vous aidera à trouver ou créer la solution idéale.</p>
-    <a href="{{ path('app_besoins') }}" class="btn-cta">
-        <i class="bi bi-plus-circle-fill"></i>
-        Exprimer mon besoin
-    </a>
+    <p>Exprimez votre besoin ou proposez votre propre solution à la communauté.</p>
+    <div class="cta-buttons">
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_nouveau_besoin') }}" class="btn-cta">
+                <i class="bi bi-chat-dots-fill"></i>
+                Exprimer mon besoin
+            </a>
+            <a href="{{ path('app_nouvelle_solution') }}" class="btn-cta-outline">
+                <i class="bi bi-lightbulb-fill"></i>
+                Proposer une solution
+            </a>
+        {% else %}
+            <a href="{{ path('app_connexion') }}" class="btn-cta">
+                <i class="bi bi-lock-fill"></i>
+                Se connecter pour participer
+            </a>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

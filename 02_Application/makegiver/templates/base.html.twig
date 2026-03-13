@@ -375,21 +375,47 @@
                     </div>
 
                     <div class="col-md-5">
-                        <div class="search-container w-100">
+                        <form action="{{ path('app_recherche') }}" method="GET" class="search-container w-100">
                             <i class="bi bi-search search-icon"></i>
-                            <input type="search" class="form-control search-input" placeholder="Rechercher une solution, un besoin...">
-                        </div>
+                            <input type="search" name="q" class="form-control search-input" placeholder="Rechercher une solution, un besoin...">
+                        </form>
                     </div>
 
                     <div class="col-md-4 text-end">
-                        <a href="{{ path('app_connexion') }}" class="btn btn-outline-custom me-2">
-                            <i class="bi bi-box-arrow-in-right me-1"></i>
-                            Connexion
-                        </a>
-                        <a href="{{ path('app_inscription') }}" class="btn btn-primary-custom">
-                            <i class="bi bi-person-plus me-1"></i>
-                            Inscription
-                        </a>
+                        {% if is_granted('ROLE_USER') %}
+                            {# Utilisateur connecté : avatar + menu déroulant #}
+                            <div class="dropdown d-inline-block">
+                                <button class="btn btn-outline-custom dropdown-toggle d-inline-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-circle"></i>
+                                    {{ app.user.prenom }}
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end shadow border-0" style="border-radius: 14px; padding: 0.5rem; min-width: 200px;">
+                                    <li>
+                                        <a class="dropdown-item rounded-3 d-flex align-items-center gap-2 py-2" href="{{ path('app_espace') }}">
+                                            <i class="bi bi-person-badge" style="color: var(--primary-color)"></i>
+                                            Mon espace
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider my-1"></li>
+                                    <li>
+                                        <a class="dropdown-item rounded-3 d-flex align-items-center gap-2 py-2 text-danger" href="{{ path('app_deconnexion') }}">
+                                            <i class="bi bi-box-arrow-right"></i>
+                                            Se déconnecter
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% else %}
+                            {# Utilisateur non connecté : boutons connexion / inscription #}
+                            <a href="{{ path('app_connexion') }}" class="btn btn-outline-custom me-2">
+                                <i class="bi bi-box-arrow-in-right me-1"></i>
+                                Connexion
+                            </a>
+                            <a href="{{ path('app_inscription') }}" class="btn btn-primary-custom">
+                                <i class="bi bi-person-plus me-1"></i>
+                                Inscription
+                            </a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -424,6 +450,12 @@
                         <a href="{{ path('app_agenda') }}" class="nav-link-custom">
                             <i class="bi bi-calendar-event me-1"></i>
                             Agenda
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{ path('app_fablabs') }}" class="nav-link-custom">
+                            <i class="bi bi-geo-alt me-1"></i>
+                            FabLabs
                         </a>
                     </li>
                 </ul>
