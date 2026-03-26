@@ -276,6 +276,11 @@
                     <i class="bi bi-calendar3"></i>
                     Publié le {{ solution.Date_Publication|date('d/m/Y') }}
                 </span>
+                <a href="mailto:admin@makegiver.fr?subject=Signalement de la solution : {{ solution.Titre_Solution }}&body=Bonjour, je souhaite signaler cette solution pour la raison suivante : " 
+                   class="badge-custom" 
+                   style="background: rgba(239,68,68,0.1); color: #DC2626; text-decoration: none; margin-left: auto;">
+                    <i class="bi bi-flag-fill"></i> Signaler
+                </a>
             </div>
 
             {# Auteur #}
