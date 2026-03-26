@@ -158,6 +158,8 @@
                 <div class="text-danger small mt-1">{{ form_errors(form.role) }}</div>
             {% endif %}
         </div>
+        {# Ligne critique : marque form.role comme déjà rendu pour éviter le doublon #}
+        {% do form.role.setRendered() %}
 
         {# Mot de passe #}
         <div class="mb-4">
@@ -179,7 +181,7 @@
             <i class="bi bi-person-plus-fill me-2"></i> S'inscrire
         </button>
 
-        {{ form_end(form) }}
+        {{ form_end(form, {'render_rest': false}) }}
 
         <p class="text-center mt-4 mb-0">
             Déjà inscrit ? 

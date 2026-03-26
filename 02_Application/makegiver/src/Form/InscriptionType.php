@@ -38,6 +38,8 @@ class InscriptionType extends AbstractType
                     'Maker / Bricoleur'            => 'Maker',
                     'Soignant / Professionnel'     => 'Soignant',
                 ],
+                'expanded' => true,  // ← ajoute cette ligne
+                'multiple' => false, // ← et celle-ci pour rester en choix unique
                 'constraints' => [new NotBlank()],
             ])
             ->add('plainPassword', RepeatedType::class, [
