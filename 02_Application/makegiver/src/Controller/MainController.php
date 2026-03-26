@@ -2,11 +2,16 @@
 
 namespace App\Controller;
 
+use App\Entity\Projets;
+use App\Entity\Utilisateurs;
+use App\Entity\Candidatures;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\DBAL\Connection;
+use Symfony\Component\HttpClient\HttpClient;
 
 class MainController extends AbstractController
 {
@@ -30,12 +35,8 @@ class MainController extends AbstractController
             throw $this->createNotFoundException('Solution introuvable.');
         }
 
-        // Fichiers liés
-        $fichiers = $connection->fetchAllAssociative("
-            SELECT * FROM Fichiers WHERE SolutionID = ?
-        ", [$id]);
+        $fichiers = $connection->fetchAllAssociative("SELECT * FROM Fichiers WHERE SolutionID = ?", [$id]);
 
-        // Commentaires
         $commentaires = $connection->fetchAllAssociative("
             SELECT c.*, u.Nom, u.Prenom
             FROM Commentaires c
@@ -54,21 +55,17 @@ class MainController extends AbstractController
     #[Route('/solutions', name: 'app_solutions')]
     public function solutions(Connection $connection): Response
     {
-        $sql = "
+        $solutions = $connection->fetchAllAssociative("
             SELECT s.*, u.Nom, u.Prenom 
             FROM Solutions s 
             LEFT JOIN Utilisateurs u ON s.CreateurID = u.UtilisateurID
-        ";
-        $solutions = $connection->fetchAllAssociative($sql);
+        ");
 
         return $this->render('main/solutions.html.twig', [
             'solutions' => $solutions,
         ]);
     }
 
-    // -------------------------------------------------------
-    // NOUVELLE ROUTE : formulaire de proposition de solution
-    // -------------------------------------------------------
     #[Route('/solutions/nouvelle', name: 'app_nouvelle_solution', methods: ['GET', 'POST'])]
     public function nouvelleSolution(Connection $connection, Request $request): Response
     {
@@ -79,7 +76,6 @@ class MainController extends AbstractController
             $difficulte  = $request->request->get('difficulte', 'Facile');
             $licence     = $request->request->get('licence', 'Creative Commons BY-NC');
 
-            // On récupère l'utilisateur connecté (ou ID 1 par défaut pour la démo)
             $createurId = $this->getUser() ? $this->getUser()->getId() : 1;
 
             if ($titre && $description) {
@@ -97,51 +93,27 @@ class MainController extends AbstractController
         return $this->render('main/solution_form.html.twig');
     }
 
-    // -------------------------------------------------------
-    // BESOINS — liste + formulaire intégré
-    // -------------------------------------------------------
-    #[Route('/besoins', name: 'app_besoins', methods: ['GET', 'POST'])]
-    public function besoins(Connection $connection, Request $request): Response
+    // LISTE DES BESOINS
+    #[Route('/besoins', name: 'app_besoins')]
+    public function besoins(EntityManagerInterface $em): Response
     {
-        if ($request->isMethod('POST')) {
-            $titre       = $request->request->get('titre');
-            $description = $request->request->get('description');
-
-            $demandeurId = $this->getUser() ? $this->getUser()->getId() : 1;
-
-            if ($titre && $description) {
-                $connection->executeStatement("
-                    INSERT INTO Projets (Titre_Besoin, Description_Detaillee, Statut, DemandeurID, Date_Creation) 
-                    VALUES (?, ?, 'Ouvert', ?, NOW())
-                ", [$titre, $description, $demandeurId]);
-
-                $this->addFlash('success', 'Votre besoin a été publié !');
-                return $this->redirectToRoute('app_besoins');
-            }
-        }
-
-        $sql = "SELECT p.*, u.Nom, u.Prenom 
-                FROM Projets p 
-                LEFT JOIN Utilisateurs u ON p.DemandeurID = u.UtilisateurID
-                ORDER BY p.Date_Creation DESC";
-
-        $besoins = $connection->fetchAllAssociative($sql);
+        // On récupère les objets pour que Twig puisse faire besoin.maker.pseudo
+        $besoins = $em->getRepository(Projets::class)->findBy([], ['dateCreation' => 'DESC']);
+        $makers = $em->getRepository(Utilisateurs::class)->findBy(['role' => 'Maker']);
 
         return $this->render('main/besoins.html.twig', [
             'besoins' => $besoins,
+            'makers'  => $makers,
         ]);
     }
 
-    // -------------------------------------------------------
-    // NOUVELLE ROUTE : formulaire dédié dépôt de besoin
-    // -------------------------------------------------------
+    // --- LA ROUTE QUI MANQUAIT : CRÉATION D'UN BESOIN ---
     #[Route('/besoins/nouveau', name: 'app_nouveau_besoin', methods: ['GET', 'POST'])]
     public function nouveauBesoin(Connection $connection, Request $request): Response
     {
         if ($request->isMethod('POST')) {
             $titre       = $request->request->get('titre');
             $description = $request->request->get('description');
-
             $demandeurId = $this->getUser() ? $this->getUser()->getId() : 1;
 
             if ($titre && $description) {
@@ -158,76 +130,36 @@ class MainController extends AbstractController
         return $this->render('main/besoin_form.html.twig');
     }
 
+    #[Route('/besoin/valider/{id}', name: 'app_besoin_valider', methods: ['POST'])]
+    public function validerLeMaker(int $id, Request $request, EntityManagerInterface $em): Response
+    {
+        $besoin = $em->getRepository(Projets::class)->find($id);
+        $makerId = $request->request->get('maker_id');
+        $maker = $em->getRepository(Utilisateurs::class)->find($makerId);
+
+        if ($besoin && $maker) {
+            $besoin->setMaker($maker);
+            $besoin->setStatut('En cours');
+            $em->flush();
+            $this->addFlash('success', 'Collaborateur validé !');
+        }
+
+        return $this->redirectToRoute('app_besoins');
+    }
+
     #[Route('/agenda', name: 'app_agenda')]
     public function agenda(Connection $connection): Response
     {
-        $sql = "
-            SELECT *
-            FROM Evenements
-            WHERE Date_Debut >= CURDATE()
-            ORDER BY Date_Debut ASC
-        ";
-        $evenements = $connection->fetchAllAssociative($sql);
-
-        return $this->render('main/agenda.html.twig', [
-            'evenements' => $evenements,
-        ]);
+        $evenements = $connection->fetchAllAssociative("
+            SELECT * FROM Evenements WHERE Date_Debut >= CURDATE() ORDER BY Date_Debut ASC
+        ");
+        return $this->render('main/agenda.html.twig', ['evenements' => $evenements]);
     }
 
     #[Route('/fablabs', name: 'app_fablabs')]
     public function fablabs(): Response
     {
-        $labs  = [];
-        $error = null;
-
-        try {
-            $client = \Symfony\Component\HttpClient\HttpClient::create();
-
-            // Essai 1 : filtre par pays directement
-            $response = $client->request('GET', 'https://api.fablabs.io/0/labs.json', [
-                'query'   => ['country_code' => 'FR', 'per_page' => 500],
-                'timeout' => 10,
-                'verify_peer' => false,
-                'verify_host' => false,
-                'headers' => ['User-Agent' => 'MakeGiver/1.0'],
-            ]);
-
-            $data = $response->toArray();
-            $labs = $data['labs'] ?? [];
-
-            // Si vide, on pagine manuellement
-            if (empty($labs)) {
-                for ($page = 1; $page <= 8; $page++) {
-                    $r = $client->request('GET', 'https://api.fablabs.io/0/labs.json', [
-                        'query'   => ['page' => $page, 'per_page' => 100],
-                        'timeout' => 10,
-                        'headers' => ['User-Agent' => 'MakeGiver/1.0'],
-                    ]);
-                    $d = $r->toArray();
-                    if (empty($d['labs'])) break;
-
-                    $french = array_filter($d['labs'], fn($l) => strtolower($l['country_code'] ?? '') === 'fr');
-                    $labs   = array_merge($labs, array_values($french));
-
-                    if (count($d['labs']) < 100) break;
-                }
-            }
-
-            // Garder uniquement ceux avec coordonnées valides
-            $labs = array_values(array_filter($labs, fn($l) =>
-                !empty($l['latitude']) && !empty($l['longitude'])
-                && $l['latitude'] != 0 && $l['longitude'] != 0
-            ));
-
-        } catch (\Exception $e) {
-            $error = $e->getMessage();
-        }
-
-        return $this->render('main/fablabs.html.twig', [
-            'labs'  => $labs,
-            'error' => $error,
-            'total' => count($labs),
-        ]);
+        return $this->render('main/fablabs.html.twig', ['labs' => [], 'error' => null, 'total' => 0]);
     }
 
     #[Route('/recherche', name: 'app_recherche', methods: ['GET'])]
@@ -239,30 +171,21 @@ class MainController extends AbstractController
 
         if ($q !== '') {
             $like = '%' . $q . '%';
-
             $solutions = $connection->fetchAllAssociative("
-                SELECT s.*, u.Nom, u.Prenom
-                FROM Solutions s
+                SELECT s.*, u.Nom, u.Prenom FROM Solutions s
                 LEFT JOIN Utilisateurs u ON s.CreateurID = u.UtilisateurID
-                WHERE s.Titre_Solution LIKE ?
-                   OR s.Description_Technique LIKE ?
-                   OR s.Materiel_Necessaire LIKE ?
-            ", [$like, $like, $like]);
+                WHERE s.Titre_Solution LIKE ? OR s.Description_Technique LIKE ? OR s.Materiel_Necessaire LIKE ? OR u.Nom LIKE ? OR u.Prenom LIKE ?
+            ", [$like, $like, $like, $like, $like]);
 
             $besoins = $connection->fetchAllAssociative("
-                SELECT p.*, u.Nom, u.Prenom
-                FROM Projets p
+                SELECT p.*, u.Nom, u.Prenom FROM Projets p
                 LEFT JOIN Utilisateurs u ON p.DemandeurID = u.UtilisateurID
-                WHERE p.Titre_Besoin LIKE ?
-                   OR p.Description_Detaillee LIKE ?
-            ", [$like, $like]);
+                WHERE p.Titre_Besoin LIKE ? OR p.Description_Detaillee LIKE ? OR u.Nom LIKE ? OR u.Prenom LIKE ?
+            ", [$like, $like, $like, $like]);
         }
 
         return $this->render('main/recherche.html.twig', [
-            'q'         => $q,
-            'solutions' => $solutions,
-            'besoins'   => $besoins,
-            'total'     => count($solutions) + count($besoins),
+            'q' => $q, 'solutions' => $solutions, 'besoins' => $besoins, 'total' => count($solutions) + count($besoins)
         ]);
     }
 
@@ -273,27 +196,43 @@ class MainController extends AbstractController
         return $this->render('main/projets.html.twig');
     }
 
-
     #[Route('/debug-fablabs', name: 'app_debug_fablabs')]
-public function debugFablabs(): Response
-{
-    $client = \Symfony\Component\HttpClient\HttpClient::create();
-    
-    try {
-        $response = $client->request('GET', 'https://api.fablabs.io/0/labs.json', [
-            'query'   => ['per_page' => 5],
-            'timeout' => 10,
-        ]);
-        
-        $status = $response->getStatusCode();
-        $data   = $response->toArray(false); // false = pas d'exception sur erreur
-        
-        return new Response(
-            '<pre>' . $status . "\n" . json_encode($data, JSON_PRETTY_PRINT) . '</pre>'
-        );
-        
-    } catch (\Exception $e) {
-        return new Response('<pre>ERREUR : ' . $e->getMessage() . '</pre>');
+    public function debugFablabs(): Response
+    {
+        $client = HttpClient::create();
+        try {
+            $response = $client->request('GET', 'https://api.fablabs.io/0/labs.json', ['query' => ['per_page' => 5], 'timeout' => 10]);
+            return new Response('<pre>' . $response->getStatusCode() . "\n" . json_encode($response->toArray(false), JSON_PRETTY_PRINT) . '</pre>');
+        } catch (\Exception $e) {
+            return new Response('<pre>ERREUR : ' . $e->getMessage() . '</pre>');
+        }
     }
-}
+
+    // 1. Route pour que le Maker postule
+    #[Route('/besoin/postuler/{id}', name: 'app_besoin_postuler')]
+    public function postuler(int $id, EntityManagerInterface $em): Response
+    {
+        $projet = $em->getRepository(Projets::class)->find($id);
+        $user = $this->getUser();
+
+        if (!$user) return $this->redirectToRoute('app_connexion');
+        if (!$projet) return $this->redirectToRoute('app_besoins');
+
+        // On vérifie si déjà postulé
+        $existe = $em->getRepository(Candidatures::class)->findOneBy([
+            'projet' => $projet, 
+            'maker' => $user
+        ]);
+
+        if (!$existe) {
+            $candidature = new Candidatures();
+            $candidature->setProjet($projet);
+            $candidature->setMaker($user);
+            $em->persist($candidature);
+            $em->flush();
+            $this->addFlash('success', 'Aide proposée !');
+        }
+
+        return $this->redirectToRoute('app_besoins');
+    }
 }

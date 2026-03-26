@@ -5,7 +5,6 @@
 {% block body %}
 <style>
     .form-container { max-width: 600px; margin: 4rem auto; }
-    
     .form-card {
         background: white;
         border-radius: 24px;
@@ -13,7 +12,6 @@
         box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
         border: 2px solid #F3F4F6;
     }
-
     .form-main-title {
         font-size: 2.5rem;
         font-weight: 800;
@@ -24,7 +22,6 @@
         text-align: center;
         margin-bottom: 2rem;
     }
-
     .form-control-custom {
         border: 2px solid #E5E7EB;
         border-radius: 12px;
@@ -32,159 +29,97 @@
         transition: all 0.3s ease;
         width: 100%;
     }
-
     .form-control-custom:focus {
-        border-color: var(--secondary-color);
-        box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
         outline: none;
     }
-
     .btn-submit-green {
-        width: 100%;
-        padding: 18px;
-        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-dark) 100%);
+        background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
         color: white;
         border: none;
-        border-radius: 14px;
+        border-radius: 12px;
+        padding: 16px;
         font-weight: 700;
-        text-transform: uppercase;
+        width: 100%;
         transition: all 0.3s ease;
-        box-shadow: 0 10px 20px -10px rgba(16, 185, 129, 0.4);
-        cursor: pointer;
+        margin-top: 1rem;
     }
-
     .btn-submit-green:hover {
-        opacity: 0.9;
-        transform: translateY(-1px);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(74, 175, 80, 0.3);
     }
-
-    .role-card {
-        border: 2px solid #E5E7EB;
-        border-radius: 12px;
-        padding: 12px 16px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .role-card input[type="radio"] { display: none; }
-
-    .role-card:has(input:checked),
-    .role-card.selected {
-        border-color: var(--secondary-color);
-        background: #F0FDF4;
-    }
-
-    .form-errors {
-        background: #FEF2F2;
-        border: 2px solid #FECACA;
-        border-radius: 12px;
-        padding: 14px 18px;
-        color: #DC2626;
-        margin-bottom: 1.5rem;
-    }
-
-    .form-errors ul { margin: 0; padding-left: 1rem; }
+    .form-label { color: #4B5563; margin-bottom: 0.5rem; display: block; }
 </style>
 
-<div class="form-container">
-    <h1 class="form-main-title">Rejoindre la communauté</h1>
+<div class="container">
+    <div class="form-container">
+        <div class="form-card">
+            <h1 class="form-main-title">Rejoindre l'aventure</h1>
+            
+            {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        {{ form_label(form.prenom, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.prenom, {'attr': {'class': 'form-control-custom', 'placeholder': 'Jean'}}) }}
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        {{ form_label(form.nom, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.nom, {'attr': {'class': 'form-control-custom', 'placeholder': 'Dupont'}}) }}
+                    </div>
+                </div>
 
-    <div class="form-card">
+                <div class="mb-4">
+                    {{ form_label(form.email, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.email, {'attr': {'class': 'form-control-custom', 'placeholder': 'email@exemple.fr'}}) }}
+                </div>
 
-        {# Affichage des erreurs globales #}
-        {% if form.vars.errors|length > 0 %}
-            <div class="form-errors">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                <strong>Veuillez corriger les erreurs suivantes :</strong>
-                <ul class="mt-2">
-                    {% for error in form.vars.errors %}
-                        <li>{{ error.message }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
+                <div class="mb-4">
+                    {{ form_label(form.pseudo, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.pseudo, {'attr': {'class': 'form-control-custom', 'placeholder': 'Votre pseudo'}}) }}
+                </div>
 
-        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        {{ form_label(form.telephone, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.telephone, {'attr': {'class': 'form-control-custom', 'placeholder': '06...'}}) }}
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        {{ form_label(form.region, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.region, {'attr': {'class': 'form-control-custom'}}) }}
+                    </div>
+                </div>
 
-        {# Prénom / Nom #}
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <label class="form-label fw-bold">Prénom</label>
-                {{ form_widget(form.prenom, {'attr': {'class': 'form-control form-control-custom', 'placeholder': 'Jean'}}) }}
-                {% if form.prenom.vars.errors|length > 0 %}
-                    <div class="text-danger small mt-1">{{ form_errors(form.prenom) }}</div>
-                {% endif %}
-            </div>
-            <div class="col-md-6">
-                <label class="form-label fw-bold">Nom</label>
-                {{ form_widget(form.nom, {'attr': {'class': 'form-control form-control-custom', 'placeholder': 'Dupont'}}) }}
-                {% if form.nom.vars.errors|length > 0 %}
-                    <div class="text-danger small mt-1">{{ form_errors(form.nom) }}</div>
-                {% endif %}
-            </div>
+                <div class="mb-4">
+                    {{ form_label(form.role, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.role, {'attr': {'class': 'form-select form-control-custom'}}) }}
+                </div>
+
+                <div class="mb-4">
+                    {{ form_label(form.plainPassword.first, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.plainPassword.first, {'attr': {'class': 'form-control-custom', 'placeholder': '••••••••'}}) }}
+                    {{ form_errors(form.plainPassword.first) }}
+                </div>
+                
+                <div class="mb-4">
+                    {{ form_label(form.plainPassword.second, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.plainPassword.second, {'attr': {'class': 'form-control-custom', 'placeholder': '••••••••'}}) }}
+                </div>
+
+                <div class="mb-4 d-flex align-items-center gap-2">
+                    {{ form_widget(form.accepte_contact_public) }}
+                    {{ form_label(form.accepte_contact_public, null, {'label_attr': {'class': 'form-label fw-bold mb-0'}}) }}
+                </div>
+
+                <button type="submit" class="btn-submit-green">
+                    <i class="bi bi-person-plus-fill me-2"></i> S'inscrire
+                </button>
+            {{ form_end(form) }}
+
+            <p class="text-center mt-4 text-muted">
+                Déjà inscrit ? <a href="{{ path('app_connexion') }}" class="text-primary fw-bold">Connectez-vous</a>
+            </p>
         </div>
-
-        {# Email #}
-        <div class="mb-4">
-            <label class="form-label fw-bold">Email</label>
-            {{ form_widget(form.email, {'attr': {'class': 'form-control form-control-custom', 'placeholder': 'votre@email.com'}}) }}
-            {% if form.email.vars.errors|length > 0 %}
-                <div class="text-danger small mt-1">{{ form_errors(form.email) }}</div>
-            {% endif %}
-        </div>
-
-        {# Rôle #}
-        <div class="mb-4">
-            <label class="form-label fw-bold">Je suis…</label>
-            <div class="d-flex flex-column gap-2">
-                {% for choice in form.role %}
-                    <label class="role-card">
-                        {{ form_widget(choice) }}
-                        {% if choice.vars.value == 'Patient' %}
-                            <i class="bi bi-person-heart fs-5" style="color: var(--primary-color)"></i>
-                        {% elseif choice.vars.value == 'Maker' %}
-                            <i class="bi bi-tools fs-5" style="color: var(--secondary-color)"></i>
-                        {% else %}
-                            <i class="bi bi-clipboard2-pulse fs-5" style="color: #F59E0B"></i>
-                        {% endif %}
-                        <span class="fw-semibold">{{ choice.vars.label }}</span>
-                    </label>
-                {% endfor %}
-            </div>
-            {% if form.role.vars.errors|length > 0 %}
-                <div class="text-danger small mt-1">{{ form_errors(form.role) }}</div>
-            {% endif %}
-        </div>
-
-        {# Mot de passe #}
-        <div class="mb-4">
-            <label class="form-label fw-bold">Mot de passe</label>
-            {{ form_widget(form.plainPassword.first, {'attr': {'class': 'form-control form-control-custom', 'placeholder': '••••••••'}}) }}
-            {% if form.plainPassword.first.vars.errors|length > 0 %}
-                <div class="text-danger small mt-1">{{ form_errors(form.plainPassword.first) }}</div>
-            {% endif %}
-        </div>
-        <div class="mb-4">
-            <label class="form-label fw-bold">Confirmer le mot de passe</label>
-            {{ form_widget(form.plainPassword.second, {'attr': {'class': 'form-control form-control-custom', 'placeholder': '••••••••'}}) }}
-            {% if form.plainPassword.second.vars.errors|length > 0 %}
-                <div class="text-danger small mt-1">{{ form_errors(form.plainPassword.second) }}</div>
-            {% endif %}
-        </div>
-
-        <button type="submit" class="btn-submit-green">
-            <i class="bi bi-person-plus-fill me-2"></i> S'inscrire
-        </button>
-
-        {{ form_end(form) }}
-
-        <p class="text-center mt-4 mb-0">
-            Déjà inscrit ? 
-            <a href="{{ path('app_connexion') }}" class="fw-bold" style="color: var(--secondary-color)">Se connecter</a>
-        </p>
     </div>
 </div>
 {% endblock %}
