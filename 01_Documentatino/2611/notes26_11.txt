@@ -1,0 +1,60 @@
+ajouter la barre des menus dans le canva pour accéder aux différentes pages
+
+pas besoin de mettre un fond sur les titres/ pour bien différencier les titres des boutons
+
+
+CARTE:
+
+PAS BESOIN DE POSITIONNER LES EVENEMENTS SUR LA CARTE - seulement adresse en texte
+
+LA CARTE SERT POUR LES FABLABS 
+
+
+
+LES EVENEMENTS NE SONT PAS ITNERNES AUX SITES donc l'inscription ne se fait pas en base de données, car les evenements sont externes au site, ce n'est pas le site qui les gère donc il faut suprimmer la table.
+
+
+filtrer par doit inclure la barre de recherche car c'est aussi un filtre simplement par chaine de caractère plutot que par tag
+
+
+
+Ajouter une description du besoin
+
+
+PAGE 2 --> J'exprime un besoin qui redirige vers un formulaire si pas de solution et pas soignants
+TITRE 
+DESCRIPTIF
+EN FONCTION DES FILTRES
+
+
+pas de barre de suivi car le fablab a pas le temps
+
+
+
+
+se connecter avec des fablab etc
+donc FORUM ?
+
+pouvoir contacter les gens --> envoyer un message via le site directement + informations de contact
+
+LES PERSONNES EXPRIMENT LE besoin avant qu'il y ai des solutions, ce n'est pas l'initiative du fablab
+
+
+
+dans le détails, l'affichage se met en fonction de ce que le proposeur de solution donne comme infos
+
+
+
+
+FORMULAIRE permettant a la personne de remplir la solution avec adresse, num tel, image, fichiers, etc pour créer la solutions
+
+
+
+
+
+REVOIR LE CROQUIS
+
+puis MCD et USERCASE A JOUR
+
+
+18 décembre a 10h BATIMENT MF

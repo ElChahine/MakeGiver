@@ -1,0 +1,39 @@
+security:
+    password_hashers:
+        App\Entity\Utilisateurs:
+            algorithm: bcrypt
+
+    providers:
+        app_user_provider:
+            entity:
+                class: App\Entity\Utilisateurs
+                property: email
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            lazy: true
+            provider: app_user_provider
+
+            form_login:
+                login_path: app_connexion
+                check_path: app_connexion
+                username_parameter: email
+                password_parameter: password
+                default_target_path: app_espace
+                always_use_default_target_path: false
+
+            logout:
+                path: app_deconnexion
+                target: app_connexion
+
+    access_control:
+        - { path: ^/connexion, roles: PUBLIC_ACCESS }
+        - { path: ^/inscription, roles: PUBLIC_ACCESS }
+        - { path: ^/projets, roles: ROLE_USER }
+        - { path: ^/espace, roles: ROLE_USER }
+        - { path: ^/besoins/nouveau, roles: ROLE_USER }
+        - { path: ^/solutions/nouvelle, roles: ROLE_USER }

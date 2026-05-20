@@ -1,0 +1,24 @@
+Synthèse des évolutions du MCD (Projet Makegiver)
+Suite à la revue du premier modèle, nous avons apporté des modifications structurelles et sémantiques majeures pour lever les ambiguïtés et respecter les standards de modélisation.
+
+1. Respect de la norme Merise (Suppression des flux) Nous avons corrigé la syntaxe visuelle en remplaçant toutes les flèches directionnelles (-->) par des traits simples (---). Le MCD représente désormais des associations statiques entre les entités, et non un flux de données, ce qui est conforme à la méthodologie stricte.
+
+2. Complétude des Entités (Ajout des Attributs) Conformément à la demande de détailler les tables, nous avons intégré l'ensemble des attributs pour les 8 entités du système. Chaque entité (Utilisateur, Projet, Solution, etc.) est désormais décrite précisément avec ses identifiants uniques, ses champs descriptifs, ses types (énumérations) et ses dates, rendant le modèle complet.
+
+3. Clarification de la classification (Projet vs Solution) L'association unique "Classifier" qui liait confusément les projets et les solutions à une même catégorie a été scindée en deux pour plus de précision sémantique :
+
+"Défini par" : Relie un Projet (le besoin) à une catégorie de handicap ou de difficulté (ex: Préhension).
+
+"Qualifié par" : Relie une Solution (la réponse technique) à une catégorie technologique (ex: Impression 3D). Cela permet de distinguer clairement l'espace du problème de l'espace de la solution.
+
+4. Désambiguïsation du terme "Ressource" Afin d'éviter la confusion entre les lieux et les contenus, nous avons segmenté les concepts :
+
+Lieu Physique : L'entité LieuRessource devient Lieu (FabLab, Centre de soin) pour l'accueil physique.
+
+Ressource Technique : L'entité Solution représente la ressource intellectuelle. Elle est désormais explicitement liée à une entité Fichier (STL, PDF, Vidéo) qui contient la ressource numérique réelle.
+
+Ressource Temporelle : Ajout de l'entité Evenement pour gérer le calendrier des activités (Webinaires, Ateliers, Rencontres), qui peuvent être liés ou non à un lieu physique.
+
+5. Autonomie des Solutions (Open Source) Nous avons modifié les cardinalités de l'association "Aboutir à" entre Projet et Solution. Auparavant, une solution semblait dépendre obligatoirement d'un projet. Désormais, une Solution peut exister de manière autonome (cardinalité 0,N), permettant aux Makers de publier des ressources existantes (catalogue open source) sans qu'elles soient nécessairement la réponse à une demande spécifique d'un patient.
+
+6. Distinction Projet / Besoin Le terme "Projet" a été conservé mais redéfini non pas comme un simple fil de discussion, mais comme un processus de co-conception complet, qui démarre par l'expression d'un besoin (statut "Ouvert") et évolue vers une collaboration (statut "En cours").

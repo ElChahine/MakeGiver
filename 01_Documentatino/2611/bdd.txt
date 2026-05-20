@@ -1,0 +1,154 @@
+C'est une étape cruciale pour garantir la cohérence entre tes User Stories (le besoin), ton MCD (le schéma visuel) et ta BDD (la structure des données).
+
+Voici la description textuelle de la Base de Données (BDD) mise à jour.
+
+J'ai intégré les nouvelles tables (Événements), les nouveaux champs (Modération, Coup de cœur, Détails techniques) et ajusté les noms pour qu'ils collent parfaitement à ton MCD final.
+
+Structure de la Base de Données (BDD) - Projet Makegiver (Version Finale)
+1. Utilisateurs (Users)
+
+UtilisateurID (Clé Primaire)
+
+Nom, Prénom
+
+Email, MotDePasse_Hash
+
+Rôle (Enum : 'Patient', 'Maker', 'Soignant', 'Admin', 'Partenaire')
+
+Bio_Description, Compétences_Techniques (pour Makers)
+
+Date_Inscription
+
+2. Projets (Besoins)
+
+ProjetID (Clé Primaire)
+
+Titre_Besoin, Description_Detaillee
+
+Statut (Enum : 'Ouvert', 'En cours', 'Terminé')
+
+Date_Creation, Date_MiseAJour
+
+DemandeurID (Clé Étrangère -> Utilisateurs)
+
+SolutionID (Clé Étrangère -> Solutions, Nullable - permet de lier la solution finale au besoin)
+
+3. Solutions (Ressources Techniques)
+
+SolutionID (Clé Primaire)
+
+Titre_Solution, Description_Technique
+
+Licence (ex: 'Open Source', 'CC-BY')
+
+Materiel_Necessaire, Difficulte_Fabrication
+
+Date_Publication
+
+Est_CoupDeCoeur (Booléen - pour la mise en avant par l'Admin)
+
+CreateurID (Clé Étrangère -> Utilisateurs)
+
+4. Fichiers (Fichiers Numériques)
+
+FichierID (Clé Primaire)
+
+Nom_Fichier, Chemin_URL (Lien vers le stockage)
+
+Type (Enum : 'STL', 'PDF', 'Vidéo', 'Image')
+
+Taille_Mo
+
+SolutionID (Clé Étrangère -> Solutions)
+
+5. Lieux (Lieux Physiques)
+
+LieuID (Clé Primaire)
+
+Nom_Lieu
+
+Adresse_Complete, Code_Postal, Ville
+
+Latitude, Longitude (Coordonnées GPS pour la carte)
+
+Type (Enum : 'FabLab', 'CentreSoin', 'Association')
+
+Liste_Equipements (Texte libre ou formaté)
+
+ContactUserID (Clé Étrangère -> Utilisateurs - le gestionnaire du lieu)
+
+6. Evenements (Agenda / Activités)
+
+EvenementID (Clé Primaire)
+
+Titre_Event, Description
+
+Date_Debut, Date_Fin
+
+Type (Enum : 'Webinaire', 'Atelier', 'Rencontre', 'TableRonde')
+
+Lien_Visio_Ou_Salle
+
+OrganisateurID (Clé Étrangère -> Utilisateurs)
+
+LieuID (Clé Étrangère -> Lieux, Nullable - si l'événement se passe dans un lieu physique)
+
+7. Categories (Tables de référence)
+
+CategorieID (Clé Primaire)
+
+Nom_Categorie (ex: 'Préhension', 'Impression 3D')
+
+Type_Categorie (Enum : 'Besoin', 'Technique')
+
+Description
+
+8. Commentaires (Espace d'échange & Avis)
+
+CommentaireID (Clé Primaire)
+
+Contenu_Texte
+
+Note (Integer, Check 0 à 5) - Optionnel
+
+Date_Post
+
+Est_Valide (Booléen - pour la modération par l'Admin)
+
+AuteurID (Clé Étrangère -> Utilisateurs)
+
+ProjetID (Clé Étrangère -> Projets, Nullable)
+
+SolutionID (Clé Étrangère -> Solutions, Nullable)
+
+9. Tables de Liaison (Relations N-M)
+
+MembresProjet (Qui participe au projet ?)
+
+ProjetID (FK -> Projets)
+
+UtilisateurID (FK -> Utilisateurs)
+
+RoleSurProjet (ex: 'Consultant Ergo', 'Maker Principal')
+
+ProjetsCategories (Classification des besoins)
+
+ProjetID (FK -> Projets)
+
+CategorieID (FK -> Categories - Filtre sur Type='Besoin')
+
+SolutionsCategories (Classification complète de la solution)
+
+SolutionID (FK -> Solutions)
+
+CategorieID (FK -> Categories - Peut être Type 'Technique' OU 'Besoin')
+
+Note : Permet le double filtrage visible sur la maquette Catalogue.
+
+InscriptionsEvenements (Gestion des participants)
+
+EvenementID (FK -> Evenements)
+
+UtilisateurID (FK -> Utilisateurs)
+
+Date_Inscription

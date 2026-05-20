@@ -1,0 +1,33 @@
+graph TD
+    %% Entités (Rectangles)
+    E1[Utilisateur]
+    E2[Projet]
+    E3[Solution]
+    E4[LieuRessource]
+    E5[Categorie]
+    E6[Commentaire]
+    E7[Fichier]
+
+    %% Associations (Losanges/Oviodes)
+    A1((Soumettre))
+    A2((Participer à))
+    A3((Aboutir à))
+    A4((Gérer))
+    A5((Classifier))
+    A6((Laisser))
+    A7((Contenir))
+
+    %% Relations avec Flèches (Ce qu'il faut corriger)
+    E1 -- "1,1" --> A1 -- "0,N" --> E2
+    E1 -- "0,N" --> A2 -- "1,N" --> E2
+    E2 -- "0,1" --> A3 -- "0,1" --> E3
+    E1 -- "1,1" --> A4 -- "0,N" --> E4
+    
+    %% Confusion ici : Une seule bulle pour deux entités
+    E5 -- "0,N" --> A5 -- "0,N" --> E2
+    E5 -- "0,N" --> A5 -- "0,N" --> E3
+    
+    E1 -- "1,N" --> A6 -- "0,N" --> E2
+    E1 -- "1,N" --> A6 -- "0,N" --> E3
+    E6 --- A6
+    E3 -- "1,1" --> A7 -- "0,N" --> E7

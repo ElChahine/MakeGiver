@@ -1,0 +1,57 @@
+En tant que personne concernée (patient), je veux m'inscrire sur la plateforme afin de pouvoir décrire mes besoins et trouver de l'aide.[inscrit]
+
+[inscrit]En tant que personne concernée, je veux soumettre une description de ma difficulté (geste quotidien impossible) afin que des makers puissent me proposer des solutions.
+
+En tant que personne concernée, je veux chercher dans une bibliothèque de solutions existantes afin de voir si mon problème a déjà été résolu.
+
+En tant que personne concernée, je veux filtrer les solutions par type de déficit (ex: préhension faible, mobilité des doigts) afin de trouver rapidement ce qui est pertinent pour moi.
+
+
+(En tant que personne concernée, je veux être mis en relation avec un maker et un soignant afin de co-concevoir une aide technique sur mesure.)
+
+
+[inscrit]En tant que personne concernée, je veux voir une carte des FabLabs et centres ressources près de chez moi afin de savoir où je peux aller pour fabriquer un objet.
+
+En tant que personne concernée, je veux suivre l'avancement d'un projet que j'ai initié afin de savoir où en est le prototypage.
+
+[inscrit]En tant que personne concernée, je veux laisser un avis ou un retour d'expérience sur une solution que j'ai testée afin d'aider les autres utilisateurs.
+
+
+En tant que Maker (concepteur), je veux m'inscrire sur la plateforme afin de proposer mes compétences techniques et mon aide.[inscrit]
+
+[inscrit] ? En tant que Maker, je veux consulter la liste des besoins soumis par les utilisateurs afin de trouver des projets qui m'intéressent.
+
+[inscrit] En tant que Maker, je veux répondre à un besoin spécifique afin de démarrer une collaboration avec un utilisateur et un soignant.
+
+[inscrit] En tant que Maker, je veux publier une solution que j'ai créée (fichiers 3D, tutoriel) afin de la rendre accessible à tous en open source.
+
+[inscrit] En tant que Maker, je veux documenter les étapes de fabrication d'un prototype afin que d'autres puissent le reproduire ou l'améliorer.
+
+[inscrit] En tant que Maker, je veux contacter un ergothérapeute sur la plateforme afin de valider la pertinence fonctionnelle d'un prototype.
+
+
+En tant que Soignant (ergothérapeute, kiné), je veux m'inscrire sur la plateforme afin de pouvoir accompagner mes patients dans la recherche de solutions.
+
+En tant que Soignant, je veux soumettre un besoin pour un de mes patients (avec son accord) afin de trouver une aide technique adaptée.
+
+En tant que Soignant, je veux rechercher des solutions par pathologie ou type de geste afin de conseiller mes patients.
+
+En tant que Soignant, je veux participer à un projet de co-conception (en tant que consultant) afin d'apporter mon expertise sur le handicap et l'usage.
+
+En tant que Soignant, je veux valider une aide technique proposée afin de garantir sa sécurité et son adéquation avec le besoin fonctionnel.
+
+En tant qu'Administrateur de la plateforme, je veux valider les inscriptions des nouveaux membres (makers, soignants) afin d'assurer la qualité et le sérieux de la communauté.
+
+
+En tant qu'Administrateur, je veux modérer les besoins et les solutions publiés afin de m'assurer qu'ils respectent l'éthique du projet.
+
+En tant qu'Administrateur, je veux gérer la carte des lieux ressources afin de la maintenir à jour.
+
+En tant qu'Administrateur, je veux pouvoir mettre en avant certaines solutions réussies afin de valoriser le travail de la communauté.
+
+
+En tant que Partenaire (FabLab, Centre de rééducation), je veux inscrire ma structure sur la plateforme afin d'être visible sur la carte des ressources.
+
+En tant que Partenaire, je veux indiquer les équipements dont je dispose (ex: imprimante 3D, découpe laser) afin que les makers sachent ce qu'il est possible de faire chez moi.
+
+En tant que Partenaire (FabLab mobile), je veux gérer un calendrier de rendez-vous afin d'organiser mes déplacements dans les établissements.

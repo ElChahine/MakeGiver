@@ -1,0 +1,167 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Besoins de la Communauté - MakeGiver{% endblock %}
+
+{% block body %}
+<style>
+    .page-header {
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 3px solid #F3F4F6;
+    }
+
+    .page-title {
+        font-size: 2.75rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, var(--dark-color) 0%, var(--primary-color) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .besoin-card {
+        background: white;
+        border-radius: 20px;
+        border: 2px solid #F3F4F6;
+        border-left: 5px solid var(--primary-color) !important;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .besoin-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+    }
+
+    .btn-proposer {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 12px 20px;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        text-align: center;
+        text-decoration: none;
+        display: block;
+    }
+
+    .btn-proposer:hover {
+        background: var(--primary-dark);
+        color: white;
+        transform: scale(1.02);
+    }
+
+    .cta-section {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        border-radius: 30px;
+        padding: 4rem;
+        color: white;
+        text-align: center;
+        margin-top: 5rem;
+    }
+</style>
+
+<div class="container py-5">
+    <div class="page-header d-flex justify-content-between align-items-end">
+        <div>
+            <h1 class="page-title">Besoins de la Communauté</h1>
+            <p class="text-muted fs-5 mb-0">Découvrez les défis lancés par les patients et soignants.</p>
+        </div>
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_nouveau_besoin') }}" class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm">
+                <i class="bi bi-plus-lg me-2"></i>Exprimer un besoin
+            </a>
+        {% endif %}
+    </div>
+
+    {# Grille des besoins #}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 mb-5">
+        {% for besoin in besoins %}
+            <div class="col">
+                <div class="besoin-card card border-0">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="badge rounded-pill {% if besoin.statut == 'Ouvert' %}bg-success{% elseif besoin.statut == 'En cours' %}bg-primary{% else %}bg-secondary{% endif %}">
+                                {{ besoin.statut }}
+                            </span>
+                            <small class="text-muted">
+                                <i class="bi bi-calendar3 me-1"></i>
+                                {{ besoin.dateCreation|date('d/m/Y') }}
+                            </small>
+                        </div>
+
+                        <h3 class="h5 fw-bold mb-3">{{ besoin.titreBesoin }}</h3>
+                        <p class="text-secondary mb-4">{{ besoin.descriptionDetaillee|slice(0, 150) }}...</p>
+
+                        <div class="d-flex align-items-center pt-3 border-top">
+                            <div class="bg-light rounded-circle p-2 me-3">
+                                <i class="bi bi-person-fill text-primary"></i>
+                            </div>
+                            <div>
+                                <p class="mb-0 small text-muted">Demandé par</p>
+                                <p class="mb-0 fw-bold">Utilisateur #{{ besoin.demandeurId }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-transparent border-0 p-4 pt-0 d-flex flex-column gap-2">
+                        
+                        {# 1. SI LE PROJET EST DÉJÀ PRIS EN CHARGE #}
+                        {% if besoin.maker is not null %}
+                            <div class="alert alert-info mb-0 text-center py-2 border-0" style="background: rgba(13, 202, 240, 0.1); color: #087990; border-radius: 12px; font-weight: 600;">
+                                <i class="bi bi-person-check-fill me-2"></i>Pris en charge par {{ besoin.maker.pseudo }}
+                            </div>
+
+                        {# 2. SI C'EST MON PROJET (Je valide un volontaire) #}
+                        {% elseif app.user and app.user.id == besoin.demandeurId %}
+                            <div class="p-3 bg-light rounded-3 shadow-sm border">
+                                <p class="small fw-bold mb-2">
+                                    <i class="bi bi-patch-check-fill text-primary"></i> 
+                                    Volontaires ({{ besoin.candidatures|length }}) :
+                                </p>
+                                <form action="{{ path('app_besoin_valider', {'id': besoin.id}) }}" method="POST" class="d-flex gap-2">
+                                    <select name="maker_id" class="form-select form-select-sm" required>
+                                        <option value="">Choisir un volontaire...</option>
+                                        {% for candidature in besoin.candidatures %}
+                                            <option value="{{ candidature.maker.id }}">{{ candidature.maker.pseudo }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="submit" class="btn btn-sm btn-primary">Valider</button>
+                                </form>
+                            </div>
+
+                        {# 3. SI C'EST LE PROJET D'UN AUTRE (Je propose mon aide / Postule) #}
+                        {% elseif is_granted('ROLE_USER') %}
+                            <a href="{{ path('app_besoin_postuler', {'id': besoin.id}) }}" class="btn-proposer">
+                                <i class="bi bi-hand-thumbs-up-fill me-2"></i>Je propose mon aide
+                            </a>
+                        {% else %}
+                            <a href="{{ path('app_connexion') }}" class="btn-proposer" style="background: #6B7280;">
+                                <i class="bi bi-lock-fill me-2"></i>Connexion requise
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12 text-center py-5">
+                <p class="text-muted">Aucun besoin pour le moment.</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    {# CTA section #}
+    <div class="cta-section">
+        <h3 class="fw-bold mb-3"><i class="bi bi-chat-dots-fill me-2"></i>Vous avez une difficulté au quotidien ?</h3>
+        <p class="fs-5 mb-4 opacity-90">Décrivez votre besoin et les Makers vous proposeront des solutions.</p>
+        {% if is_granted('ROLE_USER') %}
+            <a href="{{ path('app_nouveau_besoin') }}" class="btn btn-light btn-lg rounded-pill px-5 fw-bold text-primary">
+                Déposer mon besoin
+            </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

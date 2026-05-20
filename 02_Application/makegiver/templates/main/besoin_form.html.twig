@@ -1,0 +1,296 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Déposer un Besoin - MakeGiver{% endblock %}
+
+{% block body %}
+<style>
+    .form-container { max-width: 750px; margin: 3rem auto; }
+
+    .page-header {
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 3px solid #F3F4F6;
+    }
+
+    .page-title {
+        font-size: 2.75rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, var(--dark-color) 0%, var(--primary-color) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+        border: 2px solid #F3F4F6;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .form-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    }
+
+    .form-label { font-weight: 700; color: #374151; margin-bottom: 0.5rem; }
+
+    .form-control-custom {
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 14px 18px;
+        transition: all 0.3s ease;
+        width: 100%;
+        font-size: 1rem;
+        background: #FAFAFA;
+    }
+
+    .form-control-custom:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.08);
+        outline: none;
+        background: white;
+    }
+
+    textarea.form-control-custom { resize: vertical; min-height: 130px; }
+
+    .input-icon-wrapper {
+        position: relative;
+    }
+
+    .input-icon-wrapper i {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9CA3AF;
+        font-size: 1.1rem;
+    }
+
+    .input-icon-wrapper .form-control-custom { padding-left: 44px; }
+
+    .section-divider {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin: 2rem 0 1.5rem;
+    }
+
+    .section-divider span {
+        font-weight: 700;
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: #9CA3AF;
+        white-space: nowrap;
+    }
+
+    .section-divider::before, .section-divider::after {
+        content: '';
+        flex: 1;
+        height: 2px;
+        background: #F3F4F6;
+    }
+
+    .urgence-group {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .urgence-btn {
+        flex: 1;
+        min-width: 120px;
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 12px 16px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-align: center;
+        background: white;
+    }
+
+    .urgence-btn input[type="radio"] { display: none; }
+
+    .urgence-btn:has(input:checked) { border-color: var(--primary-color); background: rgba(79,70,229,0.05); }
+    .urgence-btn.low:has(input:checked) { border-color: #10B981; background: rgba(16,185,129,0.05); }
+    .urgence-btn.high:has(input:checked) { border-color: #EF4444; background: rgba(239,68,68,0.05); }
+
+    .urgence-icon { font-size: 1.5rem; margin-bottom: 4px; }
+    .urgence-label { font-weight: 600; font-size: 0.9rem; color: #374151; }
+
+    .btn-submit {
+        width: 100%;
+        padding: 18px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+        color: white;
+        border: none;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px -10px rgba(79, 70, 229, 0.5);
+    }
+
+    .flash-success {
+        background: #F0FDF4;
+        border: 2px solid #BBF7D0;
+        border-radius: 12px;
+        padding: 14px 18px;
+        color: #16A34A;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 600;
+    }
+
+    .tips-box {
+        background: linear-gradient(135deg, rgba(79,70,229,0.05) 0%, rgba(16,185,129,0.05) 100%);
+        border: 2px solid rgba(79,70,229,0.1);
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .tips-box h6 { font-weight: 700; color: var(--primary-color); margin-bottom: 0.75rem; }
+    .tips-box ul { margin: 0; padding-left: 1.2rem; color: #6B7280; font-size: 0.95rem; }
+    .tips-box li { margin-bottom: 4px; }
+</style>
+
+<div class="form-container">
+
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="bi bi-chat-dots-fill me-3" style="font-size: 2rem; -webkit-text-fill-color: var(--primary-color);"></i>
+            Déposer un besoin
+        </h1>
+        <p class="text-muted mb-0">Décrivez votre difficulté, les Makers de la communauté vous proposeront des solutions.</p>
+    </div>
+
+    <div class="tips-box">
+        <h6><i class="bi bi-lightbulb me-2"></i>Conseils pour un bon besoin</h6>
+        <ul>
+            <li>Soyez précis sur la situation (quelle activité, quel handicap, quel contexte)</li>
+            <li>Décrivez ce que vous avez déjà essayé</li>
+            <li>Mentionnez vos contraintes (budget, matériaux, taille...)</li>
+        </ul>
+    </div>
+
+    <div class="form-card">
+
+        {% for message in app.flashes('success') %}
+            <div class="flash-success">
+                <i class="bi bi-check-circle-fill fs-5"></i> {{ message }}
+            </div>
+        {% endfor %}
+
+        <form action="{{ path('app_besoins') }}" method="POST">
+
+            {# Titre #}
+            <div class="mb-4">
+                <label class="form-label">Titre du besoin <span class="text-danger">*</span></label>
+                <div class="input-icon-wrapper">
+                    <i class="bi bi-pencil"></i>
+                    <input 
+                        type="text" 
+                        name="titre" 
+                        class="form-control-custom" 
+                        placeholder="Ex : Aide pour ouvrir les bouteilles d'une seule main"
+                        required
+                    >
+                </div>
+            </div>
+
+            {# Description #}
+            <div class="mb-4">
+                <label class="form-label">Description détaillée <span class="text-danger">*</span></label>
+                <textarea 
+                    name="description" 
+                    class="form-control-custom" 
+                    placeholder="Expliquez votre situation, le contexte, ce que vous avez déjà testé..."
+                    required
+                ></textarea>
+            </div>
+
+            <div class="section-divider"><span>Informations complémentaires</span></div>
+
+            {# Contexte / Lieu d'usage #}
+            <div class="mb-4">
+                <label class="form-label">Contexte d'utilisation</label>
+                <div class="input-icon-wrapper">
+                    <i class="bi bi-geo-alt"></i>
+                    <input 
+                        type="text" 
+                        name="contexte" 
+                        class="form-control-custom" 
+                        placeholder="Ex : À domicile, au travail, en déplacement..."
+                    >
+                </div>
+            </div>
+
+            {# Niveau d'urgence #}
+            <div class="mb-4">
+                <label class="form-label d-block">Niveau d'urgence</label>
+                <div class="urgence-group">
+                    <label class="urgence-btn low">
+                        <input type="radio" name="urgence" value="Faible" checked>
+                        <div class="urgence-icon">🟢</div>
+                        <div class="urgence-label">Faible</div>
+                    </label>
+                    <label class="urgence-btn">
+                        <input type="radio" name="urgence" value="Modéré">
+                        <div class="urgence-icon">🟡</div>
+                        <div class="urgence-label">Modéré</div>
+                    </label>
+                    <label class="urgence-btn high">
+                        <input type="radio" name="urgence" value="Urgent">
+                        <div class="urgence-icon">🔴</div>
+                        <div class="urgence-label">Urgent</div>
+                    </label>
+                </div>
+            </div>
+
+            {# Contraintes budget #}
+            <div class="mb-4">
+                <label class="form-label">Contraintes ou précisions</label>
+                <textarea 
+                    name="contraintes" 
+                    class="form-control-custom" 
+                    style="min-height: 80px;"
+                    placeholder="Budget limité, matériaux souhaités, taille, poids..."
+                ></textarea>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="bi bi-send-fill"></i>
+                Publier mon besoin
+            </button>
+        </form>
+    </div>
+
+    <p class="text-center text-muted mt-4">
+        <i class="bi bi-arrow-left me-1"></i>
+        <a href="{{ path('app_besoins') }}" style="color: var(--primary-color); font-weight: 600;">Retour à la liste des besoins</a>
+    </p>
+</div>
+{% endblock %}

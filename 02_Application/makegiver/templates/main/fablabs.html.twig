@@ -1,0 +1,346 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Annuaire des FabLabs - MakeGiver{% endblock %}
+
+{% block body %}
+<style>
+    .page-header {
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 3px solid #F3F4F6;
+    }
+
+    .page-title {
+        font-size: 2.75rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--dark-color) 0%, var(--secondary-color) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .stats-bar {
+        display: flex;
+        gap: 2rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        color: #6B7280;
+        font-size: 0.95rem;
+    }
+
+    .stat-item i { color: var(--secondary-color); font-size: 1.1rem; }
+    .stat-item strong { color: var(--dark-color); }
+
+    #map {
+        height: 500px;
+        border-radius: 20px;
+        border: 2px solid #E5E7EB;
+        box-shadow: 0 10px 30px -10px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+        z-index: 1;
+    }
+
+    .search-filter-bar {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+        align-items: center;
+    }
+
+    .search-filter-input {
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 12px 18px;
+        font-size: 0.95rem;
+        flex: 1;
+        min-width: 200px;
+        transition: border-color 0.3s;
+        outline: none;
+    }
+
+    .search-filter-input:focus { border-color: var(--secondary-color); }
+
+    .filter-select {
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 12px 18px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: #374151;
+        outline: none;
+        cursor: pointer;
+        background: white;
+        transition: border-color 0.3s;
+    }
+
+    .filter-select:focus { border-color: var(--secondary-color); }
+
+    .fablabs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.25rem;
+    }
+
+    .fablab-card {
+        background: white;
+        border: 2px solid #F3F4F6;
+        border-radius: 18px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .fablab-card::before {
+        content: '';
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.3s ease;
+    }
+
+    .fablab-card:hover {
+        border-color: var(--secondary-color);
+        transform: translateY(-4px);
+        box-shadow: 0 15px 30px -10px rgba(16,185,129,0.2);
+    }
+
+    .fablab-card:hover::before { transform: scaleX(1); }
+
+    .fablab-name {
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: var(--dark-color);
+        margin-bottom: 0.4rem;
+    }
+
+    .fablab-city {
+        color: #6B7280;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        margin-bottom: 0.75rem;
+    }
+
+    .fablab-city i { color: var(--secondary-color); }
+
+    .fablab-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        color: var(--primary-color);
+        font-weight: 600;
+        font-size: 0.85rem;
+        text-decoration: none;
+        transition: gap 0.2s;
+    }
+
+    .fablab-link:hover { gap: 8px; }
+
+    .result-count {
+        font-weight: 600;
+        color: #6B7280;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .error-state {
+        background: #FEF2F2;
+        border: 2px solid #FECACA;
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        color: #DC2626;
+        margin-bottom: 2rem;
+    }
+
+    .leaflet-popup-content-wrapper {
+        border-radius: 14px !important;
+        box-shadow: 0 10px 30px -10px rgba(0,0,0,0.2) !important;
+    }
+
+    .popup-name { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+    .popup-city { color: #6B7280; font-size: 0.85rem; margin-bottom: 8px; }
+    .popup-link {
+        display: inline-flex; align-items: center; gap: 5px;
+        background: var(--secondary-color); color: white;
+        padding: 6px 14px; border-radius: 8px;
+        text-decoration: none; font-size: 0.82rem; font-weight: 600;
+    }
+</style>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<div class="page-header">
+    <h1 class="page-title">
+        <i class="bi bi-geo-alt-fill me-2" style="font-size: 2rem; -webkit-text-fill-color: var(--secondary-color);"></i>
+        Annuaire des FabLabs
+    </h1>
+    <p class="text-muted mb-0">Trouvez un FabLab près de chez vous en France métropolitaine.</p>
+</div>
+
+{% if error %}
+    <div class="error-state">
+        <i class="bi bi-wifi-off fs-2 d-block mb-3"></i>
+        <strong>Impossible de charger les FabLabs</strong>
+        <p class="mb-2 mt-2">{{ error }}</p>
+        <a href="https://www.fablabs.io/labs?country_code=FR" target="_blank" class="btn btn-outline-danger rounded-pill px-4 mt-1">
+            Consulter fablabs.io directement
+        </a>
+    </div>
+{% else %}
+
+<div class="stats-bar">
+    <div class="stat-item">
+        <i class="bi bi-building"></i>
+        <span><strong>{{ total }}</strong> FabLabs référencés</span>
+    </div>
+    <div class="stat-item">
+        <i class="bi bi-pin-map"></i>
+        <span>Source : <strong>fablabs.io</strong></span>
+    </div>
+</div>
+
+<div id="map"></div>
+
+<div class="search-filter-bar">
+    <input type="search" id="search-input" class="search-filter-input" placeholder="🔍 Rechercher par nom ou ville...">
+    <select id="city-filter" class="filter-select">
+        <option value="">Toutes les villes</option>
+        {% set cities = [] %}
+        {% for lab in labs %}
+            {% if lab.city is defined and lab.city and lab.city not in cities %}
+                {% set cities = cities|merge([lab.city]) %}
+            {% endif %}
+        {% endfor %}
+        {% for city in cities|sort %}
+            <option value="{{ city|lower }}">{{ city }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="result-count" id="result-count">{{ total }} FabLab{{ total > 1 ? 's' : '' }} affiché{{ total > 1 ? 's' : '' }}</div>
+
+<div class="fablabs-grid" id="labs-grid">
+    {% for lab in labs %}
+    <div class="fablab-card"
+         data-name="{{ lab.name|lower|e('html_attr') }}"
+         data-city="{{ (lab.city ?? '')|lower|e('html_attr') }}"
+         data-lat="{{ lab.latitude }}"
+         data-lng="{{ lab.longitude }}"
+         data-url="{{ lab.website ?? 'https://www.fablabs.io/labs/' ~ (lab.slug ?? '') }}"
+         onclick="flyToLab({{ lab.latitude }}, {{ lab.longitude }})">
+        <div class="fablab-name">{{ lab.name }}</div>
+        <div class="fablab-city">
+            <i class="bi bi-geo-alt-fill"></i>
+            {{ lab.city ?? 'Ville inconnue' }}{% if lab.county is defined and lab.county %} — {{ lab.county }}{% endif %}
+        </div>
+        <a href="{{ lab.website ?? 'https://www.fablabs.io/labs/' ~ (lab.slug ?? '') }}"
+           target="_blank"
+           class="fablab-link"
+           onclick="event.stopPropagation()">
+            Voir le FabLab <i class="bi bi-arrow-right"></i>
+        </a>
+    </div>
+    {% else %}
+    <div style="grid-column: 1/-1; text-align:center; padding:3rem; color:#9CA3AF;">
+        <i class="bi bi-building-x" style="font-size:2.5rem; display:block; margin-bottom:1rem;"></i>
+        Aucun FabLab trouvé.
+    </div>
+    {% endfor %}
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const map = L.map('map').setView([46.8, 2.3], 6);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    maxZoom: 18
+}).addTo(map);
+
+const greenIcon = L.divIcon({
+    className: '',
+    html: `<div style="width:26px;height:26px;background:linear-gradient(135deg,#10B981,#059669);border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 3px 8px rgba(0,0,0,0.3);"></div>`,
+    iconSize: [26, 26], iconAnchor: [13, 26], popupAnchor: [0, -28]
+});
+
+// Données injectées par Symfony — aucun appel fetch, aucun problème CORS
+const allLabs = {{ labs|json_encode|raw }};
+let markers = [];
+
+function renderMarkers(labs) {
+    markers.forEach(m => map.removeLayer(m));
+    markers = [];
+    labs.forEach(lab => {
+        const lat = parseFloat(lab.latitude);
+        const lng = parseFloat(lab.longitude);
+        if (!lat || !lng) return;
+        const name = lab.name || 'FabLab';
+        const city = lab.city || '';
+        const url  = lab.website || `https://www.fablabs.io/labs/${lab.slug || ''}`;
+        const m = L.marker([lat, lng], { icon: greenIcon }).addTo(map).bindPopup(`
+            <div class="popup-name">${name}</div>
+            <div class="popup-city"><i class="bi bi-geo-alt me-1"></i>${city}</div>
+            <a href="${url}" target="_blank" class="popup-link">
+                <i class="bi bi-box-arrow-up-right"></i> Voir le FabLab
+            </a>
+        `);
+        markers.push(m);
+    });
+}
+
+renderMarkers(allLabs);
+
+function flyToLab(lat, lng) {
+    if (!lat || !lng) return;
+    map.flyTo([lat, lng], 14, { duration: 1 });
+    markers.forEach(m => {
+        const p = m.getLatLng();
+        if (Math.abs(p.lat - lat) < 0.001 && Math.abs(p.lng - lng) < 0.001) m.openPopup();
+    });
+    document.getElementById('map').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function applyFilters() {
+    const q    = document.getElementById('search-input').value.toLowerCase().trim();
+    const city = document.getElementById('city-filter').value;
+    const cards = document.querySelectorAll('.fablab-card');
+    let visible = 0;
+    const filtered = [];
+
+    cards.forEach(card => {
+        const matchQ = !q    || card.dataset.name.includes(q) || card.dataset.city.includes(q);
+        const matchC = !city || card.dataset.city === city;
+        if (matchQ && matchC) {
+            card.style.display = '';
+            visible++;
+            filtered.push({ latitude: card.dataset.lat, longitude: card.dataset.lng, name: card.querySelector('.fablab-name').textContent, city: card.dataset.city, website: card.dataset.url, slug: '' });
+        } else {
+            card.style.display = 'none';
+        }
+    });
+
+    document.getElementById('result-count').textContent = `${visible} FabLab${visible > 1 ? 's' : ''} affiché${visible > 1 ? 's' : ''}`;
+    renderMarkers(filtered);
+}
+
+document.getElementById('search-input').addEventListener('input', applyFilters);
+document.getElementById('city-filter').addEventListener('change', applyFilters);
+</script>
+
+{% endif %}
+{% endblock %}

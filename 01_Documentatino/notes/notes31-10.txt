@@ -1,0 +1,64 @@
+📅 Compte-rendu et Plan d'Action - Projet Makegiver
+1. Organisation et Logistique
+Mise en place du OneDrive :
+
+Créer un dossier partagé central.
+
+Structure :
+
+Dossier "ISKANDER / CHAHINE" (Travail interne).
+
+Dossier partagé avec Mme Cavallar et Mme Karami.
+
+Gestion des documents :
+
+Y déposer toutes les ressources et suivre l'avancée du projet.
+
+Rédiger et déposer les rapports et comptes-rendus de chaque réunion.
+
+Règle d'or : Mettre les livrables sur le OneDrive en avance (avant les réunions) pour permettre à Mme Karami de les consulter et de préparer ses retours.
+
+2. Corrections Techniques (MCD & Concepts)
+Les axes d'amélioration suivants doivent être intégrés immédiatement au Modèle Conceptuel de Données (MCD) :
+
+Standardisation : Supprimer les flèches directionnelles dans le MCD (utiliser des traits simples pour les associations).
+
+Clarification Sémantique :
+
+Projet vs Thread : Revoir le nommage. "Projet" doit être clair (ce n'est pas juste une discussion, c'est un besoin qui évolue).
+
+Catégorisation : Distinguer la classification du Projet (ex: type de handicap) de la classification de la Solution (ex: technique utilisée).
+
+Concept de "Solution" :
+
+Une solution peut être une ressource autonome (existante, technologie, open source) ajoutée directement sur le site.
+
+Elle n'est pas nécessairement une réponse à un projet spécifique (revoir la cardinalité).
+
+Format : Une solution est composée de ressources numériques (lien, fichier, image, texte, tableau Excel, vidéo).
+
+Distinction "Lieu" vs "Ressource" :
+
+Bien séparer le Lieu Ressource (Physique : FabLab, Centre) de la Ressource Technique (Solution numérique).
+
+Nouveauté : Calendrier des Activités :
+
+Intégrer les "Potentiels" (Webinaires, rencontres, journées, tables rondes) sous forme d'une entité Activité/Événement liée à un calendrier.
+
+3. Travaux à réaliser pour la prochaine fois
+UML Use Case : Finaliser le diagramme des cas d'utilisation (format UML propre) pour qu'il soit cohérent avec les nouvelles fonctionnalités.
+
+MCD complet : Mettre à jour le schéma avec les nouvelles entités et ajouter tous les attributs dans les tables.
+
+Maquettes (Croquis) :
+
+Imaginer et dessiner les pages web (doit être propre et "bien fait").
+
+Détailler le contenu visible sur chaque page.
+
+Vues conditionnelles : Prévoir l'affichage pour un visiteur non connecté vs un utilisateur connecté.
+
+📍 Prochaine Réunion
+Date : Mercredi 12 novembre (12/11)
+
+Heure : 13h30

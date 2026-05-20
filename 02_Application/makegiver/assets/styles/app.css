@@ -1,0 +1,168 @@
+/* Fichier CSS supplémentaire pour personnalisations globales */
+
+/* Scrollbar personnalisée */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #F3F4F6;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #4F46E5 0%, #818CF8 100%);
+    border-radius: 6px;
+    border: 2px solid #F3F4F6;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #4338CA 0%, #6366F1 100%);
+}
+
+/* Sélection de texte */
+::selection {
+    background-color: rgba(79, 70, 229, 0.2);
+    color: #1F2937;
+}
+
+/* Animations globales */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.9;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Classes utilitaires */
+.animate-fade-in {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.animate-pulse {
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.animate-slide-in {
+    animation: slideInRight 0.5s ease-out;
+}
+
+/* Focus visible pour accessibilité */
+*:focus-visible {
+    outline: 3px solid rgba(79, 70, 229, 0.5);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+/* Amélioration de l'accessibilité pour les boutons */
+button, a {
+    position: relative;
+}
+
+button::after, a.btn::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+button:focus-visible::after, a.btn:focus-visible::after {
+    opacity: 1;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+}
+
+/* Amélioration des zones cliquables pour l'accessibilité */
+.nav-link-custom,
+.btn-custom {
+    min-height: 44px; /* Taille minimale recommandée pour l'accessibilité */
+    min-width: 44px;
+}
+
+/* Transitions fluides pour les changements de thème */
+* {
+    transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+}
+
+/* Suppression des animations pour les utilisateurs qui préfèrent le mouvement réduit */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Amélioration du contraste pour la lisibilité */
+@media (prefers-contrast: high) {
+    :root {
+        --primary-color: #3730A3;
+        --secondary-color: #047857;
+        --dark-color: #000000;
+    }
+}
+
+/* Mode sombre (préparation pour future implémentation) */
+@media (prefers-color-scheme: dark) {
+    /* Les styles du mode sombre peuvent être ajoutés ici si nécessaire */
+}
+
+/* Responsive utilities */
+@media (max-width: 576px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    header,
+    footer,
+    .btn,
+    .search-container {
+        display: none !important;
+    }
+    
+    body {
+        color: #000;
+        background: #fff;
+    }
+    
+    main {
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+}

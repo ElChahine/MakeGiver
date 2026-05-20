@@ -1,0 +1,42 @@
+@startuml
+skinparam actorStyle awesome
+left to right direction
+
+actor "Visiteur" as Guest
+actor "Membre Connecté" as Member
+actor "Patient / Soignant" as Requester
+actor "Maker" as Maker
+actor "Administrateur" as Admin
+
+package "Plateforme Je Demain" {
+    usecase "Consulter l'Annuaire des FabLabs" as UC_Directory
+    usecase "Consulter l'Agenda (Événements)" as UC_Agenda
+    usecase "Rechercher par Créateur ou Catégorie" as UC_Search
+    
+    usecase "S'inscrire avec choix de Consentement" as UC_Register
+    usecase "Signaler un contenu" as UC_Report
+    usecase "Laisser un Commentaire (avis textuel)" as UC_Comment
+    
+    usecase "Soumettre un Besoin (+ Fichiers)" as UC_Submit
+    usecase "Prendre en charge un Besoin (Projet)" as UC_Accept
+    usecase "Gérer 'Mes Projets' (Accès restreint)" as UC_PrivateProject
+    usecase "Publier une Solution (Co-autorat)" as UC_Publish
+}
+
+Guest --> UC_Directory
+Guest --> UC_Agenda
+Guest --> UC_Search
+
+Member --> UC_Report
+Member --> UC_Comment
+Member --> UC_Register
+
+Requester --> UC_Submit
+Requester --> UC_PrivateProject
+
+Maker --> UC_Accept
+Maker --> UC_Publish
+Maker --> UC_PrivateProject
+
+Admin --> UC_Report : "Traiter les signalements"
+@enduml

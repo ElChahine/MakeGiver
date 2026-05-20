@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Agenda - Je Demain{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <span class="badge bg-primary-soft text-primary px-3 py-2 rounded-pill mb-3">ÉVÉNEMENTS À VENIR</span>
+        <h1 class="display-4 fw-bold">Notre Agenda</h1>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        {% for event in evenements %}
+            <div class="col-md-10 col-lg-8">
+                <div class="card border-0 shadow-sm" style="border-radius: 20px; transition: transform 0.3s ease;">
+                    <div class="row g-0">
+                        {# Bloc Date #}
+                        <div class="col-sm-3 bg-primary text-white d-flex flex-column align-items-center justify-content-center p-4" style="border-radius: 20px 0 0 20px;">
+                            <span class="h1 fw-bold mb-0">{{ event.Date_Evenement|date('d') }}</span>
+                            <span class="text-uppercase">{{ event.Date_Evenement|date('M') }}</span>
+                        </div>
+
+                        {# Détails #}
+                        <div class="col-sm-9 p-4">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h3 class="fw-bold h4">{{ event.Titre_Evenement }}</h3>
+                                <span class="badge bg-success-soft text-success">Webinaire</span>
+                            </div>
+                            
+                            <p class="text-muted mt-2">{{ event.Description }}</p>
+                            
+                            <hr class="my-3 opacity-10">
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="small text-secondary">
+                                    <i class="bi bi-clock me-1"></i> {{ event.Date_Evenement|date('H:i') }}
+                                </span>
+                                {# On affiche le nom du lieu (ex: Wenov ou En ligne) #}
+                                <span class="small text-secondary">
+                                    <i class="bi bi-geo-alt me-1"></i> {{ event.Nom_Lieu|default('En ligne') }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            {# Si la BDD est vide #}
+            <div class="col-12 text-center py-5">
+                <i class="bi bi-calendar-x display-1 text-light mb-3"></i>
+                <p class="text-muted">Aucun événement n'est prévu pour le moment.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,77 @@
+Sur toutes les pages (Le style général)
+
+Ajoute un menu : En haut, sous ton logo "JE DEMAIN", ajoute une barre avec quatre mots cliquables : Accueil, Catalogue, Mes Projets, Agenda.
+
+
+
+Nettoie les titres : Regarde tes titres comme "Comment fonctionne makegiver ?" ou "Espace Projet". S'ils ont un rectangle de couleur derrière, enlève la couleur. Le titre doit être juste du texte noir ou coloré, mais sans boîte autour.
+
+
+
+Supprime les enveloppes : Si tu as des petites icônes de message ou de messagerie dans le bandeau du haut, efface-les. On n'utilise plus de messagerie interne.
+
+
+Page 3 : Carte & Agenda
+
+Nettoie la carte : Sur ta carte de France , garde uniquement les points qui correspondent à des FabLabs physiques.
+
+
+Change la liste de droite :
+
+
+Supprime tous les boutons "M'inscrire". On ne s'inscrit plus sur ton site.
+
+À la place, écris un petit texte sous chaque événement : "Lien vers le site de l'organisateur".
+
+
+Enlève les points RDV de la carte : Les événements  ne doivent plus avoir de petits logos sur la carte, ils restent juste dans la liste de droite.
+
+Page 4 : Catalogue
+
+Déplace la recherche : Prends ta barre "Votre recherche..." qui est tout en haut et mets-la à l'intérieur de ta colonne de gauche, juste au-dessus de "Filtrer par".
+
+
+
+Ajoute un gros bouton : En bas de tes filtres (sous Low-Tech), crée un bouton bien visible qui dit : "Je ne trouve pas ? J'exprime un besoin".
+
+Page 5 : Espace Projet
+
+Supprime la barre de couleur : Enlève toute la barre avec les cases rouges, orange et vertes et le pourcentage "60%". Garde juste écrit en texte : "Statut : En cours de prototype".
+
+
+
+Supprime le Chat : Efface toute la grande boîte verte où Léo et Théo se parlent.
+
+
+
+Change la zone Équipe : À côté des noms de Léo (Maker) et Dr Martin (Ergo), ajoute leurs emails et numéros de téléphone en texte. Les gens doivent s'appeler directement.
+
+Page 6 : Détail d'une solution
+
+Enlève la zone de discussion : Comme pour la page d'avant, supprime la zone où Jean et Théo laissent des commentaires.
+
+
+
+Ajoute les contacts du Maker : Sous "Par Fablab Lille", ajoute trois lignes :
+
+📍 Adresse du FabLab.
+
+📧 Email de contact.
+
+📞 Numéro de téléphone.
+
+
+Pas de bouton message : Vérifie bien qu'il n'y a aucun bouton pour envoyer un message. On veut juste voir les infos pour appeler.
+
+Nouvelle Page à créer : Formulaire de Solution
+Crée une page toute simple avec des cases vides pour qu'un Maker puisse créer sa fiche :
+
+Une case : Titre de la solution.
+
+Une case : Description du problème et de la solution.
+
+Des cases : Ton téléphone et Ton adresse.
+
+Un bouton : "Ajouter des photos".
+
+Un bouton : "Ajouter les fichiers (STL, PDF)".

@@ -1,0 +1,125 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - MakeGiver{% endblock %}
+
+{% block body %}
+<style>
+    .form-container { max-width: 600px; margin: 4rem auto; }
+    .form-card {
+        background: white;
+        border-radius: 24px;
+        padding: 3rem;
+        box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.1);
+        border: 2px solid #F3F4F6;
+    }
+    .form-main-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    .form-control-custom {
+        border: 2px solid #E5E7EB;
+        border-radius: 12px;
+        padding: 14px 18px;
+        transition: all 0.3s ease;
+        width: 100%;
+    }
+    .form-control-custom:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.1);
+        outline: none;
+    }
+    .btn-submit-green {
+        background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 16px;
+        font-weight: 700;
+        width: 100%;
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+    .btn-submit-green:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 15px rgba(74, 175, 80, 0.3);
+    }
+    .form-label { color: #4B5563; margin-bottom: 0.5rem; display: block; }
+</style>
+
+<div class="container">
+    <div class="form-container">
+        <div class="form-card">
+            <h1 class="form-main-title">Rejoindre l'aventure</h1>
+            
+            {{ form_start(form) }}
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        {{ form_label(form.prenom, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.prenom, {'attr': {'class': 'form-control-custom', 'placeholder': 'Jean'}}) }}
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        {{ form_label(form.nom, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.nom, {'attr': {'class': 'form-control-custom', 'placeholder': 'Dupont'}}) }}
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    {{ form_label(form.email, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.email, {'attr': {'class': 'form-control-custom', 'placeholder': 'email@exemple.fr'}}) }}
+                </div>
+
+                <div class="mb-4">
+                    {{ form_label(form.pseudo, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.pseudo, {'attr': {'class': 'form-control-custom', 'placeholder': 'Votre pseudo'}}) }}
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6 mb-4">
+                        {{ form_label(form.telephone, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.telephone, {'attr': {'class': 'form-control-custom', 'placeholder': '06...'}}) }}
+                    </div>
+                    <div class="col-md-6 mb-4">
+                        {{ form_label(form.region, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                        {{ form_widget(form.region, {'attr': {'class': 'form-control-custom'}}) }}
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    {{ form_label(form.role, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.role, {'attr': {'class': 'form-select form-control-custom'}}) }}
+                </div>
+
+                <div class="mb-4">
+                    {{ form_label(form.plainPassword.first, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.plainPassword.first, {'attr': {'class': 'form-control-custom', 'placeholder': '••••••••'}}) }}
+                    {{ form_errors(form.plainPassword.first) }}
+                </div>
+                
+                <div class="mb-4">
+                    {{ form_label(form.plainPassword.second, null, {'label_attr': {'class': 'form-label fw-bold'}}) }}
+                    {{ form_widget(form.plainPassword.second, {'attr': {'class': 'form-control-custom', 'placeholder': '••••••••'}}) }}
+                </div>
+
+                <div class="mb-4 d-flex align-items-center gap-2">
+                    {{ form_widget(form.accepte_contact_public) }}
+                    {{ form_label(form.accepte_contact_public, null, {'label_attr': {'class': 'form-label fw-bold mb-0'}}) }}
+                </div>
+
+                <button type="submit" class="btn-submit-green">
+                    <i class="bi bi-person-plus-fill me-2"></i> S'inscrire
+                </button>
+            {{ form_end(form) }}
+
+            <p class="text-center mt-4 text-muted">
+                Déjà inscrit ? <a href="{{ path('app_connexion') }}" class="text-primary fw-bold">Connectez-vous</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
