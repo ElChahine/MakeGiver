@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Proposer un événement - Je Demain{% endblock %}
+
+{% block body %}
+<div class="container" style="max-width: 680px;">
+    <a href="{{ path('app_agenda') }}" class="text-decoration-none text-muted fw-semibold d-inline-block mb-3">
+        <i class="bi bi-arrow-left me-1"></i> Retour à l'agenda
+    </a>
+
+    <div class="text-center mb-4">
+        <span class="badge bg-primary-soft text-primary px-3 py-2 rounded-pill mb-3">NOUVEL ÉVÉNEMENT</span>
+        <h1 class="display-6 fw-bold">Proposer un événement</h1>
+        <p class="text-muted">Le lien vers l'organisateur est obligatoire afin de vérifier la légitimité de l'événement.</p>
+    </div>
+
+    {% if erreurs is not empty %}
+        <div class="alert alert-danger" style="border-radius: 14px;">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+            <strong>Veuillez corriger les points suivants :</strong>
+            <ul class="mb-0 mt-2">
+                {% for erreur in erreurs %}
+                    <li>{{ erreur }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <div class="card border-0 shadow-sm" style="border-radius: 20px;">
+        <div class="card-body p-4 p-md-5">
+            <form method="POST" action="{{ path('app_nouvel_evenement') }}">
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Titre de l'événement *</label>
+                    <input type="text" name="titre" class="form-control" maxlength="100"
+                           value="{{ valeurs.titre }}" placeholder="Ex : Atelier impression 3D" required>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Description</label>
+                    <textarea name="description" class="form-control" rows="4"
+                              placeholder="Décrivez l'événement...">{{ valeurs.description }}</textarea>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Date et heure de début *</label>
+                        <input type="datetime-local" name="date_debut" class="form-control"
+                               value="{{ valeurs.date_debut }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Date et heure de fin</label>
+                        <input type="datetime-local" name="date_fin" class="form-control"
+                               value="{{ valeurs.date_fin }}">
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Type</label>
+                    <select name="type" class="form-select">
+                        {% set types = ['Webinaire', 'Atelier', 'Conférence', 'Rencontre', 'Formation'] %}
+                        {% for t in types %}
+                            <option value="{{ t }}" {{ valeurs.type == t ? 'selected' : '' }}>{{ t }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Lien vers l'organisateur *</label>
+                    <input type="url" name="lien" class="form-control"
+                           value="{{ valeurs.lien }}" placeholder="https://..." required>
+                    <div class="form-text">Une URL valide commençant par http:// ou https:// est obligatoire.</div>
+                </div>
+
+                <div class="d-flex gap-2 justify-content-end">
+                    <a href="{{ path('app_agenda') }}" class="btn btn-light">Annuler</a>
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-calendar-plus me-1"></i> Publier l'événement
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

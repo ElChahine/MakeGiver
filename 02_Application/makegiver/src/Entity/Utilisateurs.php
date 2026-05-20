@@ -33,7 +33,6 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'MotDePasse_Hash', length: 255, nullable: true)]
     private ?string $motDePasseHash = null;
 
-    // CHANGEMENT : 'Patient' devient 'Membre'
     #[ORM\Column(name: 'Role', type: 'string', columnDefinition: "ENUM('Membre','Maker','Soignant','Admin')", nullable: true)]
     private ?string $role = null;
 
@@ -43,7 +42,6 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(name: 'Competences_Techniques', type: 'text', nullable: true)]
     private ?string $competencesTechniques = null;
 
-    // AJOUT : La Région
     #[ORM\Column(name: 'Region', length: 100, nullable: true)]
     private ?string $region = null;
 
@@ -69,7 +67,7 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
             'Admin'    => ['ROLE_ADMIN', 'ROLE_USER'],
             'Maker'    => ['ROLE_MAKER', 'ROLE_USER'],
             'Soignant' => ['ROLE_SOIGNANT', 'ROLE_USER'],
-            'Membre'   => ['ROLE_MEMBRE', 'ROLE_USER'], // Mise à jour ici
+            'Membre'   => ['ROLE_MEMBRE', 'ROLE_USER'],
             default    => ['ROLE_USER'],
         };
     }
@@ -106,4 +104,8 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDateInscription(\DateTimeInterface $date): static { $this->dateInscription = $date; return $this; }
     public function getPseudo(): ?string { return $this->pseudo; }
     public function setPseudo(?string $pseudo): static { $this->pseudo = $pseudo; return $this; }
+    public function getNomComplet(): string
+    {
+        return trim(($this->prenom ?? '') . ' ' . ($this->nom ?? ''));
+    }
 }

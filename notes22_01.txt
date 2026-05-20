@@ -1,41 +1,54 @@
-Est-il nécessaire ou non de garder le système de notes ? Pas réellement nécessaire, cela peut descendre les différentes personnes qui travaillent gratuitement et les solutions ne sont pas nécessairement représentatifs.
-Laisser en revanche le système de commentaire.
-Retirer le système de notes.
+Voici quelques pistes de réflexion pour t'aider à évaluer la cohérence et l'optimalité de ton code.
+1. Clarté et lisibilité : Sous-requêtes vs CTE (WITH)
+
+Regarde la structure générale de tes requêtes (par exemple, la première ou la troisième). Tu y utilises massivement des sous-requêtes imbriquées dans la clause FROM :
+
+SELECT ... FROM ( SELECT ... ) AS t WHERE …
 
 
-La personne ayant demandé la solution doit être co-auteur de la page de solution ?
+Maintenant, jette un œil aux questions 3, 4, 8, 10, 11 et 12 du corrigé du TP5, ainsi qu'à la page 2 de ton cours.  
 
---> Un besoin doit être pris en charge par une personne souhaitant le réaliser.
-
-Ajouter une page d'annuaire des différents Fablabs
-
-
-SYSTEME DE RECHERCHE (si je cherche FablabLib, je veux seulement celui ou il l'a créé par, pas seulement le corps de texte)
-
-
-PAGE Projet -> seulement pour le créateur, le co-créateur (demandant)
+    Ta réflexion : Quelle structure le professeur a-t-il systématiquement privilégiée dans le corrigé pour isoler les calculs intermédiaires (comme les classements ou les statistiques)? Qu'est-ce que cela changerait sur la lisibilité et la maintenance de ton code si tu appliquais cette méthode, notamment sur tes requêtes les plus longues ?
 
 
 
-Mes projets restreints, le reste n'est pas nécessaire
+2. Le piège des "colonnes fantômes" dans le GROUP BY
+
+Analysons de près ta troisième requête (celle qui calcule total_yellow par compétition) :
+
+SELECT competition_name, player_name, total_yellow
+FROM (
+    SELECT c.name AS competition_name, a.player_name, 
+           SUM(a.yellow_cards) AS total_yellow,
+           DENSE_RANK() OVER(PARTITION BY a.competition_id ORDER BY SUM(a.yellow_cards) DESC) AS rang
+    FROM public.appearances a
+    JOIN public.competitions c ON a.competition_id = c.competition_id
+    ...
+    GROUP BY c.name, a.competition_id, a.player_id, a.player_name
+) …
 
 
-à l'inscription, demande s'il souhaite que les informations soit publiés (email, téléphone, alias(--> Pseudo))
-
-Modérateur ou pas// si pas, système de signalement pour signaler à gestataire du site web.
-
-
-Trouver une base de données des différents fablab de France  --> Séparation des fablabs et de l'agenda (en deux pages) puis ajout des potentiels commerces adhératnts
-
-
-Enlever la connexion entre un utilisateur et un lieu physique. (directeur de fablab n'est pas nécessairement inscrit sur le site)
-Enlever la connexion entre un utilisateur et un evenement (c'est externe)
-Ajouter une connexion entre le projet/besoin et les fichiers numériques (pas seulement pour les ressources et solutions)
+Ta réflexion : Regarde bien les éléments présents dans le GROUP BY. Si le but est d'obtenir le total de cartons par joueur et par compétition, as-tu strictement besoin d'inclure à la fois c.name et a.competition_id ? De même, pourquoi avoir mis a.player_id dans le GROUP BY alors qu'il n'est pas sélectionné dans le SELECT interne ? Est-ce une "ligne/colonne inutile" ou y a-t-il une raison technique liée à l'unicité des joueurs (deux joueurs ayant le même nom) ?
 
 
 
-FORMULAIRE POUR UN BESOIN + FORMULAIRE POUR UN PROjet
+3. Cohérence des fonctions de fenêtrage : ROW_NUMBER() vs DENSE_RANK()
+
+Dans ton TP, tu utilises exclusivement DENSE_RANK() pour trouver les "Top X" (requêtes 1, 3, 4, 6, 9, 12, 14, 15).
+Dans le corrigé du TP5, pour des logiques de "Top X" similaires (Questions 3, 4, 8, 11, 12), le corrigé utilise systématiquement :
+
+ROW_NUMBER() OVER (PARTITION BY ... ORDER BY ... DESC) AS rang
 
 
+ROW_NUMBER() OVER (PARTITION BY ... ORDER BY ... DESC) AS rang
 
-BDD fictives pour implémenter les prochaines fonctionnalités du liste
+Ta réflexion : En te basant sur les définitions des pages 3, 5 et 6 de ton cours , quelle est la différence fondamentale de comportement entre ROW_NUMBER() , RANK() et DENSE_RANK()  en cas d'égalités strictes (ex: deux joueurs avec exactement le même nombre de buts ou de cartons) ? Est-ce que l'utilisation de DENSE_RANK() dans ton TP est une erreur, ou est-ce un choix métier différent mais tout aussi cohérent ?
+
+
+4. L'utilisation des fonctions d'agrégation avancées (ROLLUP / CUBE)
+
+Ta requête avec ROLLUP (sur la progression des cartons en 2023) utilise une astuce intéressante :
+
+SELECT CASE WHEN GROUPING(c.name) = 1 THEN 'TOTAL' ELSE c.name END AS championnat, …
+
+Si tu compares cela avec la Question 6 du corrigé du TP5 (qui utilise CUBE ) ou les exemples des pages 8 et 9 de ton cours:  Ta réflexion : Ton utilisation de ROLLUP  et de GROUPING est-elle parfaitement en phase avec ce qui est attendu pour générer des lignes de sous-totaux et de totaux globaux ? (Indice : regarde si le corrigé s'embête à renommer les valeurs NULL ou s'il les laisse telles quelles).

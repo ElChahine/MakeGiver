@@ -276,11 +276,13 @@
                     <i class="bi bi-calendar3"></i>
                     Publié le {{ solution.Date_Publication|date('d/m/Y') }}
                 </span>
-                <a href="mailto:admin@makegiver.fr?subject=Signalement de la solution : {{ solution.Titre_Solution }}&body=Bonjour, je souhaite signaler cette solution pour la raison suivante : " 
-                   class="badge-custom" 
-                   style="background: rgba(239,68,68,0.1); color: #DC2626; text-decoration: none; margin-left: auto;">
-                    <i class="bi bi-flag-fill"></i> Signaler
-                </a>
+                {% if is_granted('ROLE_USER') %}
+                    <a href="{{ path('app_signaler', {'type': 'Solution', 'id': solution.SolutionID}) }}"
+                       class="badge-custom"
+                       style="background: rgba(239,68,68,0.1); color: #DC2626; text-decoration: none; margin-left: auto;">
+                        <i class="bi bi-flag-fill"></i> Signaler
+                    </a>
+                {% endif %}
             </div>
 
             {# Auteur #}
@@ -289,7 +291,13 @@
                     {{ solution.Prenom|slice(0,1) }}{{ solution.Nom|slice(0,1) }}
                 </div>
                 <div>
-                    <div class="author-name">{{ solution.Prenom }} {{ solution.Nom }}</div>
+                    <div class="author-name">
+                        {% if solution.CreateurID %}
+                            <a href="{{ path('app_membre_profil', {id: solution.CreateurID}) }}" class="text-decoration-none">{{ solution.Prenom }} {{ solution.Nom }}</a>
+                        {% else %}
+                            {{ solution.Prenom }} {{ solution.Nom }}
+                        {% endif %}
+                    </div>
                     <div class="author-role">
                         <i class="bi bi-person-badge"></i> {{ solution.Role }}
                     </div>
@@ -404,15 +412,48 @@
 
             {% if commentaires|length > 0 %}
                 {% for c in commentaires %}
-                    <div class="comment-item">
+                    <div class="comment-item" {% if c.Est_Valide == 0 %}style="opacity: 0.6; border-style: dashed;"{% endif %}>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="comment-author">
                                 <i class="bi bi-person-circle me-1" style="color: var(--primary-color)"></i>
-                                {{ c.Prenom }} {{ c.Nom }}
+                                {% if c.AuteurID %}
+                                    <a href="{{ path('app_membre_profil', {id: c.AuteurID}) }}" class="text-decoration-none">{{ c.Prenom }} {{ c.Nom }}</a>
+                                {% else %}
+                                    {{ c.Prenom }} {{ c.Nom }}
+                                {% endif %}
+                                {% if c.Est_Valide == 0 %}
+                                    <span class="badge bg-warning text-dark ms-1">Masqué</span>
+                                {% endif %}
                             </span>
                             <span class="comment-date">{{ c.Date_Post|date('d/m/Y à H:i') }}</span>
                         </div>
                         <p class="comment-text mb-0">{{ c.Contenu_Texte }}</p>
+
+                        {% if is_granted('ROLE_USER') and not (app.user and app.user.id == c.AuteurID) %}
+                            <a href="{{ path('app_signaler', {type: 'Commentaire', id: c.CommentaireID}) }}"
+                               class="text-muted small text-decoration-none d-inline-block mt-2">
+                                <i class="bi bi-flag me-1"></i> Signaler
+                            </a>
+                        {% endif %}
+
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <div class="d-flex gap-2 mt-2">
+                                <form method="POST" action="{{ path('app_admin_commentaire_basculer', {id: c.CommentaireID}) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('moderer_commentaire_' ~ c.CommentaireID) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">
+                                        <i class="bi bi-eye{{ c.Est_Valide == 1 ? '-slash' : '' }} me-1"></i>
+                                        {{ c.Est_Valide == 1 ? 'Masquer' : 'Afficher' }}
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ path('app_admin_commentaire_supprimer', {id: c.CommentaireID}) }}"
+                                      onsubmit="return confirm('Supprimer définitivement ce commentaire ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('moderer_commentaire_' ~ c.CommentaireID) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash me-1"></i> Supprimer
+                                    </button>
+                                </form>
+                            </div>
+                        {% endif %}
                     </div>
                 {% endfor %}
             {% else %}
@@ -424,8 +465,9 @@
 
             {% if is_granted('ROLE_USER') %}
                 <hr class="my-3">
-                <form action="#" method="POST">
-                    <textarea name="commentaire" class="form-control" rows="3" placeholder="Laisser un commentaire..." style="border-radius: 12px; border: 2px solid #E5E7EB;"></textarea>
+                <form action="{{ path('app_solution_commenter', {id: solution.SolutionID}) }}" method="POST">
+                    <input type="hidden" name="_token" value="{{ csrf_token('commenter_' ~ solution.SolutionID) }}">
+                    <textarea name="commentaire" class="form-control" rows="3" placeholder="Laisser un commentaire..." style="border-radius: 12px; border: 2px solid #E5E7EB;" required></textarea>
                     <button type="submit" class="btn-action btn-primary-action mt-2">
                         <i class="bi bi-send-fill"></i> Envoyer
                     </button>

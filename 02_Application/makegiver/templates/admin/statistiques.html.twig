@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statistiques Admin - MakeGiver{% endblock %}
+
+{% block body %}
+<style>
+    .stats-container { max-width: 1100px; margin: 3rem auto; }
+    .stat-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+        border: 1px solid #F3F4F6;
+        text-align: center;
+        transition: transform 0.3s ease;
+    }
+    .stat-card:hover { transform: translateY(-5px); }
+    .stat-number { font-size: 3rem; font-weight: 800; color: var(--secondary-color); display: block; }
+    .stat-label { color: #6B7280; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; }
+    
+    .top-list { background: white; border-radius: 20px; padding: 2rem; border: 1px solid #F3F4F6; }
+    .top-item { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; border-bottom: 1px solid #F3F4F6; }
+    .top-item:last-child { border-bottom: none; }
+    .rank-badge { width: 30px; height: 30px; background: #EEF2FF; color: #4F46E5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; }
+</style>
+
+<div class="container stats-container">
+    <h1 class="mb-5 fw-bold">Tableau de bord de gestion</h1>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <span class="stat-number">{{ nbMembres }}</span>
+                <span class="stat-label">Utilisateurs inscrits</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <span class="stat-number">{{ nbBesoins }}</span>
+                <span class="stat-label">Besoins publiés</span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <span class="stat-number">{{ nbSolutions }}</span>
+                <span class="stat-label">Solutions partagées</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="top-list">
+                <h4 class="fw-bold mb-4"><i class="bi bi-trophy me-2 text-warning"></i> Membres les plus actifs</h4>
+                {% for user in topContributeurs %}
+                    <div class="top-item">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rank-badge">{{ loop.index }}</div>
+                            <div>
+                                <div class="fw-bold">{{ user.Pseudo ?? user.Prenom ~ ' ' ~ user.Nom }}</div>
+                                <div class="text-muted small">Contributeur MakeGiver</div>
+                            </div>
+                        </div>
+                        <div class="badge bg-light text-dark rounded-pill px-3 py-2 border">
+                            {{ user.nb_projets }} projet{{ user.nb_projets > 1 ? 's' : '' }}
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="text-muted">Aucune activité enregistrée pour le moment.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

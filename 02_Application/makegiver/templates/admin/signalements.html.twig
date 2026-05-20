@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Signalements - Administration{% endblock %}
+
+{% block body %}
+<div class="container" style="max-width: 1100px; margin: 2rem auto;">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h1 class="fw-bold mb-1">Signalements reçus</h1>
+            <p class="text-muted mb-0">Contenus signalés par la communauté, du plus récent au plus ancien.</p>
+        </div>
+        <a href="{{ path('app_admin_stats') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i> Tableau de bord
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm" style="border-radius: 18px;">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4">Date</th>
+                            <th>Type</th>
+                            <th>Contenu</th>
+                            <th>Raison</th>
+                            <th>Signalé par</th>
+                            <th class="text-end pe-4">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s in signalements %}
+                            <tr>
+                                <td class="ps-4 text-nowrap small text-muted">
+                                    {{ s.Date_Signalement|date('d/m/Y H:i') }}
+                                </td>
+                                <td>
+                                    <span class="badge bg-secondary-subtle text-secondary-emphasis">{{ s.TypeContenu|default('—') }}</span>
+                                </td>
+                                <td>
+                                    {% if s.TypeContenu == 'Solution' and s.ContenuID %}
+                                        <a href="{{ path('app_solution_detail', {id: s.ContenuID}) }}" target="_blank" rel="noopener">
+                                            #{{ s.ContenuID }} <i class="bi bi-box-arrow-up-right small"></i>
+                                        </a>
+                                    {% elseif s.TypeContenu == 'Profil' and s.ContenuID %}
+                                        <a href="{{ path('app_membre_profil', {id: s.ContenuID}) }}" target="_blank" rel="noopener">
+                                            #{{ s.ContenuID }} <i class="bi bi-box-arrow-up-right small"></i>
+                                        </a>
+                                    {% elseif s.TypeContenu == 'Besoin' %}
+                                        <a href="{{ path('app_besoins') }}" target="_blank" rel="noopener">#{{ s.ContenuID|default('—') }}</a>
+                                    {% elseif s.TypeContenu == 'Evenement' %}
+                                        <a href="{{ path('app_agenda') }}" target="_blank" rel="noopener">#{{ s.ContenuID|default('—') }}</a>
+                                    {% else %}
+                                        #{{ s.ContenuID|default('—') }}
+                                    {% endif %}
+                                </td>
+                                <td style="max-width: 320px;">
+                                    <span class="text-break">{{ s.Raison|default('—') }}</span>
+                                </td>
+                                <td class="small">
+                                    {% if s.pseudo or s.nom %}
+                                        <strong>{{ s.pseudo|default(s.prenom ~ ' ' ~ s.nom) }}</strong><br>
+                                        <span class="text-muted">{{ s.email }}</span>
+                                    {% else %}
+                                        <span class="text-muted">Anonyme</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end pe-4">
+                                    <form method="POST"
+                                          action="{{ path('app_admin_signalement_supprimer', {id: s.SignalementID}) }}"
+                                          onsubmit="return confirm('Marquer ce signalement comme traité et le supprimer ?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('supprimer_signalement_' ~ s.SignalementID) }}">
+                                        <button type="submit" class="btn btn-sm btn-outline-success">
+                                            <i class="bi bi-check2-circle me-1"></i> Traiter
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-5">
+                                    <i class="bi bi-inbox display-6 d-block mb-2"></i>
+                                    Aucun signalement pour le moment.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

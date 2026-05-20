@@ -25,6 +25,7 @@ security:
                 password_parameter: password
                 default_target_path: app_espace
                 always_use_default_target_path: false
+                enable_csrf: true
 
             logout:
                 path: app_deconnexion
