@@ -458,6 +458,13 @@
                             FabLabs
                         </a>
                     </li>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <li class="nav-item">
+                            <a class="nav-link fw-bold text-danger" href="{{ path('app_admin_stats') }}">
+                            <i class="bi bi-shield-lock me-1"></i> Administration
+                            </a>
+                        </li>
+                    {% endif %}
                 </ul>
             </nav>
         </header>

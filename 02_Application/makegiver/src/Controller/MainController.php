@@ -12,9 +12,17 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class MainController extends AbstractController
 {
+    private $httpClient;
+
+    public function __construct(HttpClientInterface $httpClient)
+    {
+        $this->httpClient = $httpClient;
+    }
+
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
@@ -156,12 +164,6 @@ class MainController extends AbstractController
         return $this->render('main/agenda.html.twig', ['evenements' => $evenements]);
     }
 
-    #[Route('/fablabs', name: 'app_fablabs')]
-    public function fablabs(): Response
-    {
-        return $this->render('main/fablabs.html.twig', ['labs' => [], 'error' => null, 'total' => 0]);
-    }
-
     #[Route('/recherche', name: 'app_recherche', methods: ['GET'])]
     public function recherche(Connection $connection, Request $request): Response
     {
@@ -196,13 +198,64 @@ class MainController extends AbstractController
         return $this->render('main/projets.html.twig');
     }
 
+    #[Route('/fablabs', name: 'app_fablabs')]
+    public function fablabs(): Response
+    {
+        $labs = [];
+        $error = null;
+
+        try {
+            // Utilisation de l'URL stable www.fablabs.io/labs.json
+            $response = $this->httpClient->request('GET', 'https://www.fablabs.io/labs.json', [
+                'verify_peer' => false,
+                'timeout' => 20,
+                'headers' => [
+                    'User-Agent' => 'MakeGiver Project (Student)',
+                ],
+            ]);
+
+            if ($response->getStatusCode() === 200) {
+                $allLabs = $response->toArray();
+                
+                // Filtrage : France uniquement + Coordonnées obligatoires
+                $labs = array_filter($allLabs, function($lab) {
+                    return isset($lab['country_code']) && 
+                           strtoupper($lab['country_code']) === 'FR' &&
+                           !empty($lab['latitude']) && 
+                           !empty($lab['longitude']);
+                });
+                
+                // Réindexation du tableau pour Twig
+                $labs = array_values($labs);
+            } else {
+                $error = "L'API FabLabs.io ne répond pas correctement (Code " . $response->getStatusCode() . ")";
+            }
+        } catch (\Exception $e) {
+            $error = "Erreur de connexion : " . $e->getMessage();
+        }
+
+        return $this->render('main/fablabs.html.twig', [
+            'labs'  => $labs,
+            'error' => $error,
+            'total' => count($labs)
+        ]);
+    }
+
     #[Route('/debug-fablabs', name: 'app_debug_fablabs')]
     public function debugFablabs(): Response
     {
         $client = HttpClient::create();
         try {
-            $response = $client->request('GET', 'https://api.fablabs.io/0/labs.json', ['query' => ['per_page' => 5], 'timeout' => 10]);
-            return new Response('<pre>' . $response->getStatusCode() . "\n" . json_encode($response->toArray(false), JSON_PRETTY_PRINT) . '</pre>');
+            $response = $client->request('GET', 'https://www.fablabs.io/labs.json', [
+                'verify_peer' => false,
+                'headers' => ['User-Agent' => 'MakeGiver Debug'],
+            ]);
+
+            $statusCode = $response->getStatusCode();
+            $content = $response->toArray(false);
+            $preview = array_slice($content, 0, 2); // Juste les 2 premiers pour vérifier
+
+            return new Response('<pre>Statut : ' . $statusCode . "\n" . json_encode($preview, JSON_PRETTY_PRINT) . '</pre>');
         } catch (\Exception $e) {
             return new Response('<pre>ERREUR : ' . $e->getMessage() . '</pre>');
         }

@@ -106,4 +106,8 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDateInscription(\DateTimeInterface $date): static { $this->dateInscription = $date; return $this; }
     public function getPseudo(): ?string { return $this->pseudo; }
     public function setPseudo(?string $pseudo): static { $this->pseudo = $pseudo; return $this; }
+    public function getNomComplet(): string
+    {
+        return trim(($this->prenom ?? '') . ' ' . ($this->nom ?? ''));
+    }
 }

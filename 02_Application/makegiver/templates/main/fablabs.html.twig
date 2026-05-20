@@ -103,7 +103,8 @@
     .fablab-card::before {
         content: '';
         position: absolute;
-        top: 0; left: 0; right: 0;
+        top: 0;
+        left: 0; right: 0;
         height: 4px;
         background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));
         transform: scaleX(0);
@@ -236,19 +237,22 @@
 
 <div class="fablabs-grid" id="labs-grid">
     {% for lab in labs %}
+    {# CORRECTION TWIG : Si website est vide "", on passe bien à l'URL de secours #}
+    {% set labUrl = (lab.website is defined and lab.website is not empty) ? lab.website : 'https://www.fablabs.io/labs/' ~ (lab.slug ?? '') %}
     <div class="fablab-card"
          data-name="{{ lab.name|lower|e('html_attr') }}"
          data-city="{{ (lab.city ?? '')|lower|e('html_attr') }}"
          data-lat="{{ lab.latitude }}"
          data-lng="{{ lab.longitude }}"
-         data-url="{{ lab.website ?? 'https://www.fablabs.io/labs/' ~ (lab.slug ?? '') }}"
+         data-url="{{ labUrl }}"
+         data-slug="{{ lab.slug ?? '' }}"
          onclick="flyToLab({{ lab.latitude }}, {{ lab.longitude }})">
         <div class="fablab-name">{{ lab.name }}</div>
         <div class="fablab-city">
             <i class="bi bi-geo-alt-fill"></i>
             {{ lab.city ?? 'Ville inconnue' }}{% if lab.county is defined and lab.county %} — {{ lab.county }}{% endif %}
         </div>
-        <a href="{{ lab.website ?? 'https://www.fablabs.io/labs/' ~ (lab.slug ?? '') }}"
+        <a href="{{ labUrl }}"
            target="_blank"
            class="fablab-link"
            onclick="event.stopPropagation()">
@@ -266,7 +270,6 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const map = L.map('map').setView([46.8, 2.3], 6);
-
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     maxZoom: 18
@@ -278,7 +281,6 @@ const greenIcon = L.divIcon({
     iconSize: [26, 26], iconAnchor: [13, 26], popupAnchor: [0, -28]
 });
 
-// Données injectées par Symfony — aucun appel fetch, aucun problème CORS
 const allLabs = {{ labs|json_encode|raw }};
 let markers = [];
 
@@ -291,7 +293,10 @@ function renderMarkers(labs) {
         if (!lat || !lng) return;
         const name = lab.name || 'FabLab';
         const city = lab.city || '';
-        const url  = lab.website || `https://www.fablabs.io/labs/${lab.slug || ''}`;
+        
+        // CORRECTION JS : Sécurité renforcée si le champ arrive vide à l'état brut
+        const url  = (lab.website && lab.website.trim() !== "") ? lab.website : `https://www.fablabs.io/labs/${lab.slug || ''}`;
+        
         const m = L.marker([lat, lng], { icon: greenIcon }).addTo(map).bindPopup(`
             <div class="popup-name">${name}</div>
             <div class="popup-city"><i class="bi bi-geo-alt me-1"></i>${city}</div>
@@ -328,7 +333,16 @@ function applyFilters() {
         if (matchQ && matchC) {
             card.style.display = '';
             visible++;
-            filtered.push({ latitude: card.dataset.lat, longitude: card.dataset.lng, name: card.querySelector('.fablab-name').textContent, city: card.dataset.city, website: card.dataset.url, slug: '' });
+            
+            // CORRECTION JS : On ne perd plus le slug lors de la reconstruction dynamique du tableau filtré
+            filtered.push({ 
+                latitude: card.dataset.lat, 
+                longitude: card.dataset.lng, 
+                name: card.querySelector('.fablab-name').textContent, 
+                city: card.dataset.city, 
+                website: card.dataset.url, 
+                slug: card.dataset.slug || '' 
+            });
         } else {
             card.style.display = 'none';
         }
