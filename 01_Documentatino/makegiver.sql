@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : localhost:3306
--- Généré le : jeu. 05 fév. 2026 à 19:58
+-- Généré le : mer. 20 mai 2026 à 13:04
 -- Version du serveur : 8.0.30
 -- Version de PHP : 8.1.10
 
@@ -20,6 +20,28 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `makegiver`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `candidatures`
+--
+
+CREATE TABLE `candidatures` (
+  `id` int NOT NULL,
+  `projet_id` int NOT NULL,
+  `maker_id` int NOT NULL,
+  `date_candidature` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `candidatures`
+--
+
+INSERT INTO `candidatures` (`id`, `projet_id`, `maker_id`, `date_candidature`) VALUES
+(1, 3, 4, '2026-03-13 14:03:50'),
+(2, 2, 4, '2026-03-13 14:54:24'),
+(3, 2, 14, '2026-03-27 10:23:36');
 
 -- --------------------------------------------------------
 
@@ -163,15 +185,18 @@ CREATE TABLE `projets` (
   `Statut` enum('Ouvert','En cours','Terminé') DEFAULT 'Ouvert',
   `Date_Creation` datetime DEFAULT CURRENT_TIMESTAMP,
   `Date_MiseAJour` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
-  `DemandeurID` int DEFAULT NULL
+  `DemandeurID` int DEFAULT NULL,
+  `maker_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `projets`
 --
 
-INSERT INTO `projets` (`ProjetID`, `Titre_Besoin`, `Description_Detaillee`, `Statut`, `Date_Creation`, `Date_MiseAJour`, `DemandeurID`) VALUES
-(1, 'Adaptateur Manette PS5', 'Cherche un système pour utiliser la manette d une seule main.', 'En cours', '2026-02-05 20:54:41', NULL, 1);
+INSERT INTO `projets` (`ProjetID`, `Titre_Besoin`, `Description_Detaillee`, `Statut`, `Date_Creation`, `Date_MiseAJour`, `DemandeurID`, `maker_id`) VALUES
+(1, 'Adaptateur Manette PS5', 'Cherche un système pour utiliser la manette d une seule main.', 'En cours', '2026-02-05 20:54:41', NULL, 1, NULL),
+(2, 'Aide pour prothèse de main', 'Je cherche quelqu\'un pour imprimer en 3D un support de cuillère adapté.', 'Ouvert', '2026-03-13 13:36:37', NULL, 1, NULL),
+(3, 'Aide pour prothèse de main', 'Je cherche quelqu\'un pour imprimer en 3D un support de cuillère adapté.', 'En cours', '2026-03-13 13:41:06', '2026-03-13 14:04:14', 7, 4);
 
 -- --------------------------------------------------------
 
@@ -212,7 +237,8 @@ CREATE TABLE `solutions` (
 --
 
 INSERT INTO `solutions` (`SolutionID`, `Titre_Solution`, `Description_Technique`, `Licence`, `Materiel_Necessaire`, `Difficulte_Fabrication`, `Date_Publication`, `Est_CoupDeCoeur`, `CreateurID`, `CoAuteurID`) VALUES
-(1, 'Adaptateur Clé Ergonomique', 'Extension de clé en PLA imprimée en 3D.', 'Creative Commons BY-NC', 'Filament PLA, Vis M3', 'Facile', '2026-02-05 20:54:42', 1, 2, 1);
+(1, 'Adaptateur Clé Ergonomique', 'Extension de clé en PLA imprimée en 3D.', 'Creative Commons BY-NC', 'Filament PLA, Vis M3', 'Facile', '2026-02-05 20:54:42', 1, 2, 1),
+(2, 'Support de carte à jouer', 'Un support imprimable en 3D pour tenir ses cartes à jouer à une main, idéal pour les personnes ayant des problèmes de préhension.', 'Creative Commons BY-SA', 'Filament PLA', 'Très Facile', '2026-03-13 12:08:09', 0, 2, NULL);
 
 -- --------------------------------------------------------
 
@@ -227,25 +253,44 @@ CREATE TABLE `utilisateurs` (
   `Email` varchar(100) DEFAULT NULL,
   `Telephone` varchar(20) DEFAULT NULL,
   `MotDePasse_Hash` varchar(255) DEFAULT NULL,
-  `Role` enum('Patient','Maker','Soignant','Admin') DEFAULT NULL,
+  `Role` enum('Membre','Maker','Soignant','Admin') DEFAULT NULL,
   `Bio_Description` text,
   `Competences_Techniques` text,
   `Consentement_Public` tinyint(1) DEFAULT '0',
-  `Date_Inscription` datetime DEFAULT CURRENT_TIMESTAMP
+  `Date_Inscription` datetime DEFAULT CURRENT_TIMESTAMP,
+  `pseudo` varchar(255) DEFAULT NULL,
+  `Region` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `utilisateurs`
 --
 
-INSERT INTO `utilisateurs` (`UtilisateurID`, `Nom`, `Prenom`, `Email`, `Telephone`, `MotDePasse_Hash`, `Role`, `Bio_Description`, `Competences_Techniques`, `Consentement_Public`, `Date_Inscription`) VALUES
-(1, 'Dupont', 'Jean', 'jean.dupont@email.com', '0601020304', NULL, 'Patient', 'Patient expert cherchant des aides pour la préhension.', NULL, 1, '2026-02-05 20:54:41'),
-(2, 'Martin', 'Alice', 'alice.maker@email.com', '0708091011', NULL, 'Maker', 'Ingénieure passionnée par la modélisation 3D et le low-tech.', NULL, 1, '2026-02-05 20:54:41'),
-(3, 'Leroy', 'Marc', 'marc.soignant@email.com', '0611223344', NULL, 'Soignant', 'Ergothérapeute au centre de rééducation de Lille.', NULL, 0, '2026-02-05 20:54:41');
+INSERT INTO `utilisateurs` (`UtilisateurID`, `Nom`, `Prenom`, `Email`, `Telephone`, `MotDePasse_Hash`, `Role`, `Bio_Description`, `Competences_Techniques`, `Consentement_Public`, `Date_Inscription`, `pseudo`, `Region`) VALUES
+(1, 'Dupont', 'Jean', 'jean.dupont@email.com', '0601020304', NULL, 'Membre', 'Patient expert cherchant des aides pour la préhension.', NULL, 1, '2026-02-05 20:54:41', NULL, NULL),
+(2, 'Martin', 'Alice', 'alice.maker@email.com', '0708091011', NULL, 'Maker', 'Ingénieure passionnée par la modélisation 3D et le low-tech.', NULL, 1, '2026-02-05 20:54:41', NULL, NULL),
+(3, 'Leroy', 'Marc', 'marc.soignant@email.com', '0611223344', NULL, 'Soignant', 'Ergothérapeute au centre de rééducation de Lille.', NULL, 0, '2026-02-05 20:54:41', NULL, NULL),
+(4, 'test', 'test', 'test@test.fr', NULL, '$2y$13$cS0HJlmzWHoD5..1acrAaumBeOxdJ1xZDd3kXbavqxeLaj0v5RCve', 'Maker', NULL, NULL, 1, '2026-03-13 11:47:02', 'TestMaker', NULL),
+(7, 'Bricolo', 'Marc', 'maker@test.fr', NULL, '$2y$13$N.TA26j80GWMqm0ZJ3lN3e8Dw8cTY2baDzLzM291t9XbV8rfC13JW', 'Membre', NULL, NULL, 1, '2026-03-13 12:40:04', 'MarcBricolo', NULL),
+(8, 'Dupond', 'Jean', 'dupontjean@test.fr', NULL, '$2y$13$VERV5wMC5wtiPAFqd7Lope4RGPLlweFSAo8ja5jUHDm9Z682ApDfC', 'Maker', NULL, NULL, 1, '2026-03-13 12:46:06', 'JeanMaker', NULL),
+(9, 'Bensafia', 'Chahine', 'chahine.bensafia@gmail.com', NULL, '$2y$13$r44pJuJxWoIYWH5SItK.iuuRL3qSCsb/X5.p1fq/NZoCpivYqQHzi', 'Membre', NULL, NULL, 0, '2026-03-13 13:44:31', 'Chahine', NULL),
+(10, 'Maison', 'Jean', 'jeanMaison@test.fr', NULL, '$2y$13$qN6HaJNh4jiPiiJDQKsjf.1G6NgKQLJ7k/l9VlZAick9zMOQpbDCi', 'Membre', NULL, NULL, 0, '2026-03-13 14:02:16', 'JeanMembre', NULL),
+(11, 'iofeosjf', 'foiejsofj', 'testinscription@gmail.com', '065486586', '$2y$13$uZM8lXOgR8LLs1qQBwyBSevtFD4Pe6g5iyrHW2nPtSt9IBo5/x8C6', 'Membre', NULL, NULL, 1, '2026-03-27 03:31:07', 'testinscription', 'Hauts-de-France'),
+(13, 'Systeme', 'Admin', 'admin@makegiver.fr', '0616262626', '$2y$13$.ZQcuWlSYu5Dx0rWNuC4nOutPGIHljPGc3VPEhL13uoxVuMQsGvfm', 'Admin', NULL, NULL, 0, '2026-03-27 07:38:14', 'AdminSytem', 'Hauts-de-France'),
+(14, 'membre', 'test', 'testmembre@makegiver.fr', '06252525255', '$2y$13$hPPbjeBnWAoqn53CEPaSmeg2seyj3XZbowp/.NmD4H5JBlZJf0Itq', 'Membre', NULL, NULL, 1, '2026-03-27 09:22:09', 'testmembre', 'Normandie'),
+(15, 'Bensafai', 'Chahine', 'chahinebensafia@gmail.com', '0616265765', '$2y$13$hAAZdQhfTGHodofzhktPuuexXn3k/m7l9S2vrmOr0Kl/8zYAAY4vO', 'Membre', NULL, NULL, 1, '2026-05-14 13:49:14', 'Chahine', 'Hauts-de-France');
 
 --
 -- Index pour les tables déchargées
 --
+
+--
+-- Index pour la table `candidatures`
+--
+ALTER TABLE `candidatures`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK_PROJET` (`projet_id`),
+  ADD KEY `FK_MAKER` (`maker_id`);
 
 --
 -- Index pour la table `categories`
@@ -323,6 +368,12 @@ ALTER TABLE `utilisateurs`
 --
 
 --
+-- AUTO_INCREMENT pour la table `candidatures`
+--
+ALTER TABLE `candidatures`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT pour la table `categories`
 --
 ALTER TABLE `categories`
@@ -356,7 +407,7 @@ ALTER TABLE `lieux`
 -- AUTO_INCREMENT pour la table `projets`
 --
 ALTER TABLE `projets`
-  MODIFY `ProjetID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `ProjetID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT pour la table `signalements`
@@ -368,17 +419,24 @@ ALTER TABLE `signalements`
 -- AUTO_INCREMENT pour la table `solutions`
 --
 ALTER TABLE `solutions`
-  MODIFY `SolutionID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `SolutionID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateurs`
 --
 ALTER TABLE `utilisateurs`
-  MODIFY `UtilisateurID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `UtilisateurID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Contraintes pour les tables déchargées
 --
+
+--
+-- Contraintes pour la table `candidatures`
+--
+ALTER TABLE `candidatures`
+  ADD CONSTRAINT `FK_MAKER` FOREIGN KEY (`maker_id`) REFERENCES `utilisateurs` (`UtilisateurID`) ON DELETE CASCADE,
+  ADD CONSTRAINT `FK_PROJET` FOREIGN KEY (`projet_id`) REFERENCES `projets` (`ProjetID`) ON DELETE CASCADE;
 
 --
 -- Contraintes pour la table `commentaires`
