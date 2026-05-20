@@ -7,6 +7,13 @@
     <div class="text-center mb-5">
         <span class="badge bg-primary-soft text-primary px-3 py-2 rounded-pill mb-3">ÉVÉNEMENTS À VENIR</span>
         <h1 class="display-4 fw-bold">Notre Agenda</h1>
+        {% if is_granted('ROLE_USER') %}
+            <div class="mt-3">
+                <a href="{{ path('app_nouvel_evenement') }}" class="btn btn-primary">
+                    <i class="bi bi-calendar-plus me-1"></i> Proposer un événement
+                </a>
+            </div>
+        {% endif %}
     </div>
 
     <div class="row g-4 justify-content-center">
@@ -16,29 +23,53 @@
                     <div class="row g-0">
                         {# Bloc Date #}
                         <div class="col-sm-3 bg-primary text-white d-flex flex-column align-items-center justify-content-center p-4" style="border-radius: 20px 0 0 20px;">
-                            <span class="h1 fw-bold mb-0">{{ event.Date_Evenement|date('d') }}</span>
-                            <span class="text-uppercase">{{ event.Date_Evenement|date('M') }}</span>
+                            <span class="h1 fw-bold mb-0">{{ event.Date_Debut|date('d') }}</span>
+                            <span class="text-uppercase">{{ event.Date_Debut|date('M') }}</span>
                         </div>
 
                         {# Détails #}
                         <div class="col-sm-9 p-4">
                             <div class="d-flex justify-content-between align-items-start">
-                                <h3 class="fw-bold h4">{{ event.Titre_Evenement }}</h3>
-                                <span class="badge bg-success-soft text-success">Webinaire</span>
+                                <h3 class="fw-bold h4">{{ event.Titre_Event }}</h3>
+                                <span class="badge bg-success-soft text-success">{{ event.Type|default('Événement') }}</span>
                             </div>
                             
                             <p class="text-muted mt-2">{{ event.Description }}</p>
-                            
+
+                            {% if is_granted('ROLE_USER') %}
+                                <a href="{{ path('app_signaler', {type: 'Evenement', id: event.EvenementID}) }}"
+                                   class="text-muted small text-decoration-none d-inline-block">
+                                    <i class="bi bi-flag me-1"></i> Signaler
+                                </a>
+                            {% endif %}
+
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <form method="POST"
+                                      action="{{ path('app_admin_evenement_supprimer', {id: event.EvenementID}) }}"
+                                      onsubmit="return confirm('Supprimer définitivement cet événement ?');"
+                                      class="mt-2">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('supprimer_evenement_' ~ event.EvenementID) }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">
+                                        <i class="bi bi-trash me-1"></i> Supprimer (admin)
+                                    </button>
+                                </form>
+                            {% endif %}
+
                             <hr class="my-3 opacity-10">
                             
                             <div class="d-flex justify-content-between align-items-center">
                                 <span class="small text-secondary">
-                                    <i class="bi bi-clock me-1"></i> {{ event.Date_Evenement|date('H:i') }}
+                                    <i class="bi bi-clock me-1"></i> {{ event.Date_Debut|date('H:i') }}{% if event.Date_Fin %} - {{ event.Date_Fin|date('H:i') }}{% endif %}
                                 </span>
-                                {# On affiche le nom du lieu (ex: Wenov ou En ligne) #}
-                                <span class="small text-secondary">
-                                    <i class="bi bi-geo-alt me-1"></i> {{ event.Nom_Lieu|default('En ligne') }}
-                                </span>
+                                {% if event.Lien_Externe_Organisateur %}
+                                    <a href="{{ event.Lien_Externe_Organisateur }}" target="_blank" rel="noopener noreferrer" class="small text-secondary text-decoration-none">
+                                        <i class="bi bi-link-45deg me-1"></i> Site de l'organisateur
+                                    </a>
+                                {% else %}
+                                    <span class="small text-secondary">
+                                        <i class="bi bi-geo-alt me-1"></i> En ligne
+                                    </span>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

@@ -464,12 +464,26 @@
                             <i class="bi bi-shield-lock me-1"></i> Administration
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-bold text-danger" href="{{ path('app_admin_signalements') }}">
+                            <i class="bi bi-flag me-1"></i> Signalements
+                            </a>
+                        </li>
                     {% endif %}
                 </ul>
             </nav>
         </header>
 
         <main class="container my-5">
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert" style="border-radius: 12px;">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fermer"></button>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+
             {% block body %}{% endblock %}
         </main>
 
@@ -482,9 +496,9 @@
                             Informations
                         </h5>
                         <ul class="list-unstyled">
-                            <li class="mb-2"><a href="#"><i class="bi bi-chevron-right me-1"></i>Mentions Légales</a></li>
-                            <li class="mb-2"><a href="#"><i class="bi bi-chevron-right me-1"></i>Politique de confidentialité</a></li>
-                            <li class="mb-2"><a href="#"><i class="bi bi-chevron-right me-1"></i>CGU</a></li>
+                            <li class="mb-2"><a href="{{ path('app_mentions_legales') }}"><i class="bi bi-chevron-right me-1"></i>Mentions Légales</a></li>
+                            <li class="mb-2"><a href="{{ path('app_confidentialite') }}"><i class="bi bi-chevron-right me-1"></i>Politique de confidentialité</a></li>
+                            <li class="mb-2"><a href="{{ path('app_cgu') }}"><i class="bi bi-chevron-right me-1"></i>CGU</a></li>
                         </ul>
                     </div>
                     <div class="col-md-4">

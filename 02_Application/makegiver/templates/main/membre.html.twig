@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ membre.pseudo|default('Membre') }} - Je Demain{% endblock %}
+
+{% block body %}
+<div class="container" style="max-width: 760px;">
+
+    {% set estPublic = membre.Consentement_Public == 1 %}
+
+    <div class="card border-0 shadow-sm" style="border-radius: 24px; overflow: hidden;">
+        <div style="height: 8px; background: linear-gradient(90deg, var(--secondary-color), var(--primary-color));"></div>
+        <div class="card-body p-4 p-md-5">
+
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+                <div style="width: 80px; height: 80px; border-radius: 50%; flex-shrink: 0;
+                            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+                            display: flex; align-items: center; justify-content: center;
+                            color: white; font-size: 2rem; font-weight: 800;">
+                    {{ (membre.pseudo|default(membre.Prenom))|slice(0,1)|upper }}
+                </div>
+                <div>
+                    <h1 class="fw-bold mb-1">{{ membre.pseudo|default('Membre #' ~ membre.UtilisateurID) }}</h1>
+                    {# Le statut/rôle est visible pour tous #}
+                    <span class="badge rounded-pill px-3 py-2"
+                          style="background: rgba(79,70,229,0.1); color: var(--primary-color);">
+                        <i class="bi bi-person-badge me-1"></i> {{ membre.Role|default('Membre') }}
+                    </span>
+                    {% if membre.Date_Inscription %}
+                        <div class="text-muted small mt-2">
+                            <i class="bi bi-calendar3 me-1"></i> Membre depuis le {{ membre.Date_Inscription|date('d/m/Y') }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if estPublic %}
+                <hr class="my-4">
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h2 class="h6 text-muted text-uppercase fw-bold">Nom</h2>
+                        <p>{{ (membre.Prenom ~ ' ' ~ membre.Nom)|trim|default('Non renseigné') }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h2 class="h6 text-muted text-uppercase fw-bold">Région</h2>
+                        <p>{{ membre.Region|default('Non renseignée') }}</p>
+                    </div>
+                </div>
+
+                {% if membre.Bio_Description %}
+                    <h2 class="h6 text-muted text-uppercase fw-bold mt-3">Présentation</h2>
+                    <p class="text-secondary" style="white-space: pre-line;">{{ membre.Bio_Description }}</p>
+                {% endif %}
+
+                {% if membre.Competences_Techniques %}
+                    <h2 class="h6 text-muted text-uppercase fw-bold mt-3">Compétences</h2>
+                    <p class="text-secondary">{{ membre.Competences_Techniques }}</p>
+                {% endif %}
+            {% else %}
+                <hr class="my-4">
+                <div class="alert alert-light border d-flex align-items-center gap-2 mb-0" style="border-radius: 12px;">
+                    <i class="bi bi-shield-lock text-muted"></i>
+                    <span class="text-muted">Ce membre a choisi de ne pas rendre le reste de son profil public.</span>
+                </div>
+            {% endif %}
+
+            {% if is_granted('ROLE_USER') and app.user.id != membre.UtilisateurID %}
+                <div class="mt-4">
+                    <a href="{{ path('app_signaler', {type: 'Profil', id: membre.UtilisateurID}) }}"
+                       class="btn btn-sm btn-outline-danger">
+                        <i class="bi bi-flag me-1"></i> Signaler ce profil
+                    </a>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+{% endblock %}

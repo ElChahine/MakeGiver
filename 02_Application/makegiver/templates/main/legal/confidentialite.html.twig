@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Politique de confidentialité - Je Demain{% endblock %}
+
+{% block body %}
+<div class="container" style="max-width: 820px;">
+    <h1 class="fw-bold mb-4">Politique de confidentialité</h1>
+
+    <div class="alert alert-warning" style="border-radius: 12px;">
+        <i class="bi bi-exclamation-triangle me-1"></i>
+        Modèle de base conforme à l'esprit du RGPD, à adapter et faire valider avant mise en ligne.
+        Ce site pouvant traiter des données sensibles (liées à la santé), une attention particulière est requise.
+    </div>
+
+    <h2 class="h5 fw-bold mt-4">Responsable du traitement</h2>
+    <p class="text-muted">
+        Le responsable du traitement des données est [Nom de la structure], joignable à [adresse e-mail].
+    </p>
+
+    <h2 class="h5 fw-bold mt-4">Données collectées</h2>
+    <p class="text-muted">
+        Lors de l'inscription, nous collectons : nom, prénom, pseudo, adresse e-mail, et, de manière facultative,
+        numéro de téléphone et région. Les contenus que vous publiez (besoins, solutions, commentaires) sont
+        également enregistrés. Aucune donnée de santé ne devrait être renseignée dans les champs libres ;
+        nous vous invitons à ne pas y inscrire d'informations médicales identifiantes.
+    </p>
+
+    <h2 class="h5 fw-bold mt-4">Finalités</h2>
+    <p class="text-muted">
+        Les données sont utilisées pour gérer votre compte, permettre la mise en relation au sein de la communauté
+        et assurer la modération. Votre profil n'est rendu visible publiquement que si vous y consentez
+        explicitement lors de l'inscription.
+    </p>
+
+    <h2 class="h5 fw-bold mt-4">Durée de conservation</h2>
+    <p class="text-muted">
+        Les données sont conservées tant que votre compte est actif, puis supprimées ou anonymisées dans un délai
+        de [à définir] après sa fermeture.
+    </p>
+
+    <h2 class="h5 fw-bold mt-4">Vos droits</h2>
+    <p class="text-muted">
+        Conformément au RGPD, vous disposez d'un droit d'accès, de rectification, d'effacement, d'opposition et de
+        portabilité de vos données. Pour les exercer, écrivez à [adresse e-mail dédiée]. Vous pouvez également
+        introduire une réclamation auprès de la CNIL.
+    </p>
+
+    <p class="text-muted small mt-4">Dernière mise à jour : {{ "now"|date('d/m/Y') }}.</p>
+</div>
+{% endblock %}

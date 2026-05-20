@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Conditions générales d'utilisation - Je Demain{% endblock %}
+
+{% block body %}
+<div class="container" style="max-width: 820px;">
+    <h1 class="fw-bold mb-4">Conditions générales d'utilisation</h1>
+
+    <div class="alert alert-warning" style="border-radius: 12px;">
+        <i class="bi bi-exclamation-triangle me-1"></i>
+        Modèle à compléter et à faire valider avant mise en ligne.
+    </div>
+
+    <h2 class="h5 fw-bold mt-4">Objet</h2>
+    <p class="text-muted">
+        Les présentes conditions régissent l'utilisation du site « Je Demain », plateforme d'entraide permettant
+        de partager des besoins et des solutions de fabrication accessibles.
+    </p>
+
+    <h2 class="h5 fw-bold mt-4">Compte utilisateur</h2>
+    <p class="text-muted">
+        L'inscription nécessite des informations exactes. Vous êtes responsable de la confidentialité de votre
+        mot de passe et des activités réalisées depuis votre compte.
+    </p>
+
+    <h2 class="h5 fw-bold mt-4">Règles de publication</h2>
+    <p class="text-muted">
+        Les contenus publiés doivent être respectueux, licites et pertinents. Tout contenu inapproprié peut être
+        signalé via le bouton « Signaler » et retiré par la modération. Les solutions partagées le sont sous la
+        licence indiquée par leur auteur.
+    </p>
+
+    <h2 class="h5 fw-bold mt-4">Responsabilité</h2>
+    <p class="text-muted">
+        Les solutions proposées le sont à titre d'entraide, sans garantie. Chaque utilisateur reste responsable de
+        l'usage qu'il en fait. Le site ne saurait se substituer à un avis médical ou professionnel.
+    </p>
+
+    <h2 class="h5 fw-bold mt-4">Modification</h2>
+    <p class="text-muted">
+        L'éditeur peut faire évoluer ces conditions ; la version applicable est celle en ligne au moment de
+        l'utilisation du site.
+    </p>
+
+    <p class="text-muted small mt-4">Dernière mise à jour : {{ "now"|date('d/m/Y') }}.</p>
+</div>
+{% endblock %}
