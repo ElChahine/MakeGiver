@@ -60,7 +60,7 @@
         font-weight: 700;
         font-size: 0.85rem;
     }
-
+    .badge-difficulte.Très_Facile       { background: rgba(16,185,129,0.12); color: #67dcf7; }
     .badge-difficulte.Facile       { background: rgba(16,185,129,0.12); color: #059669; }
     .badge-difficulte.Intermédiaire { background: rgba(245,158,11,0.12); color: #D97706; }
     .badge-difficulte.Avancé       { background: rgba(239,68,68,0.12); color: #DC2626; }
@@ -264,7 +264,8 @@
 
             <div class="badges-row">
                 <span class="badge-custom badge-difficulte {{ solution.Difficulte_Fabrication }}">
-                    {% if solution.Difficulte_Fabrication == 'Facile' %}🟢
+                    {% if solution.Difficulte_Fabrication == "Très_Facile" %}🟢
+                    {% elseif solution.Difficulte_Fabrication == 'Facile' %}🟢
                     {% elseif solution.Difficulte_Fabrication == 'Intermédiaire' %}🟡
                     {% else %}🔴{% endif %}
                     {{ solution.Difficulte_Fabrication }}

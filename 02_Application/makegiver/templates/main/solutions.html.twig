@@ -299,7 +299,7 @@
             <i class="bi bi-funnel text-muted"></i>
             <select name="difficulte" class="form-select" onchange="this.form.submit()" style="border-radius: 12px; border: 2px solid #E5E7EB; min-width: 200px;">
                 <option value="">Toutes les difficultés</option>
-                {% for d in ['Très Facile', 'Facile', 'Intermédiaire', 'Avancé'] %}
+                {% for d in ['Très_Facile', 'Facile', 'Intermédiaire', 'Avancé'] %}
                     <option value="{{ d }}" {{ difficulte == d ? 'selected' : '' }}>{{ d }}</option>
                 {% endfor %}
             </select>
