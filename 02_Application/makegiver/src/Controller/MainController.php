@@ -177,8 +177,40 @@ class MainController extends AbstractController
                     VALUES (?, ?, ?, ?, ?, ?, NOW())
                 ", [$titre, $description, $materiel, $difficulte, $licence, $createurId]);
 
+                $solutionId = (int) $connection->lastInsertId();
+
+                $extensionsAutorisees = ['stl', 'jpg', 'jpeg', 'png', 'pdf'];
+                $tailleMax = 10 * 1024 * 1024;
+                $dossier = $this->getParameter('kernel.project_dir') . '/public/uploads/solutions';
+
+                foreach ($request->files->get('fichiers', []) as $fichier) {
+                    if (!$fichier || !$fichier->isValid()) {
+                        continue;
+                    }
+
+                    $extension = strtolower($fichier->getClientOriginalExtension());
+                    if (!in_array($extension, $extensionsAutorisees, true) || $fichier->getSize() > $tailleMax) {
+                        $this->addFlash('error', 'Fichier ignoré (type non autorisé ou supérieur à 10 Mo) : ' . $fichier->getClientOriginalName());
+                        continue;
+                    }
+
+                    $nomOriginal = $fichier->getClientOriginalName();
+                    $tailleMo    = round($fichier->getSize() / 1048576, 2);
+                    $nomStocke   = uniqid('sol_', true) . '.' . $extension;
+
+                    try {
+                        $fichier->move($dossier, $nomStocke);
+                        $connection->executeStatement("
+                            INSERT INTO fichiers (Nom_Fichier, Chemin_URL, Type, Taille_Mo, SolutionID)
+                            VALUES (?, ?, ?, ?, ?)
+                        ", [$nomOriginal, '/uploads/solutions/' . $nomStocke, strtoupper($extension), $tailleMo, $solutionId]);
+                    } catch (\Exception $e) {
+                        $this->addFlash('error', "Échec de l'enregistrement du fichier : " . $nomOriginal);
+                    }
+                }
+
                 $this->addFlash('success', 'Votre solution a été publiée !');
-                return $this->redirectToRoute('app_solutions');
+                return $this->redirectToRoute('app_solution_detail', ['id' => $solutionId]);
             }
         }
 
@@ -394,10 +426,40 @@ class MainController extends AbstractController
     }
 
     #[Route('/projets', name: 'app_projets')]
-    public function projets(): Response
+    public function projets(Connection $connection): Response
     {
         $this->denyAccessUnlessGranted('ROLE_USER');
-        return $this->render('main/projets.html.twig');
+
+        $userId = $this->getUser()->getId();
+
+        $mesBesoins = $connection->fetchAllAssociative("
+            SELECT p.*,
+                   (SELECT COUNT(*) FROM candidatures c WHERE c.projet_id = p.ProjetID) AS nb_candidatures
+            FROM projets p
+            WHERE p.DemandeurID = ?
+            ORDER BY p.Date_Creation DESC
+        ", [$userId]);
+
+        $mesCandidatures = $connection->fetchAllAssociative("
+            SELECT p.ProjetID, p.Titre_Besoin, p.Statut, p.maker_id, c.date_candidature
+            FROM candidatures c
+            JOIN projets p ON c.projet_id = p.ProjetID
+            WHERE c.maker_id = ?
+            ORDER BY c.date_candidature DESC
+        ", [$userId]);
+
+        $mesSolutions = $connection->fetchAllAssociative("
+            SELECT SolutionID, Titre_Solution, Difficulte_Fabrication, Date_Publication
+            FROM solutions
+            WHERE CreateurID = ?
+            ORDER BY Date_Publication DESC
+        ", [$userId]);
+
+        return $this->render('main/projets.html.twig', [
+            'mesBesoins'      => $mesBesoins,
+            'mesCandidatures' => $mesCandidatures,
+            'mesSolutions'    => $mesSolutions,
+        ]);
     }
 
     #[Route('/fablabs', name: 'app_fablabs')]

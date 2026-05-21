@@ -51,6 +51,43 @@ class AdminController extends AbstractController
             ORDER BY s.Date_Signalement DESC
         ");
 
+        // Pour chaque signalement, on récupère un aperçu du contenu visé et de quoi y accéder.
+        foreach ($signalements as &$s) {
+            $s['apercu'] = null;
+            $s['cibleSolutionId'] = null;
+
+            if (empty($s['ContenuID'])) {
+                continue;
+            }
+            $cid = (int) $s['ContenuID'];
+
+            switch ($s['TypeContenu']) {
+                case 'Solution':
+                    $s['apercu'] = $connection->fetchOne("SELECT Titre_Solution FROM solutions WHERE SolutionID = ?", [$cid]) ?: null;
+                    break;
+                case 'Besoin':
+                    $s['apercu'] = $connection->fetchOne("SELECT Titre_Besoin FROM projets WHERE ProjetID = ?", [$cid]) ?: null;
+                    break;
+                case 'Evenement':
+                    $s['apercu'] = $connection->fetchOne("SELECT Titre_Event FROM evenements WHERE EvenementID = ?", [$cid]) ?: null;
+                    break;
+                case 'Profil':
+                    $s['apercu'] = $connection->fetchOne(
+                        "SELECT COALESCE(NULLIF(pseudo, ''), TRIM(CONCAT(COALESCE(Prenom, ''), ' ', COALESCE(Nom, '')))) FROM utilisateurs WHERE UtilisateurID = ?",
+                        [$cid]
+                    ) ?: null;
+                    break;
+                case 'Commentaire':
+                    $row = $connection->fetchAssociative("SELECT Contenu_Texte, SolutionID FROM commentaires WHERE CommentaireID = ?", [$cid]);
+                    if ($row) {
+                        $s['apercu'] = $row['Contenu_Texte'];
+                        $s['cibleSolutionId'] = $row['SolutionID'];
+                    }
+                    break;
+            }
+        }
+        unset($s);
+
         return $this->render('admin/signalements.html.twig', [
             'signalements' => $signalements,
         ]);
