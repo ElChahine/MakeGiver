@@ -36,8 +36,7 @@ class InscriptionType extends AbstractType
             ->add('pseudo', TextType::class, [
                 'label' => 'Pseudo *',
                 'constraints' => [
-                    // CORRECTION ICI : On utilise "message:" au lieu de "null,"
-                    new NotBlank(message: 'Veuillez entrer un pseudo'), 
+                    new NotBlank(message: 'Veuillez entrer un pseudo'),
                 ],
             ])
             ->add('telephone', TelType::class, [
@@ -80,9 +79,8 @@ class InscriptionType extends AbstractType
                 'second_options'=> ['label' => 'Confirmer le mot de passe *'],
                 'constraints'   => [
                     new NotBlank(message: 'Le mot de passe est obligatoire'),
-                    // CORRECTION ICI : On enlève les crochets [] et on utilise "min:" et "minMessage:"
                     new Length(
-                        min: 8, 
+                        min: 8,
                         minMessage: 'Le mot de passe doit faire au moins 8 caractères.'
                     ),
                 ],

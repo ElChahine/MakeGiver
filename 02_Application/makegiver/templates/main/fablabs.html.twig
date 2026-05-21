@@ -237,7 +237,6 @@
 
 <div class="fablabs-grid" id="labs-grid">
     {% for lab in labs %}
-    {# CORRECTION TWIG : Si website est vide "", on passe bien à l'URL de secours #}
     {% set labUrl = (lab.website is defined and lab.website is not empty) ? lab.website : 'https://www.fablabs.io/labs/' ~ (lab.slug ?? '') %}
     <div class="fablab-card"
          data-name="{{ lab.name|lower|e('html_attr') }}"
@@ -293,8 +292,7 @@ function renderMarkers(labs) {
         if (!lat || !lng) return;
         const name = lab.name || 'FabLab';
         const city = lab.city || '';
-        
-        // CORRECTION JS : Sécurité renforcée si le champ arrive vide à l'état brut
+
         const url  = (lab.website && lab.website.trim() !== "") ? lab.website : `https://www.fablabs.io/labs/${lab.slug || ''}`;
         
         const m = L.marker([lat, lng], { icon: greenIcon }).addTo(map).bindPopup(`
@@ -333,9 +331,8 @@ function applyFilters() {
         if (matchQ && matchC) {
             card.style.display = '';
             visible++;
-            
-            // CORRECTION JS : On ne perd plus le slug lors de la reconstruction dynamique du tableau filtré
-            filtered.push({ 
+
+            filtered.push({
                 latitude: card.dataset.lat, 
                 longitude: card.dataset.lng, 
                 name: card.querySelector('.fablab-name').textContent, 

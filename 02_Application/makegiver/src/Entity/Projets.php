@@ -32,19 +32,17 @@ class Projets
     #[ORM\Column(name: 'DemandeurID', nullable: true)]
     private ?int $demandeurId = null;
 
-    // Relation avec le Maker final (celui qui est validé)
     #[ORM\ManyToOne(targetEntity: Utilisateurs::class)]
     #[ORM\JoinColumn(name: 'maker_id', referencedColumnName: 'UtilisateurID')]
     private ?Utilisateurs $maker = null;
 
-    // --- AJOUT : Relation avec la liste des volontaires ---
     #[ORM\OneToMany(mappedBy: 'projet', targetEntity: Candidatures::class)]
     private Collection $candidatures;
 
     public function __construct()
     {
         $this->dateCreation = new \DateTime();
-        $this->candidatures = new ArrayCollection(); // Initialisation obligatoire
+        $this->candidatures = new ArrayCollection();
     }
 
     public function getId(): ?int { return $this->id; }
@@ -66,7 +64,6 @@ class Projets
     public function getMaker(): ?Utilisateurs { return $this->maker; }
     public function setMaker(?Utilisateurs $maker): static { $this->maker = $maker; return $this; }
 
-    // --- AJOUT : Getter pour Twig ---
     /**
      * @return Collection<int, Candidatures>
      */

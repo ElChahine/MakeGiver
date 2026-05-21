@@ -16,8 +16,6 @@ class SignalementType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            // Le type et l'identifiant sont déterminés par le contexte (depuis quel contenu
-            // on a cliqué « Signaler ») : ils sont donc cachés et pré-remplis, pas re-choisis.
             ->add('typeContenu', HiddenType::class, [
                 'constraints' => [new NotBlank(message: 'Type de contenu manquant.')],
             ])

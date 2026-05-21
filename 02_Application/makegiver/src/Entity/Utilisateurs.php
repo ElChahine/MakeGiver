@@ -93,8 +93,7 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
     public function setBioDescription(?string $bio): static { $this->bioDescription = $bio; return $this; }
     public function getCompetencesTechniques(): ?string { return $this->competencesTechniques; }
     public function setCompetencesTechniques(?string $comp): static { $this->competencesTechniques = $comp; return $this; }
-    
-    // Getter/Setter pour Region
+
     public function getRegion(): ?string { return $this->region; }
     public function setRegion(?string $region): static { $this->region = $region; return $this; }
 
