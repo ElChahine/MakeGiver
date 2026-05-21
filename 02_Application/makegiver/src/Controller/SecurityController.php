@@ -17,7 +17,6 @@ class SecurityController extends AbstractController
     #[Route('/connexion', name: 'app_connexion')]
     public function connexion(AuthenticationUtils $authenticationUtils): Response
     {
-        // Si déjà connecté, rediriger
         if ($this->getUser()) {
             return $this->redirectToRoute('app_espace');
         }
@@ -52,7 +51,6 @@ class SecurityController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Hash du mot de passe
             $plainPassword = $form->get('plainPassword')->getData();
             $utilisateur->setMotDePasseHash(
                 $hasher->hashPassword($utilisateur, $plainPassword)

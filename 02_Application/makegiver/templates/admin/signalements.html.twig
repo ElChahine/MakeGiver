@@ -37,21 +37,41 @@
                                 <td>
                                     <span class="badge bg-secondary-subtle text-secondary-emphasis">{{ s.TypeContenu|default('—') }}</span>
                                 </td>
-                                <td>
+                                <td style="max-width: 300px;">
+                                    {% if s.apercu is not null %}
+                                        <div class="text-break small mb-1">
+                                            {% if s.TypeContenu == 'Commentaire' %}
+                                                « {{ s.apercu|length > 100 ? s.apercu|slice(0, 100) ~ '…' : s.apercu }} »
+                                            {% else %}
+                                                <strong>{{ s.apercu }}</strong>
+                                            {% endif %}
+                                        </div>
+                                    {% elseif s.ContenuID %}
+                                        <div class="small text-muted fst-italic mb-1">Contenu introuvable (peut-être déjà supprimé)</div>
+                                    {% endif %}
+
                                     {% if s.TypeContenu == 'Solution' and s.ContenuID %}
-                                        <a href="{{ path('app_solution_detail', {id: s.ContenuID}) }}" target="_blank" rel="noopener">
-                                            #{{ s.ContenuID }} <i class="bi bi-box-arrow-up-right small"></i>
+                                        <a href="{{ path('app_solution_detail', {id: s.ContenuID}) }}" target="_blank" rel="noopener" class="small">
+                                            Voir la solution <i class="bi bi-box-arrow-up-right"></i>
                                         </a>
                                     {% elseif s.TypeContenu == 'Profil' and s.ContenuID %}
-                                        <a href="{{ path('app_membre_profil', {id: s.ContenuID}) }}" target="_blank" rel="noopener">
-                                            #{{ s.ContenuID }} <i class="bi bi-box-arrow-up-right small"></i>
+                                        <a href="{{ path('app_membre_profil', {id: s.ContenuID}) }}" target="_blank" rel="noopener" class="small">
+                                            Voir le profil <i class="bi bi-box-arrow-up-right"></i>
                                         </a>
-                                    {% elseif s.TypeContenu == 'Besoin' %}
-                                        <a href="{{ path('app_besoins') }}" target="_blank" rel="noopener">#{{ s.ContenuID|default('—') }}</a>
-                                    {% elseif s.TypeContenu == 'Evenement' %}
-                                        <a href="{{ path('app_agenda') }}" target="_blank" rel="noopener">#{{ s.ContenuID|default('—') }}</a>
+                                    {% elseif s.TypeContenu == 'Commentaire' and s.cibleSolutionId %}
+                                        <a href="{{ path('app_solution_detail', {id: s.cibleSolutionId}) }}#commentaire-{{ s.ContenuID }}" target="_blank" rel="noopener" class="small">
+                                            Voir le commentaire <i class="bi bi-box-arrow-up-right"></i>
+                                        </a>
+                                    {% elseif s.TypeContenu == 'Besoin' and s.ContenuID %}
+                                        <a href="{{ path('app_besoins') }}" target="_blank" rel="noopener" class="small">
+                                            Voir dans les besoins <i class="bi bi-box-arrow-up-right"></i>
+                                        </a>
+                                    {% elseif s.TypeContenu == 'Evenement' and s.ContenuID %}
+                                        <a href="{{ path('app_agenda') }}" target="_blank" rel="noopener" class="small">
+                                            Voir dans l'agenda <i class="bi bi-box-arrow-up-right"></i>
+                                        </a>
                                     {% else %}
-                                        #{{ s.ContenuID|default('—') }}
+                                        <span class="text-muted small">#{{ s.ContenuID|default('—') }}</span>
                                     {% endif %}
                                 </td>
                                 <td style="max-width: 320px;">
