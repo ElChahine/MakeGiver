@@ -1,42 +1,48 @@
 graph TD
+    %% --- MCD ---
     classDef box fill:#fff,stroke:#000,stroke-width:1px,align:left;
 
-    U["**UTILISATEUR**<br>----------------------<br>_id_user_<br>Nom, Prenom<br>Email, Telephone<br>MotDePasse_Hash<br>Role, Bio_Description<br>Competences_Techniques<br>**Consentement_Public (Bool)**<br>Date_Inscription"]:::box
+    U["**UTILISATEUR**<br>----------------------<br>_UtilisateurID_<br>Nom, Prenom, Pseudo<br>Email, Telephone<br>MotDePasse_Hash<br>Role (Membre/Maker/Soignant/Admin)<br>Bio_Description, Competences_Techniques<br>**Consentement_Public (Bool)**<br>Region, Date_Inscription"]:::box
 
-    P["**PROJET / BESOIN**<br>----------------------<br>_id_projet_<br>Titre_Besoin<br>Description_Detaillee<br>Statut (Ouvert, En cours...)<br>Date_Creation<br>**Date_MiseAJour**"]:::box
+    P["**PROJET / BESOIN**<br>----------------------<br>_ProjetID_<br>Titre_Besoin<br>Description_Detaillee<br>Statut (Ouvert, En cours, Terminé)<br>Date_Creation, Date_MiseAJour<br>DemandeurID (FK)<br>maker_id (FK, maker retenu)"]:::box
 
-    S["**SOLUTION / RESSOURCE**<br>----------------------<br>_id_solution_<br>Titre_Solution<br>Description_Technique<br>Licence, Materiel_Necessaire<br>**Difficulte_Fabrication**<br>Date_Publication<br>Est_CoupDeCoeur"]:::box
+    S["**SOLUTION**<br>----------------------<br>_SolutionID_<br>Titre_Solution<br>Description_Technique<br>Licence, Materiel_Necessaire<br>Difficulte_Fabrication<br>Date_Publication, Est_CoupDeCoeur<br>CreateurID (FK), CoAuteurID (FK)"]:::box
 
-    F["**FICHIER NUMERIQUE**<br>----------------------<br>_id_fichier_<br>Nom_Fichier<br>Chemin_URL<br>Type (STL, PDF...)<br>Taille_Mo"]:::box
+    CAND["**CANDIDATURE**<br>----------------------<br>_id_<br>projet_id (FK)<br>maker_id (FK)<br>date_candidature"]:::box
 
-    L["**LIEU (ANNUAIRE)**<br>----------------------<br>_id_lieu_<br>Nom_Lieu<br>Adresse_Complete<br>Code_Postal, Ville<br>GPS, Type<br>Liste_Equipements"]:::box
+    F["**FICHIER**<br>----------------------<br>_FichierID_<br>Nom_Fichier, Chemin_URL<br>Type (STL, PDF, image...)<br>Taille_Mo<br>SolutionID / ProjetID (FK)"]:::box
 
-    E["**EVENEMENT (AGENDA)**<br>----------------------<br>_id_event_<br>Titre_Event<br>Description<br>Date_Debut, Date_Fin<br>Type, **Lien_Externe**"]:::box
+    COM["**COMMENTAIRE**<br>----------------------<br>_CommentaireID_<br>Contenu_Texte<br>Date_Post<br>Est_Valide (modération)<br>AuteurID, SolutionID/ProjetID (FK)"]:::box
 
-    C["**CATEGORIE**<br>----------------------<br>_id_categorie_<br>Nom_Categorie<br>Type_Categorie<br>Description"]:::box
+    SIG["**SIGNALEMENT**<br>----------------------<br>_SignalementID_<br>UtilisateurID (FK)<br>TypeContenu, ContenuID<br>Raison, Date_Signalement"]:::box
 
-    COM["**COMMENTAIRE**<br>----------------------<br>_id_com_<br>Contenu_Texte<br>Date_Post<br>Est_Valide"]:::box
+    L["**LIEU (ANNUAIRE)**<br>----------------------<br>_LieuID_<br>Nom_Lieu, Ville, Type<br>(table dispo ; FabLabs via API)"]:::box
 
-    SIG["**SIGNALEMENT**<br>----------------------<br>_id_sig_<br>Raison, Date_Signalement"]:::box
+    E["**EVENEMENT (AGENDA)**<br>----------------------<br>_EvenementID_<br>Titre_Event, Dates<br>Lien_Externe_Organisateur"]:::box
 
-    %% RELATIONS
+    C["**CATEGORIE**<br>----------------------<br>_CategorieID_<br>Nom_Categorie, Type_Categorie<br>(présente, non reliée)"]:::box
+
+    %% RELATIONS (réelles)
     U ---|1,N| Soumettre((Soumettre)) ---|1,1| P
-    U ---|0,N| Publier((Publier_Lead)) ---|1,1| S
-    U ---|0,1| Co_auteur((Co-Auteur)) ---|1,1| S
-    U ---|0,N| Participer((Participer à)) ---|1,N| P
+    U ---|0,N| Postuler((Postuler)) ---|1,1| CAND
+    CAND ---|1,1| SurBesoin((Sur)) --- P
+    U ---|0,1| Retenu((Maker retenu)) --- P
+
+    U ---|0,N| Publier((Publier)) ---|1,1| S
+    U ---|0,1| CoAuteur((Co-Auteur)) ---|1,1| S
+
+    P ---|0,N| JoindreP((Joindre)) ---|0,N| F
+    S ---|0,N| Comporter((Comporter)) ---|0,N| F
+
     U ---|0,N| Rediger((Rédiger)) ---|1,1| COM
+    COM ---|1,1| SurContenu((Sur)) --- P
+    SurContenu --- S
+
     U ---|0,N| Signaler((Signaler)) ---|1,1| SIG
+    SIG ---|1,1| Concerne((Concerne)) --- S
+    Concerne --- P
+    Concerne --- COM
+    Concerne --- E
+    Concerne --- U
 
-    P ---|0,1| Aboutir((Aboutir à)) ---|0,N| S
-    P ---|1,N| Definir((Défini par)) ---|0,N| C
-    S ---|1,N| Qualifier((Qualifié par)) ---|0,N| C
-
-    P ---|0,N| Lier_F((Lier Fichier)) ---|0,N| F
-    S ---|1,1| Comporter_F((Comporter)) ---|1,N| F
-
-    SIG ---|1,1| Viser((Concerne)) --- P
-    SIG --- Viser --- S
-    SIG --- Viser --- COM
-
-    P ---|0,1| AvoirP((Lien)) ---|0,N| COM
-    S ---|0,1| AvoirS((Lien)) ---|0,N| COM
+    %% LIEU, EVENEMENT et CATEGORIE ne sont pas reliés dans l'application actuelle.

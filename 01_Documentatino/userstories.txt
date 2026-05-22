@@ -1,16 +1,32 @@
+USER STORIES
+
 SÉCURITÉ ET PROTECTION DES DONNÉES
-- En tant qu'utilisateur, je veux m'authentifier par F2A (Email/Tel) pour protéger mes données de santé[cite: 15].
-- En tant qu'utilisateur, je veux choisir lors de mon inscription si mes coordonnées (Email, Tel) sont publiques ou privées (Consentement RGPD).
-- En tant qu'utilisateur, je veux pouvoir signaler un contenu inapproprié au gestionnaire du site via un bouton de signalement.
+- En tant qu'utilisateur, je veux me connecter de façon sécurisée (mot de passe haché, protection CSRF) pour protéger mon compte.
+- En tant qu'utilisateur, je veux choisir lors de mon inscription si mon profil est visible publiquement (consentement RGPD) ; mon e-mail et mon téléphone ne sont jamais affichés publiquement.
+- En tant qu'utilisateur, je veux signaler un contenu inapproprié (solution, besoin, commentaire, événement ou profil) via un bouton de signalement contextuel.
+  (Note : la double authentification F2A envisagée au départ n'a pas été implémentée.)
 
-PATIENT ET SOIGNANT (BESOINS)
-- En tant que demandeur, je veux soumettre un besoin via un formulaire incluant des photos ou fichiers techniques dès le dépôt[cite: 18].
-- En tant que demandeur, je veux être automatiquement cité comme co-auteur de la solution finale issue de mon besoin.
-- En tant qu'utilisateur, je veux filtrer les solutions par type de handicap ou par nom de créateur/FabLab spécifique[cite: 20].
-- En tant qu'utilisateur, je veux laisser un commentaire pour partager mon expérience sur une solution (sans système de notation par étoiles)[cite: 23].
+MEMBRE / SOIGNANT (BESOINS)
+- En tant que demandeur, je veux déposer un besoin via un formulaire (titre, description) pour solliciter la communauté.
+- En tant que demandeur, je veux voir les makers qui se proposent et valider celui de mon choix pour prendre en charge mon besoin.
+- En tant qu'utilisateur, je veux rechercher des solutions et des besoins (recherche par mots-clés) et filtrer les solutions par difficulté.
+- En tant qu'utilisateur, je veux laisser un commentaire pour partager mon expérience sur une solution (sans système de notation par étoiles).
+- En tant qu'utilisateur, je veux consulter le profil public d'un membre (pseudo et rôle pour tous ; nom, région, bio et compétences seulement s'il y a consenti).
 
-MAKER ET PARTENAIRE (SOLUTIONS & LIEUX)
-- En tant que Maker, je veux consulter les besoins pour identifier un projet à prendre en charge[cite: 25].
-- En tant que Maker, je veux publier une solution (fichiers STL/PDF) et collaborer avec le demandeur dans un espace restreint "Mes Projets"[cite: 26].
-- En tant qu'utilisateur, je veux consulter un annuaire des FabLabs de France (indépendant de l'agenda) pour trouver un lieu de fabrication permanent[cite: 22, 32].
-- En tant que partenaire, je veux afficher mes événements externes dans l'agenda sans lien direct avec mon compte utilisateur[cite: 33].
+MAKER (SOLUTIONS)
+- En tant que maker, je veux consulter les besoins pour identifier un projet à prendre en charge.
+- En tant que maker, je veux me proposer (candidater) sur un besoin.
+- En tant que maker, je veux publier une solution et y joindre des fichiers (STL, PDF, images) pour la rendre reproductible.
+
+COMMUNAUTÉ (ANNUAIRE & AGENDA)
+- En tant qu'utilisateur, je veux consulter un annuaire des FabLabs de France (alimenté par une source externe) pour trouver un lieu de fabrication.
+- En tant qu'utilisateur connecté, je veux proposer un événement à l'agenda (avec un lien vers l'organisateur, obligatoire) ; les événements sont externes au site.
+
+ESPACE PERSONNEL
+- En tant qu'utilisateur connecté, je veux un tableau de bord récapitulant mes besoins, mes propositions d'aide (candidatures) et mes solutions publiées.
+
+ADMINISTRATION
+- En tant qu'administrateur, je veux consulter des statistiques (nombre de membres, besoins, solutions, top contributeurs).
+- En tant qu'administrateur, je veux traiter les signalements (avec un aperçu et un lien direct vers le contenu visé).
+- En tant qu'administrateur, je veux modérer les commentaires (les masquer ou les supprimer).
+- En tant qu'administrateur, je veux supprimer un contenu inapproprié (solution, besoin ou événement).

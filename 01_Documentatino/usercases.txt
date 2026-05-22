@@ -1,42 +1,70 @@
 @startuml
+' Cas d'utilisation
 skinparam actorStyle awesome
 left to right direction
 
 actor "Visiteur" as Guest
-actor "Membre Connecté" as Member
-actor "Patient / Soignant" as Requester
+actor "Membre connecté" as Member
 actor "Maker" as Maker
 actor "Administrateur" as Admin
 
 package "Plateforme Je Demain" {
-    usecase "Consulter l'Annuaire des FabLabs" as UC_Directory
-    usecase "Consulter l'Agenda (Événements)" as UC_Agenda
-    usecase "Rechercher par Créateur ou Catégorie" as UC_Search
-    
-    usecase "S'inscrire avec choix de Consentement" as UC_Register
+    ' --- Accessible sans connexion ---
+    usecase "Consulter l'annuaire des FabLabs" as UC_Directory
+    usecase "Consulter l'agenda (événements)" as UC_Agenda
+    usecase "Rechercher (solutions / besoins)" as UC_Search
+    usecase "Consulter les solutions" as UC_Browse
+    usecase "Consulter un profil public" as UC_Profile
+    usecase "S'inscrire (avec consentement)" as UC_Register
+    usecase "Se connecter" as UC_Login
+
+    ' --- Réservé aux membres connectés ---
+    usecase "Déposer un besoin (+ fichiers)" as UC_Submit
+    usecase "Publier une solution (+ fichiers)" as UC_Publish
+    usecase "Commenter une solution" as UC_Comment
     usecase "Signaler un contenu" as UC_Report
-    usecase "Laisser un Commentaire (avis textuel)" as UC_Comment
-    
-    usecase "Soumettre un Besoin (+ Fichiers)" as UC_Submit
-    usecase "Prendre en charge un Besoin (Projet)" as UC_Accept
-    usecase "Gérer 'Mes Projets' (Accès restreint)" as UC_PrivateProject
-    usecase "Publier une Solution (Co-autorat)" as UC_Publish
+    usecase "Proposer un événement" as UC_AddEvent
+    usecase "Consulter mon tableau de bord" as UC_Dashboard
+    usecase "Se proposer sur un besoin (candidater)" as UC_Apply
+    usecase "Valider un maker (mon besoin)" as UC_Validate
+
+    ' --- Administration ---
+    usecase "Voir les statistiques" as UC_Stats
+    usecase "Modérer les signalements" as UC_ModReport
+    usecase "Modérer les commentaires" as UC_ModComment
+    usecase "Supprimer un contenu" as UC_Delete
 }
+
+' Le membre connecté hérite des actions du visiteur
+Guest <|-- Member
+Member <|-- Maker
+Member <|-- Admin
 
 Guest --> UC_Directory
 Guest --> UC_Agenda
 Guest --> UC_Search
+Guest --> UC_Browse
+Guest --> UC_Profile
+Guest --> UC_Register
+Guest --> UC_Login
 
-Member --> UC_Report
+Member --> UC_Submit
+Member --> UC_Publish
 Member --> UC_Comment
-Member --> UC_Register
+Member --> UC_Report
+Member --> UC_AddEvent
+Member --> UC_Dashboard
+Member --> UC_Validate
 
-Requester --> UC_Submit
-Requester --> UC_PrivateProject
+Maker --> UC_Apply
 
-Maker --> UC_Accept
-Maker --> UC_Publish
-Maker --> UC_PrivateProject
+Admin --> UC_Stats
+Admin --> UC_ModReport
+Admin --> UC_ModComment
+Admin --> UC_Delete
 
-Admin --> UC_Report : "Traiter les signalements"
+note bottom of UC_Report
+  Signalement contextuel : solution, besoin,
+  commentaire, événement ou profil.
+end note
 @enduml

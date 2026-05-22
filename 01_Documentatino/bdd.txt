@@ -1,25 +1,31 @@
-Utilisateurs (Users) : UtilisateurID (PK), Nom, Prénom, Email, Telephone, MotDePasse_Hash, Rôle, Bio_Description, Consentement_Public (Boolean), Date_Inscription .
+BASE DE DONNÉES « makegiver » 
 
-Projets (Besoins) : ProjetID (PK), Titre_Besoin, Description_Detaillee, Statut, Date_Creation, DemandeurID (FK).
+utilisateurs : UtilisateurID (PK), Nom, Prenom, Email (unique), Telephone, MotDePasse_Hash, Role (enum : Membre, Maker, Soignant, Admin), Bio_Description, Competences_Techniques, Consentement_Public (booléen — visibilité du profil / RGPD), Date_Inscription, pseudo, Region.
 
-Solutions (Ressources Techniques) : SolutionID (PK), Titre_Solution, Description_Technique, Licence, Materiel_Necessaire, Date_Publication, Est_CoupDeCoeur, CreateurID (FK), CoAuteurID (FK) (Demandeur du besoin initial).
+projets (Besoins) : ProjetID (PK), Titre_Besoin, Description_Detaillee, Statut (enum : Ouvert, En cours, Terminé), Date_Creation, Date_MiseAJour, DemandeurID (FK → utilisateurs), maker_id (FK → utilisateurs : le maker retenu pour le besoin).
 
-Fichiers (Fichiers Numériques) : FichierID (PK), Nom_Fichier, Chemin_URL, Type, Taille_Mo, SolutionID (FK, Optionnel), ProjetID (FK, Optionnel).
+solutions : SolutionID (PK), Titre_Solution, Description_Technique, Licence, Materiel_Necessaire, Difficulte_Fabrication, Date_Publication, Est_CoupDeCoeur (booléen), CreateurID (FK → utilisateurs), CoAuteurID (FK → utilisateurs).
 
-Lieux (Annuaire - FabLabs & Commerces) : LieuID (PK), Nom_Lieu, Adresse_Complete, Ville, GPS, Type (FabLab ou Commerce), Liste_Equipements.
+candidatures : id (PK), projet_id (FK → projets, ON DELETE CASCADE), maker_id (FK → utilisateurs, ON DELETE CASCADE), date_candidature. — Un maker se propose pour répondre à un besoin ; le demandeur valide ensuite l'un des volontaires (qui devient projets.maker_id).
 
-Evenements (Agenda Externe) : EvenementID (PK), Titre_Event, Description, Date_Debut, Date_Fin, Type, Lien_Externe_Organisateur.
+fichiers : FichierID (PK), Nom_Fichier, Chemin_URL, Type, Taille_Mo, SolutionID (FK → solutions, optionnel), ProjetID (FK → projets, optionnel). — Fichiers joints (STL, PDF, images) téléversés sur une solution.
 
-Categories (Tables de référence) : CategorieID (PK), Nom_Categorie, Type_Categorie, Description.
+commentaires : CommentaireID (PK), Contenu_Texte, Date_Post, Est_Valide (booléen — modération : 1 affiché, 0 masqué), AuteurID (FK → utilisateurs), SolutionID (FK → solutions, optionnel), ProjetID (FK → projets, optionnel). (Pas de système de notation par étoiles.)
 
-Commentaires (Avis) : CommentaireID (PK), Contenu_Texte, Date_Post, Est_Valide, AuteurID (FK), SolutionID (FK, Optionnel), ProjetID (FK, Optionnel). (Note : le système de notation a été retiré).
+signalements : SignalementID (PK), UtilisateurID (FK → utilisateurs, l'auteur du signalement), TypeContenu (Solution, Besoin, Commentaire, Evenement, Profil), ContenuID (identifiant du contenu visé), Raison, Date_Signalement.
 
-MembresProjet (Table de liaison) : ProjetID (FK), UtilisateurID (FK), RoleSurProjet.
+evenements (Agenda externe) : EvenementID (PK), Titre_Event, Description, Date_Debut, Date_Fin, Type, Lien_Externe_Organisateur. — Événements organisés en dehors du site (renvoi vers le lien de l'organisateur).
 
-ProjetsCategories (Table de liaison) : ProjetID (FK), CategorieID (FK).
+lieux (Annuaire) : LieuID (PK), Nom_Lieu, Adresse_Complete, Code_Postal, Ville, Coordonnees_GPS, Type, Liste_Equipements. — Table disponible pour des lieux saisis manuellement ; en pratique, l'annuaire des FabLabs affiché sur le site est alimenté en direct par l'API externe fablabs.io.
 
-SolutionsCategories (Table de liaison) : SolutionID (FK), CategorieID (FK).
+categories : CategorieID (PK), Nom_Categorie, Type_Categorie, Description. — Table présente, pas encore reliée aux besoins/solutions dans l'application.
 
-Signalements (Système de modération) : SignalementID (PK), UtilisateurID (FK), TypeContenu (Projet, Solution, Commentaire), ContenuID, Raison, Date_Signalement.
+membresprojet (table de liaison) : ProjetID (FK → projets), UtilisateurID (FK → utilisateurs), RoleSurProjet. — Présente dans le schéma, non utilisée par l'application actuelle.
 
-Consentements (Historique RGPD) : ConsentementID (PK), UtilisateurID (FK), TypeDonnee (Email, Tel, Alias), Date_Accord .
+
+ÉCARTS AVEC LA CONCEPTION INITIALE (pour mémoire)
+- Ajout de la table « candidatures » (un maker postule, le demandeur valide le collaborateur).
+- Authentification : connexion classique sécurisée (mot de passe haché en bcrypt, protection CSRF). La double authentification (F2A) envisagée au départ n'a pas été implémentée.
+- Le consentement RGPD est géré par le champ booléen « Consentement_Public » de la table utilisateurs (pas de table « Consentements » dédiée).
+- Tables envisagées mais non implémentées : ProjetsCategories, SolutionsCategories, Consentements.
+- L'e-mail et le téléphone ne sont jamais exposés publiquement : un profil public n'affiche que pseudo, rôle, et — si l'utilisateur y a consenti — nom, région, bio et compétences.
